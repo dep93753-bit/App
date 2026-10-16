@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdminHub – Classes</title>
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap' rel='stylesheet'>
+<script src="https://js.puter.com/v2/"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- FIX 3: configure pdf.js worker -->
+<script>
+window.addEventListener('load', function () {
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+});
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+a{text-decoration:none}li{list-style:none}
+:root{--poppins:'Poppins',sans-serif;--lato:'Lato',sans-serif;--light:#F9F9F9;--blue:#2F65C8;--light-blue:#E6EEFB;--grey:#eee;--dark-grey:#AAAAAA;--dark:#342E37;--red:#DB504A;--yellow:#FFCE26;--orange:#FD7238;--card:#fff}
+body.dark{--light:#0C0C1E;--grey:#060714;--dark:#FBFBFB;--card:#14142b;--light-blue:#1c2547}
+html,body{overflow-x:hidden}
+body{background:var(--grey);font-family:var(--poppins)}
+button{font-family:inherit;cursor:pointer}
+#sidebar{position:fixed;top:0;left:0;width:220px;height:100%;background:var(--light);z-index:2000;font-family:var(--lato);transition:.3s ease;overflow-x:hidden}
+#sidebar.hide{width:60px}
+#sidebar .brand{font-size:24px;font-weight:700;height:56px;display:flex;align-items:center;color:var(--blue);position:sticky;top:0;background:var(--light);z-index:500;padding-bottom:20px;box-sizing:content-box}
+#sidebar .brand .bx{min-width:60px;display:flex;justify-content:center}
+#sidebar .side-menu{width:100%;margin-top:48px}
+#sidebar .side-menu li{height:48px;margin-left:6px;border-radius:48px 0 0 48px;padding:4px}
+#sidebar .side-menu li.active{background:var(--grey);position:relative}
+#sidebar .side-menu li.active::before,#sidebar .side-menu li.active::after{content:'';position:absolute;width:40px;height:40px;border-radius:50%;right:0;z-index:-1}
+#sidebar .side-menu li.active::before{top:-40px;box-shadow:20px 20px 0 var(--grey)}
+#sidebar .side-menu li.active::after{bottom:-40px;box-shadow:20px -20px 0 var(--grey)}
+#sidebar .side-menu li a{width:100%;height:100%;background:var(--light);display:flex;align-items:center;border-radius:48px;font-size:16px;color:var(--dark);white-space:nowrap;overflow-x:hidden}
+#sidebar .side-menu.top li.active a,#sidebar .side-menu.top li a:hover{color:var(--blue)}
+#sidebar.hide .side-menu li a{width:40px;transition:width .3s ease}
+#sidebar .side-menu li a.logout{color:var(--red)}
+#sidebar .side-menu li a .bx{min-width:40px;display:flex;justify-content:center}
+#sidebar .side-menu.bottom li:nth-last-of-type(-n+2){position:absolute;bottom:0;left:0;right:0}
+#sidebar .side-menu.bottom li:nth-last-of-type(2){bottom:40px}
+#content{position:relative;width:calc(100% - 220px);left:220px;transition:.3s ease}
+#sidebar.hide~#content{width:calc(100% - 60px);left:60px}
+#content nav{height:56px;background:var(--light);padding:0 24px;display:flex;align-items:center;gap:24px;font-family:var(--lato);position:sticky;top:0;z-index:1000}
+#content nav::before{content:'';position:absolute;width:40px;height:40px;bottom:-40px;left:0;border-radius:50%;box-shadow:-20px -20px 0 var(--light)}
+#content nav a,#content nav .bx-menu{color:var(--dark)}
+#content nav .bx-menu{cursor:pointer}
+#content nav .nav-link:hover{color:var(--blue)}
+#content nav form{max-width:400px;width:100%;margin-right:auto}
+#content nav .form-input{display:flex;align-items:center;height:36px}
+#content nav .form-input input{flex-grow:1;padding:0 16px;height:100%;border:none;background:var(--grey);border-radius:36px 0 0 36px;outline:none;width:100%;color:var(--dark)}
+#content nav .form-input button{width:36px;height:100%;display:flex;justify-content:center;align-items:center;background:var(--blue);color:#fff;font-size:18px;border:none;border-radius:0 36px 36px 0}
+#content nav .notification{font-size:20px;position:relative}
+#content nav .notification .num{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:2px solid var(--light);background:var(--red);color:#fff;font-weight:700;font-size:12px;display:flex;justify-content:center;align-items:center}
+#content nav .profile img{width:36px;height:36px;object-fit:cover;border-radius:50%}
+#content nav .dd{display:none;position:absolute;top:56px;right:0;background:var(--light);box-shadow:0 2px 10px rgba(0,0,0,.1);border-radius:15px;width:220px;z-index:9999;padding:10px}
+#content nav .dd.show{display:block}
+#content nav .dd li{padding:10px;border-bottom:1px solid var(--grey);color:var(--dark)}
+#content nav .dd li:hover{background:var(--light-blue)}
+#content nav .swith-lm{background:var(--grey);border-radius:50px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:3px;position:relative;height:21px;width:45px;transform:scale(1.5)}
+#content nav .swith-lm .ball{background:var(--blue);border-radius:50%;position:absolute;top:2px;left:2px;height:20px;width:20px;transition:transform .2s linear}
+#content nav .checkbox:checked+.swith-lm .ball{transform:translateX(22px)}
+.bxs-moon{color:var(--yellow)}.bx-sun{color:var(--orange)}
+
+main{padding:28px 24px;color:var(--dark)}
+.classes{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
+.rail{background:var(--light);border-radius:16px;padding:16px;position:sticky;top:76px}
+.rail .item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;color:var(--dark);font-size:15px}
+.railhd{display:flex;justify-content:space-between;align-items:center;padding:0 10px 8px;font-size:16px}
+.railhd button{background:none;border:none;color:var(--dark);font-size:24px;display:flex;border-radius:50%;padding:2px}
+.railhd button:hover{background:var(--grey);color:var(--red)}
+.railopen{display:none;align-items:center;gap:8px;justify-self:start;background:var(--light);color:var(--dark);border:1px solid #ccc;border-radius:8px;padding:8px 16px;font-size:15px;font-weight:600}
+.railopen .bx{font-size:20px;color:var(--blue)}
+.classes.railclosed{grid-template-columns:1fr}
+.classes.railclosed .rail{display:none}
+.classes.railclosed .railopen{display:flex}
+/* FIX 2: keep .classes grid when .view.on sets display:block */
+.classes.view.on{display:grid}
+.rail .own{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border:none;background:none;border-radius:8px;color:var(--dark);font-size:15px;text-align:left}
+.rail .own:hover{background:var(--grey)}
+.rail .own span{flex:1}
+.rail .own small{color:var(--dark-grey)}
+.rail .own .chev{font-size:22px;transition:transform .2s}
+.rail .own.closed .chev{transform:rotate(-90deg)}
+#ownedList.closed{display:none}
+#ownedList .cls{padding-left:44px}
+.rail .hint{padding:6px 10px 6px 44px;color:var(--dark-grey);font-size:13px}
+.rail h4{font-size:15px;margin:16px 10px 8px;border-top:1px solid var(--grey);padding-top:16px}
+.rail button.cls{display:block;width:100%;text-align:left;border:none;background:none;color:var(--dark);padding:10px;border-radius:8px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail button.cls.on{background:var(--light-blue);color:var(--blue);font-weight:600}
+.rail .create{color:var(--dark-grey);font-size:15px;padding:10px;background:none;border:none}
+.rail .create:hover{color:var(--blue)}
+.ctop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.ctop h1{font-size:34px;font-weight:600}
+.ctop .tools{display:flex;align-items:center;gap:14px;font-size:26px}
+.ctop .tools .bx{cursor:pointer}
+.row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.tabs{display:flex;border:1px solid #ccc;border-radius:6px;overflow:hidden;background:var(--light)}
+.tabs button{padding:12px 24px;border:none;border-right:1px solid #ccc;background:var(--grey);color:var(--dark);font-size:16px;font-weight:600}
+.tabs button:last-child{border-right:none}
+.tabs button.on{background:var(--light);color:var(--blue)}
+.btn{background:var(--blue);color:#fff;border:none;border-bottom:4px solid #1f48a0;border-radius:6px;padding:10px 28px;font-size:16px;font-weight:600}
+.btn.ghost{background:none;color:var(--blue);border:1px solid var(--blue);border-bottom-width:1px}
+.btn.danger{background:var(--red);border-bottom-color:#a53a35}
+.card{background:var(--light);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px;overflow:hidden}
+.composer{display:flex;gap:16px;padding:16px 20px;align-items:center}
+.avatar{width:44px;height:44px;border-radius:50%;background:#7a45b0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.composer textarea{flex:1;border:1px solid #ccc;border-radius:6px;padding:12px 16px;font:inherit;font-size:17px;background:transparent;color:var(--dark);resize:none;height:52px;outline:none}
+.composer textarea:focus{border-color:var(--blue)}
+.actions{background:var(--grey);display:flex;justify-content:center;gap:36px;padding:14px;flex-wrap:wrap}
+.actions button{background:none;border:none;color:var(--dark);font-size:16px;display:flex;align-items:center;gap:8px}
+.actions .bx{color:var(--blue);font-size:24px}
+.setup .hd{display:flex;justify-content:space-between;padding:16px 20px;font-weight:600}
+.setup .hd button{background:none;border:none;color:var(--blue);font-size:16px}
+.setup .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;padding:16px 20px;background:var(--grey)}
+.setup .cards button{background:var(--light);border:none;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.12);height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--dark);font-weight:600}
+.setup .cards .bx{font-size:44px;color:var(--blue)}
+.post{padding:16px 20px}
+.post .meta{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.post .meta small{display:block;color:var(--dark-grey)}
+.post p{white-space:pre-wrap;word-break:break-word}
+.post .del{margin-left:auto;background:none;border:none;color:var(--dark-grey);font-size:20px}
+.post .del:hover{color:var(--red)}
+.post+.post{border-top:1px solid var(--grey)}
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--light-blue);color:var(--blue);margin-left:8px}
+.empty{padding:36px 20px;text-align:center;color:var(--dark-grey)}
+.wall-off{padding:14px 20px;background:var(--light-blue);color:var(--blue);font-size:14px}
+.sumrow{display:grid;grid-template-columns:1.6fr 1fr 1.1fr;gap:16px;margin-bottom:28px}
+.sum{background:var(--light);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:22px}
+.dmeta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--dark-grey);font-size:13px;margin-bottom:16px}
+.ringbox{display:flex;gap:22px;align-items:center}
+.ring{position:relative;width:108px;height:108px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;line-height:1.1}
+.ring b small{font-size:12px;font-weight:400;color:var(--dark-grey)}
+.ringbox h3{font-size:22px;margin-bottom:6px}
+.ringbox p{font-size:14px;color:var(--dark-grey);margin-bottom:14px}
+.stat{display:flex;justify-content:space-between;align-items:center;padding:13px 0;font-size:15px}
+.stat+.stat{border-top:1px solid var(--grey)}
+.stat span{display:flex;align-items:center;gap:10px}
+.stat .bx{font-size:20px;color:var(--blue)}
+.promo{background:linear-gradient(135deg,#4a90e2,#2F65C8);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.promo .pc{font-family:ui-monospace,Menlo,monospace;font-size:22px;letter-spacing:.12em;font-weight:700;background:rgba(255,255,255,.18);border-radius:8px;padding:10px;text-align:center}
+.promo button{background:#fff;color:var(--blue);border:none;border-radius:6px;padding:9px;font-weight:600}
+.promo small{opacity:.9;font-size:12px}
+.sec{font-size:15px;font-weight:600;margin-bottom:12px}
+.reports{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.rep{background:var(--light);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:20px;display:flex;flex-direction:column}
+.rep h4{font-size:15px;margin-bottom:6px}
+.rep .li{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--grey);font-size:14px}
+.rep .li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rep .li span:last-child{color:var(--dark-grey);white-space:nowrap}
+.rep .none{padding:18px 0;color:var(--dark-grey);font-size:14px}
+.seeall{background:none;border:none;color:var(--blue);font-weight:600;margin-top:auto;padding-top:14px;text-align:right}
+@media(max-width:900px){.sumrow{grid-template-columns:1fr}}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:5000;padding:16px}
+.scrim.show{display:flex}
+.modal{background:var(--light);color:var(--dark);border-radius:14px;padding:28px;width:100%;max-width:440px}
+.modal h3{font-size:22px;margin-bottom:6px}
+.modal .sub{color:var(--dark-grey);font-size:14px;margin-bottom:18px}
+.modal input[type=text]{width:100%;padding:12px 14px;border:1px solid #ccc;border-radius:6px;font:inherit;background:transparent;color:var(--dark);margin-bottom:18px}
+.modal .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:34px;letter-spacing:.14em;text-align:center;padding:18px 8px;background:var(--light-blue);color:var(--blue);border-radius:10px;font-weight:700;margin-bottom:16px;user-select:all}
+.set{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--grey)}
+.set small{display:block;color:var(--dark-grey)}
+.sw{position:relative;width:46px;height:26px;flex:none}
+.sw input{opacity:0;width:100%;height:100%;position:absolute;cursor:pointer;z-index:1}
+.sw span{position:absolute;inset:0;background:#bbb;border-radius:26px;transition:.2s}
+.sw span::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.sw input:checked+span{background:var(--blue)}
+.sw input:checked+span::after{transform:translateX(20px)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:var(--light);padding:10px 20px;border-radius:30px;font-size:14px;z-index:6000;opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1}
+.nothing{padding:60px 20px;text-align:center;color:var(--dark-grey)}
+@media(max-width:768px){.classes{grid-template-columns:1fr}.rail{position:static}#content nav .nav-link{display:none}}
+@media(max-width:576px){#content nav .form-input input{display:none}.tabs button{padding:10px 12px;font-size:14px}}
+
+/* ============ AI + Questions + Battleship ============ */
+.view{display:none}
+.view.on{display:block}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.pagehead h1{font-size:34px;font-weight:600}
+.pagehead p{color:var(--dark-grey);font-size:14px;margin-top:4px}
+.pagehead .hbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chat-wrap{background:var(--light);border-radius:16px;display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:420px;max-height:760px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.chat-log{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:78%;padding:11px 15px;border-radius:14px;font-size:15px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.msg.user{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg.bot{align-self:flex-start;background:var(--grey);color:var(--dark);border-bottom-left-radius:4px}
+.msg.sys{align-self:center;background:transparent;color:var(--dark-grey);font-size:13px;font-style:italic;max-width:90%}
+.chat-composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--grey);background:var(--light);align-items:flex-end;flex-wrap:wrap}
+.chat-composer textarea{flex:1;min-width:160px;resize:none;height:52px;padding:12px 14px;border:1px solid #ccc;border-radius:10px;background:transparent;font:inherit;font-size:15px;color:var(--dark);outline:none}
+.chat-composer textarea:focus{border-color:var(--blue)}
+.iconbtn{width:52px;height:52px;border-radius:10px;border:1px solid #ccc;background:transparent;color:var(--blue);cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.iconbtn:hover{background:var(--light-blue)}
+.chat-actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 12px 12px}
+.chat-actions .chip{background:var(--grey);border:none;color:var(--dark);padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+.chat-actions .chip:hover{background:var(--light-blue);color:var(--blue)}
+/* AI error log */
+.ai-errors{background:#fde8e6;border:1px solid #f2c1bd;border-radius:10px;margin:0 0 12px;overflow:hidden}
+.ai-errors[hidden]{display:none}
+.ai-errors .hd{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8d5d2;color:#8a2721;font-weight:600;font-size:14px}
+.ai-errors .hd .bx{font-size:20px}
+.ai-errors .hd .count{margin-left:auto;background:#8a2721;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.ai-errors .hd button{margin-left:8px;background:none;border:none;color:#8a2721;font-size:20px;cursor:pointer;line-height:1}
+.ai-errors ol{margin:0;padding:10px 14px 12px 34px;max-height:220px;overflow-y:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.5;color:#5a1a16}
+.ai-errors li{margin-bottom:8px;word-break:break-word}
+.ai-errors li b{display:block;color:#8a2721;margin-bottom:2px;font-family:var(--poppins)}
+.tag.red{background:#fde8e6;color:#8a2721}
+.qset{background:var(--light);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);flex-wrap:wrap}
+.qset .info{flex:1;min-width:200px}
+.qset .info b{font-size:16px}
+.qset .info small{color:var(--dark-grey);display:block;margin-top:2px}
+.qset .acts{display:flex;gap:8px;flex-wrap:wrap}
+.iconbtn-sm{width:40px;height:40px;border-radius:8px;border:none;background:var(--grey);color:var(--dark);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center}
+.iconbtn-sm:hover{background:var(--light-blue);color:var(--blue)}
+.iconbtn-sm.play:hover{background:#e6f5e9;color:#26890c}
+.iconbtn-sm.danger:hover{background:#fde8e6;color:var(--red)}
+.q-edit{background:var(--light);padding:16px;border-radius:10px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.q-edit label{display:block;font-size:12px;color:var(--dark-grey);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.q-edit textarea,.q-edit input[type=text]{font-family:inherit;font-size:15px;padding:9px 12px;border:1px solid #ccc;border-radius:6px;width:100%;background:transparent;color:var(--dark);outline:none}
+.q-edit textarea:focus,.q-edit input[type=text]:focus{border-color:var(--blue)}
+.q-edit .optrow{display:flex;gap:8px;align-items:center;margin-top:6px}
+.q-edit .optrow input[type=radio]{flex:none;accent-color:var(--blue)}
+.q-edit .row{display:flex;gap:12px;flex-wrap:wrap}
+.q-edit .row>div{flex:1;min-width:120px}
+.battle-wrap{position:fixed;inset:0;z-index:4500;display:none;background:#061824}
+.battle-wrap.show{display:block}
+.battle-frame{width:100%;height:100%;border:none;display:block}
+.battle-close{position:fixed;top:14px;right:14px;z-index:5000;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:22px;cursor:pointer;backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+.battle-close:hover{background:rgba(255,255,255,.3)}
+.qb-empty{padding:60px 24px;text-align:center;color:var(--dark-grey);background:var(--light);border-radius:12px}
+.qb-empty .bx{font-size:54px;color:var(--blue);display:block;margin-bottom:12px}
+.assign-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:16px}
+.assign-list button{text-align:left;padding:12px 14px;border:1px solid #ccc;background:transparent;color:var(--dark);border-radius:8px;font-size:15px;cursor:pointer}
+.assign-list button:hover{background:var(--light-blue);border-color:var(--blue);color:var(--blue)}
+.assign-list button.pick{background:var(--light-blue);border-color:var(--blue);color:var(--blue);font-weight:600}
+.tagline{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tag{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--light-blue);color:var(--blue)}
+.tag.green{background:#e6f5e9;color:#26890c}
+.tag.yellow{background:#fff6d6;color:#8a6b00}
+.spin{display:inline-block;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<section id="sidebar">
+  <a href="#" class="brand"><i class='bx bxs-smile bx-lg'></i><span class="text">AdminHub</span></a>
+  <ul class="side-menu top">
+    <li class="active" data-view="classes"><a href="#"><i class='bx bxs-graduation bx-sm'></i><span class="text">Classes</span></a></li>
+    <li data-view="ai"><a href="#"><i class='bx bxs-bot bx-sm'></i><span class="text">AI Quiz</span></a></li>
+    <li data-view="questions"><a href="#"><i class='bx bxs-list-check bx-sm'></i><span class="text">Questions</span></a></li>
+    <li data-view="battleship"><a href="#"><i class='bx bxs-ship bx-sm'></i><span class="text">Battleship</span></a></li>
+    <li><a href="#"><i class='bx bxs-shopping-bag-alt bx-sm'></i><span class="text">My Store</span></a></li>
+    <li><a href="#"><i class='bx bxs-doughnut-chart bx-sm'></i><span class="text">Analytics</span></a></li>
+    <li><a href="#"><i class='bx bxs-message-dots bx-sm'></i><span class="text">Message</span></a></li>
+    <li><a href="#"><i class='bx bxs-group bx-sm'></i><span class="text">Team</span></a></li>
+  </ul>
+  <ul class="side-menu bottom">
+    <li><a href="#"><i class='bx bxs-cog bx-sm'></i><span class="text">Settings</span></a></li>
+    <li><a href="#" class="logout"><i class='bx bx-power-off bx-sm'></i><span class="text">Logout</span></a></li>
+  </ul>
+</section>
+
+<section id="content">
+  <nav>
+    <i class='bx bx-menu bx-sm'></i>
+    <a href="#" class="nav-link">Categories</a>
+    <form action="#"><div class="form-input"><input type="search" placeholder="Search..."><button type="submit"><i class='bx bx-search'></i></button></div></form>
+    <input type="checkbox" class="checkbox" id="switch-mode" hidden>
+    <label class="swith-lm" for="switch-mode"><i class="bx bxs-moon"></i><i class="bx bx-sun"></i><div class="ball"></div></label>
+    <a href="#" class="notification" id="notificationIcon"><i class='bx bxs-bell'></i><span class="num">8</span></a>
+    <div class="dd" id="notificationMenu"><ul><li>New message from John</li><li>Your order has been shipped</li><li>New comment on your post</li><li>Reminder: Meeting at 3PM</li></ul></div>
+    <a href="#" class="profile" id="profileIcon"><img src="https://placehold.co/600x400/png" alt="Profile"></a>
+    <div class="dd" id="profileMenu"><ul><li>My Profile</li><li>Settings</li><li>Log Out</li></ul></div>
+  </nav>
+
+  <main>
+    <div class="classes view on" id="classes" data-view="classes">
+      <button class="railopen" id="railOpen"><i class='bx bx-menu-alt-left'></i>Classes</button>
+      <aside class="rail">
+        <div class="railhd"><b>Classes</b><button id="railClose" aria-label="Close classes panel" title="Close panel"><i class='bx bx-x'></i></button></div>
+        <button class="own" id="ownBtn" aria-expanded="true"><i class='bx bx-group bx-sm'></i><span>Owned classes <small id="ownCount"></small></span><i class='bx bx-chevron-down chev'></i></button>
+        <div id="ownedList"></div>
+        <h4>Recent classes</h4>
+        <div id="classList"></div>
+        <button class="create" id="createClass">Create class +</button>
+      </aside>
+      <section id="classView"></section>
+    </div>
+
+    <div class="view" id="aiView" data-view="ai">
+      <div class="pagehead">
+        <div>
+          <h1>AI Quiz</h1>
+          <p>Paste notes, upload a PDF, or just say what you want. If it's vague, I'll chat with you until I know what to build.</p>
+        </div>
+        <div class="hbtns">
+          <button class="btn ghost" id="aiErrorsToggle"><i class='bx bx-bug'></i> Errors <span id="aiErrCount" style="background:#DB504A;color:#fff;font-size:11px;padding:1px 7px;border-radius:20px;margin-left:4px">0</span></button>
+          <button class="btn ghost" id="aiReset"><i class='bx bx-refresh'></i> New chat</button>
+        </div>
+      </div>
+
+      <div class="ai-errors" id="aiErrors" hidden>
+        <div class="hd">
+          <i class='bx bx-error-circle'></i>
+          AI error log
+          <span class="count" id="aiErrTotal">0</span>
+          <button type="button" id="aiErrorsClear" title="Clear">&times;</button>
+        </div>
+        <ol id="aiErrorList"></ol>
+      </div>
+
+      <div class="chat-wrap">
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-actions" id="chatChips">
+          <button class="chip" data-chip="I have notes to paste">I have notes to paste</button>
+          <button class="chip" data-chip="I want to upload a PDF">Upload a PDF</button>
+          <button class="chip" data-chip="Just make easy questions about dinosaurs">Vague prompt (test failsafe)</button>
+          <button class="chip" data-chip="Generate 5 medium questions about the water cycle">5 medium · water cycle</button>
+        </div>
+        <div class="chat-composer">
+          <button class="iconbtn" id="aiAttach" title="Attach .txt or .pdf"><i class='bx bx-paperclip'></i></button>
+          <input type="file" id="aiFile" accept=".txt,.pdf,text/plain,application/pdf" hidden>
+          <textarea id="aiInput" placeholder="Type notes, a topic, or say 'easy dinosaur questions'…"></textarea>
+          <button class="iconbtn" id="aiSend" title="Send"><i class='bx bx-send'></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="questionsView" data-view="questions">
+      <div class="pagehead">
+        <div>
+          <h1>Question Sets</h1>
+          <p>Every quiz you make with the AI lands here. Play it in Battleship or assign it to a class.</p>
+        </div>
+        <button class="btn ghost" id="qsToAI"><i class='bx bx-plus'></i> Make a new set</button>
+      </div>
+      <div id="qsList"></div>
+    </div>
+  </main>
+</section>
+
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="battle-wrap" id="battleWrap">
+  <button class="battle-close" id="battleClose" title="Close"><i class='bx bx-x'></i></button>
+  <iframe class="battle-frame" id="battleFrame" title="Battleship"></iframe>
+</div>
+
+<script>
+/* FIX 5: global error bar */
+window.addEventListener('error', function (e) {
+  var el = document.getElementById('__errbar');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = '__errbar';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#DB504A;color:#fff;padding:10px 14px;font:13px ui-monospace,monospace;z-index:999999;white-space:pre-wrap';
+    document.body.appendChild(el);
+  }
+  el.textContent = 'Error: ' + (e.message || 'unknown') +
+    (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '');
+});
+
+/* FIX 1: nav/VIEWS at top so render() can call route() safely */
+let nav = 'classes';
+const VIEWS = ['classes', 'ai', 'questions'];
+
+/* =================== ORIGINAL DASHBOARD CODE =================== */
+const KEY = 'adminhub_classes_v1';
+let railOpen = true;
+try { railOpen = localStorage.getItem('adminhub_rail_open') !== '0'; } catch (e) {}
+let classes = [], activeId = null, tab = 'activity', memStore = null, ownOpen = true;
+try { ownOpen = localStorage.getItem('adminhub_owned_open') !== '0'; } catch (e) {}
+function load() {
+  try { const r = localStorage.getItem(KEY); if (r) return JSON.parse(r); } catch (e) {}
+  return memStore || [];
+}
+function save() {
+  memStore = classes;
+  try { localStorage.setItem(KEY, JSON.stringify(classes)); } catch (e) {}
+}
+classes = load();
+if (classes.length) activeId = classes[0].id;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cur = () => classes.find(c => c.id === activeId);
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
+
+function makeCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', buf = new Uint32Array(10);
+  crypto.getRandomValues(buf);
+  let code;
+  do { code = Array.from(buf, n => chars[n % chars.length]).join(''); crypto.getRandomValues(buf); }
+  while (classes.some(c => c.code === code));
+  return code;
+}
+
+function openModal(html) { $('#modal').innerHTML = html; $('#scrim').classList.add('show'); const i = $('#modal input[type=text]'); if (i) i.focus(); }
+function closeModal() { $('#scrim').classList.remove('show'); }
+$('#scrim').addEventListener('click', e => { if (e.target.id === 'scrim') closeModal(); });
+function ask(title, sub, label, cb, initial = '') {
+  openModal(`<h3>${title}</h3><p class="sub">${sub}</p><input type="text" id="ask" value="${esc(initial)}" maxlength="120" placeholder="${label}">
+  <div class="foot"><button class="btn ghost" data-x>Cancel</button><button class="btn" data-ok>Save</button></div>`);
+  const go = () => { const v = $('#ask').value.trim(); if (!v) return; closeModal(); cb(v); };
+  $('#modal [data-x]').onclick = closeModal; $('#modal [data-ok]').onclick = go;
+  $('#ask').onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+
+function createClass() {
+  ask('Create class', 'Give your class a name. It gets its own join code.', 'Class name', name => {
+    const c = { id: Date.now().toString(36), name, code: makeCode(), created: Date.now(),
+      settings: { studentsCanPost: true, wallVisible: true }, opened: Date.now(),
+      posts: [], shared: [], assignments: [], setupDone: false };
+    classes.push(c); activeId = c.id; tab = 'activity'; save(); render();
+  });
+}
+function showCode() {
+  const c = cur(); c.codeShared = true; save();
+  openModal(`<h3>Join class</h3><p class="sub">Students enter this code to join <b>${esc(c.name)}</b>. The code stays the same for this class.</p>
+  <div class="code">${c.code}</div>
+  <div class="foot"><button class="btn ghost" data-x>Close</button><button class="btn" data-copy>Copy code</button></div>`);
+  $('#modal [data-x]').onclick = closeModal;
+  $('#modal [data-copy]').onclick = () => {
+    (navigator.clipboard ? navigator.clipboard.writeText(c.code) : Promise.reject()).then(() => toast('Code copied'), () => toast('Select the code and copy it'));
+  };
+}
+function showSettings() {
+  const c = cur(), s = c.settings;
+  openModal(`<h3>Teacher settings</h3><p class="sub">${esc(c.name)}</p>
+  <div class="set"><div>Allow students to post<small>Students can write on the posts wall</small></div><label class="sw"><input type="checkbox" id="s1" ${s.studentsCanPost ? 'checked' : ''}><span></span></label></div>
+  <div class="set"><div>Show posts wall<small>Students can see the wall</small></div><label class="sw"><input type="checkbox" id="s2" ${s.wallVisible ? 'checked' : ''}><span></span></label></div>
+  <div class="set"><div>Join code<small>${c.code}</small></div><button class="btn ghost" id="sc">Show</button></div>
+  <div class="foot" style="margin-top:20px"><button class="btn danger" id="dc">Delete class</button><button class="btn" id="sv">Done</button></div>`);
+  $('#s1').onchange = e => { s.studentsCanPost = e.target.checked; save(); render(); };
+  $('#s2').onchange = e => { s.wallVisible = e.target.checked; save(); render(); };
+  $('#sc').onclick = showCode;
+  $('#sv').onclick = closeModal;
+  $('#dc').onclick = () => { if (confirm('Delete "' + c.name + '"? This cannot be undone.')) {
+    classes = classes.filter(x => x.id !== c.id); activeId = classes.length ? classes[0].id : null; save(); closeModal(); render(); } };
+}
+function addPost(text) {
+  const c = cur(); if (!text.trim()) return;
+  c.posts.unshift({ id: Date.now(), by: 'Teacher', text: text.trim(), time: Date.now() }); save(); render();
+}
+function addAssignment() { ask('New assignment', 'Students will see it under Assignments.', 'Assignment title', t => { cur().assignments.unshift({ id: Date.now(), text: t, time: Date.now() }); cur().setupDone = true; tab = 'assignments'; save(); render(); }); }
+function focusPost() { tab = 'activity'; render(); const t = $('#postBox'); if (t) t.focus(); }
+const fmt = t => new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+function listHtml(items, key, empty) {
+  if (!items.length) return `<div class="card"><div class="empty">${empty}</div></div>`;
+  return `<div class="card">${items.map(i => `<div class="post"><div class="meta"><div class="avatar"><i class='bx bxs-user'></i></div><div><b>Teacher</b><small>${fmt(i.time)}${i.kind === 'quiz' ? ' · quiz' : ''}</small></div>
+    <button class="del" data-del="${key}:${i.id}" aria-label="Delete"><i class='bx bx-trash'></i></button></div><p>${esc(i.text)}</p>${i.kind === 'quiz' && i.quizId ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" style="padding:6px 14px;font-size:14px" data-play-quiz="${i.quizId}"><i class='bx bxs-ship'></i> Play in Battleship</button></div>` : ''}</div>`).join('')}</div>`;
+}
+
+function dashHtml(c) {
+  const steps = [['Share the join code', c.codeShared], ['Write a post', c.posts.length > 0], ['Create an assignment', c.assignments.length > 0]];
+  const done = steps.filter(x => x[1]).length, pct = Math.round(done / steps.length * 100);
+  const left = steps.filter(x => !x[1]).map(x => x[0].toLowerCase());
+  const R = 44, C = 2 * Math.PI * R;
+  const msg = pct === 100 ? ['Your class is all set!', 'Code shared, first post and first assignment are done.'] : ['Keep setting up', 'Next: ' + left.join(', ') + '.'];
+  const list = (items, empty) => items.length ? items.slice(0, 3).map(i => `<div class="li"><span>${esc(i.text)}</span><span>${fmt(i.time)}</span></div>`).join('') : `<div class="none">${empty}</div>`;
+  return `<div class="dmeta"><span>Class report</span><span>Created ${fmt(c.created)}</span><span>Hosted by Teacher</span></div>
+  <div class="sumrow">
+    <div class="sum ringbox"><div class="ring"><svg width="108" height="108"><circle cx="54" cy="54" r="${R}" fill="none" stroke="var(--grey)" stroke-width="9"/><circle cx="54" cy="54" r="${R}" fill="none" stroke="#26890c" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}"/></svg><b>${pct}%<small>set up</small></b></div>
+      <div><h3>${msg[0]}</h3><p>${msg[1]}</p><button class="btn" data-act="post">Create post</button></div></div>
+    <div class="sum"><div class="stat"><span><i class='bx bxs-user'></i>Students</span><b>0</b></div><div class="stat"><span><i class='bx bxs-message-rounded'></i>Posts</span><b>${c.posts.length}</b></div><div class="stat"><span><i class='bx bxs-task'></i>Assignments</span><b>${c.assignments.length}</b></div></div>
+    <div class="sum promo"><small>Join code</small><div class="pc">${c.code}</div><button data-act="code">Join class</button></div>
+  </div>
+  <div class="sec">Class reports</div>
+  <div class="reports">
+    <div class="rep"><h4>Assignments (${c.assignments.length})</h4>${list(c.assignments, 'No assignments yet.')}<button class="seeall" data-tab="assignments">See all (${c.assignments.length})</button></div>
+    <div class="rep"><h4>Posts (${c.posts.length})</h4>${list(c.posts, 'No posts yet.')}<button class="seeall" data-tab="activity">See all (${c.posts.length})</button></div>
+    <div class="rep"><h4>Students (0)</h4><div class="none">No students yet. Give them the join code above.</div></div>
+  </div>`;
+}
+function render() {
+  $('#classes').classList.toggle('railclosed', !railOpen);
+  const btn = c => `<button class="cls ${c.id === activeId ? 'on' : ''}" data-id="${c.id}">${esc(c.name)}</button>`;
+  $('#ownedList').innerHTML = classes.length ? classes.map(btn).join('') : '<div class="hint">No classes yet</div>';
+  $('#ownedList').classList.toggle('closed', !ownOpen);
+  $('#ownBtn').classList.toggle('closed', !ownOpen);
+  $('#ownBtn').setAttribute('aria-expanded', ownOpen);
+  $('#ownCount').textContent = '(' + classes.length + ')';
+  const recent = classes.filter(c => c.opened).sort((a, b) => b.opened - a.opened).slice(0, 3);
+  $('#classList').innerHTML = recent.length ? recent.map(btn).join('') : '<div class="hint" style="padding-left:10px">Classes you open show up here</div>';
+  const v = $('#classView'), c = cur();
+  if (!c) { v.innerHTML = `<div class="nothing"><i class='bx bxs-graduation' style="font-size:64px"></i><h2 style="margin:8px 0">No classes yet</h2><p style="margin-bottom:20px">Create your first class to get a join code for your students.</p><button class="btn" id="firstClass">Create class</button></div>`; $('#firstClass').onclick = createClass; }
+  else {
+    let body = '';
+    if (tab === 'activity') {
+      body = `<div class="card"><div class="composer"><div class="avatar"><i class='bx bxs-user'></i></div><textarea id="postBox" placeholder="Post something"></textarea></div>
+        <div class="actions"><button data-act="post"><i class='bx bx-message-rounded'></i>Create post</button><button data-act="share"><i class='bx bx-share-alt'></i>Share</button><button data-act="assign"><i class='bx bx-task'></i>Assign</button></div></div>`;
+      if (!(c.posts.length && c.assignments.length)) body += `<div class="card setup"><div class="hd"><span>Set up your class</span></div>
+        <div class="cards"><button data-act="code"><i class='bx bx-user-plus'></i>Invite members</button><button data-act="assign"><i class='bx bx-task'></i>Assign</button><button data-act="post"><i class='bx bx-news'></i>Create post</button></div></div>`;
+      body += `<h3 style="margin:8px 0 12px">Posts wall<span class="badge">${c.settings.studentsCanPost ? 'Students can post' : 'Only you can post'}</span></h3>`;
+      if (!c.settings.wallVisible) body += `<div class="card"><div class="wall-off">The wall is hidden from students. Only you can see it.</div></div>`;
+      body += listHtml(c.posts, 'posts', 'No posts yet. Write the first one above.');
+    } else if (tab === 'dashboard') body = dashHtml(c);
+    else body = listHtml(c.assignments, 'assignments', 'No assignments yet. Use Assign to create one.');
+
+    v.innerHTML = `<div class="ctop"><h1>${esc(c.name)}</h1><div class="tools"><div class="avatar" style="background:#aaa;width:48px;height:48px"><i class='bx bxs-user'></i></div><i class='bx bx-cog' id="gear" title="Teacher settings" tabindex="0"></i></div></div>
+      <div class="row"><div class="tabs">${['activity','dashboard','assignments'].map(t => `<button data-tab="${t}" class="${tab === t ? 'on' : ''}">${t[0].toUpperCase() + t.slice(1)}</button>`).join('')}</div>
+      <button class="btn" id="joinBtn">Join class</button></div>${body}`;
+  }
+  route();
+}
+
+function pick(e) { const b = e.target.closest('[data-id]'); if (!b) return; activeId = b.dataset.id; cur().opened = Date.now(); save(); tab = 'activity'; render(); }
+$('#classList').addEventListener('click', pick);
+$('#ownedList').addEventListener('click', pick);
+function setRail(v) { railOpen = v; try { localStorage.setItem('adminhub_rail_open', v ? '1' : '0'); } catch (e) {} render(); }
+$('#railClose').onclick = () => setRail(false);
+$('#railOpen').onclick = () => setRail(true);
+$('#ownBtn').onclick = () => { ownOpen = !ownOpen; try { localStorage.setItem('adminhub_owned_open', ownOpen ? '1' : '0'); } catch (e) {} render(); };
+$('#createClass').onclick = createClass;
+$('#classView').addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]'); if (t) { tab = t.dataset.tab; render(); return; }
+  if (e.target.closest('#joinBtn')) return showCode();
+  if (e.target.closest('#gear')) return showSettings();
+  const pq = e.target.closest('[data-play-quiz]'); if (pq) { const qs = getQuestionSets().find(x => x.id === pq.dataset.playQuiz); if (qs) openBattleship(qs); else openBattleship(null); return; }
+  const d = e.target.closest('[data-del]'); if (d) { const [k, id] = d.dataset.del.split(':'); const c = cur(); c[k] = c[k].filter(x => String(x.id) !== id); save(); return render(); }
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  ({ post: focusPost, share: showCode, assign: addAssignment, code: showCode })[a.dataset.act]();
+});
+$('#classView').addEventListener('keydown', e => {
+  if (e.target.id === 'postBox' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addPost(e.target.value); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+const sidebar = $('#sidebar');
+$('#content nav .bx-menu').onclick = () => sidebar.classList.toggle('hide');
+function adjust() { sidebar.classList.toggle('hide', window.innerWidth <= 576); }
+addEventListener('load', adjust); addEventListener('resize', adjust);
+$('#switch-mode').onchange = e => document.body.classList.toggle('dark', e.target.checked);
+$('#notificationIcon').onclick = e => { e.preventDefault(); $('#notificationMenu').classList.toggle('show'); $('#profileMenu').classList.remove('show'); };
+$('#profileIcon').onclick = e => { e.preventDefault(); $('#profileMenu').classList.toggle('show'); $('#notificationMenu').classList.remove('show'); };
+addEventListener('click', e => { if (!e.target.closest('.notification') && !e.target.closest('.profile')) document.querySelectorAll('.dd').forEach(d => d.classList.remove('show')); });
+
+/* =================== Top-level navigation =================== */
+function route() {
+  VIEWS.forEach(v => {
+    const el = document.querySelector('.view[data-view="' + v + '"]');
+    if (el) el.classList.toggle('on', nav === v);
+  });
+  document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
+    const isActive = (li.dataset.view || '') === nav;
+    li.classList.toggle('active', isActive);
+  });
+}
+document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
+  const a = li.querySelector('a');
+  if (!a) return;
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const v = li.dataset.view;
+    if (!v) return;
+    if (v === 'battleship') { openBattleship(null); return; }
+    nav = v;
+    if (v === 'ai') renderChat();
+    if (v === 'questions') renderQuestionSets();
+    route();
+  });
+});
+
+/* =================== Question-set storage =================== */
+const QKEY = 'adminhub_questions_v1';
+let qsets = [];
+try { const r = localStorage.getItem(QKEY); if (r) qsets = JSON.parse(r); } catch (e) {}
+function saveQSets() { try { localStorage.setItem(QKEY, JSON.stringify(qsets)); } catch (e) {} }
+function getQuestionSets() { return qsets; }
+function addQuestionSet(set) {
+  set.id = 'qs_' + Date.now().toString(36);
+  set.created = Date.now();
+  qsets.unshift(set); saveQSets();
+  toast('Saved "' + set.title + '" · ' + set.questions.length + ' questions');
+  if (nav === 'questions') renderQuestionSets();
+}
+
+/* Preset fallback used by Battleship when no set is loaded. */
+const PRESET_QUESTIONS = [
+  { question: "Which planet is known as the Red Planet?",
+    options: ["Venus", "Mars", "Jupiter", "Mercury"],
+    correct: 1, timeLimit: 20, explanation: "Iron oxide on Mars gives it a red color." },
+  { question: "What is the largest ocean on Earth?",
+    options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+    correct: 3, timeLimit: 20, explanation: "The Pacific covers about a third of the planet." },
+  { question: "How many continents are there?",
+    options: ["5", "6", "7", "8"],
+    correct: 2, timeLimit: 15, explanation: "Africa, Antarctica, Asia, Australia, Europe, N. America, S. America." },
+  { question: "Who wrote Romeo and Juliet?",
+    options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+    correct: 1, timeLimit: 20, explanation: "Shakespeare wrote it around 1595." },
+  { question: "What gas do plants absorb from the air?",
+    options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
+    correct: 2, timeLimit: 20, explanation: "Plants take in CO₂ for photosynthesis." },
+  { question: "What is the capital of France?",
+    options: ["Lyon", "Marseille", "Paris", "Nice"],
+    correct: 2, timeLimit: 15, explanation: "Paris has been the capital since the 10th century." },
+  { question: "Which is the longest river in the world?",
+    options: ["Amazon", "Nile", "Yangtze", "Mississippi"],
+    correct: 1, timeLimit: 25, explanation: "The Nile is traditionally measured as the longest, though the Amazon is close." },
+  { question: "What is 7 × 8?",
+    options: ["54", "56", "58", "64"],
+    correct: 1, timeLimit: 10, explanation: "7 × 8 = 56." },
+  { question: "Which animal is the largest mammal?",
+    options: ["Elephant", "Blue whale", "Giraffe", "Hippopotamus"],
+    correct: 1, timeLimit: 15, explanation: "Blue whales can reach 30 meters and 150 tonnes." },
+  { question: "In which year did WWII end?",
+    options: ["1943", "1944", "1945", "1946"],
+    correct: 2, timeLimit: 20, explanation: "WWII ended in 1945." }
+];
+
+/* =================== AI Quiz view =================== */
+const AI_MODEL = 'gpt-4o-mini';
+const AI_FALLBACK = 'gpt-4o';
+
+/* ---- AI error log ---- */
+let aiErrors = [];
+function logAIError(label, err, context) {
+  const detail = (err && (err.stack || err.message)) ? (err.stack || err.message) : String(err);
+  const entry = {
+    time: new Date().toLocaleTimeString(),
+    label: label,
+    detail: detail,
+    context: context || ''
+  };
+  aiErrors.unshift(entry);
+  renderAIErrors();
+  console.error('[AI]', label, err, context || '');
+}
+function renderAIErrors() {
+  const panel = document.getElementById('aiErrors');
+  const list  = document.getElementById('aiErrorList');
+  const cnt   = document.getElementById('aiErrCount');
+  const tot   = document.getElementById('aiErrTotal');
+  if (!panel || !list) return;
+  cnt.textContent = aiErrors.length;
+  tot.textContent = aiErrors.length;
+  panel.hidden = aiErrors.length === 0;
+  list.innerHTML = aiErrors.map(e => `
+    <li>
+      <b>${esc(e.label)} <span style="opacity:.6;font-weight:400">· ${esc(e.time)}</span></b>
+      ${esc(e.detail)}
+      ${e.context ? '<br><span style="opacity:.7">' + esc(e.context) + '</span>' : ''}
+    </li>`).join('');
+}
+document.getElementById('aiErrorsToggle').onclick = () => {
+  const panel = document.getElementById('aiErrors');
+  panel.hidden = !panel.hidden;
+};
+document.getElementById('aiErrorsClear').onclick = () => {
+  aiErrors = [];
+  renderAIErrors();
+};
+
+const AI_PROMPT = (n, topic, notes) => `You are a quiz generator. Return ONLY valid JSON. No prose, no markdown.
+Shape: {"title":"...","questions":[{"question":"...","options":["A","B","C","D"],"correct":0,"timeLimit":20,"explanation":"..."}]}
+Rules:
+- Use ONLY facts from the provided text/context (or general knowledge if none given).
+- Exactly 4 options, exactly one correct (correct is an index 0-3).
+- Wrong options must be plausible.
+- Short questions readable on a phone.
+- No repeated questions.
+- Vary difficulty.
+- Return no text outside the JSON.
+
+Make ${n} questions.
+Topic: ${topic || '(infer from notes)'}
+Notes/context:
+${notes || '(none — rely on the topic)'}`;
+
+let chatState = null;
+function newChat() {
+  chatState = {
+    log: [],
+    phase: 'idle',
+    notes: '',
+    topic: '',
+    count: 5,
+    difficulty: 'medium',
+    waiting: false
+  };
+  $('#chatLog').innerHTML = '';
+  botSay("Hi! Tell me what you want questions about — or paste/upload notes and I'll go from there. If it's vague (like 'easy dinosaur questions'), I'll ask you a few clarifying questions first.");
+}
+function renderChat() { if (!chatState) newChat(); }
+function botSay(text) { addMsg('bot', text); }
+function userSay(text) { addMsg('user', text); }
+function sysSay(text) { addMsg('sys', text); }
+function addMsg(kind, text) {
+  const log = $('#chatLog');
+  const el = document.createElement('div');
+  el.className = 'msg ' + kind;
+  el.textContent = text;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+function setWaiting(w) {
+  chatState.waiting = w;
+  $('#aiSend').innerHTML = w ? "<i class='bx bx-loader-alt spin'></i>" : "<i class='bx bx-send'></i>";
+  $('#aiSend').disabled = w;
+}
+
+$('#chatChips').addEventListener('click', e => {
+  const c = e.target.closest('[data-chip]'); if (!c) return;
+  if (c.dataset.chip === 'I want to upload a PDF') return $('#aiFile').click();
+  $('#aiInput').value = c.dataset.chip;
+  $('#aiInput').focus();
+});
+
+$('#aiAttach').onclick = () => $('#aiFile').click();
+$('#aiFile').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  $('#aiFile').value = '';
+  if (!chatState) newChat();
+  userSay('📎 ' + f.name);
+  sysSay('Reading file…');
+  try {
+    let text = '';
+    if (/\.pdf$/i.test(f.name)) {
+      if (!window.pdfjsLib) {
+        const err = new Error('pdfjsLib not loaded');
+        logAIError('PDF upload failed — pdf.js missing', err);
+        botSay("PDF support failed to load (pdf.js not available). Please paste the text instead.");
+        return;
+      }
+      const buf = await f.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      const parts = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        parts.push(content.items.map(x => x.str).join(' '));
+      }
+      text = parts.join('\n\n');
+    } else {
+      text = await f.text();
+    }
+    text = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+    const words = text.split(/\s+/).length;
+    if (words < 20) {
+      logAIError('File had too little text', new Error(words + ' words extracted'), f.name);
+      botSay("That file looks empty or has no selectable text — scanned PDFs aren't supported yet. Can you paste the notes instead?");
+      return;
+    }
+    chatState.notes += (chatState.notes ? '\n\n' : '') + text;
+    sysSay('Added ~' + words.toLocaleString() + ' words from ' + f.name);
+    if (chatState.phase !== 'clarifying' || chatState.topic) await tryGenerate(true);
+    else botSay("Got your notes. What should the questions focus on, and how many do you want?");
+  } catch (err) {
+    logAIError('File read failed', err, f.name);
+    botSay("I couldn't read that file. You can paste the text instead.");
+  }
+};
+
+$('#aiSend').onclick = async () => {
+  if (!chatState) newChat();
+  const v = $('#aiInput').value.trim();
+  if (!v || chatState.waiting) return;
+  $('#aiInput').value = '';
+  userSay(v);
+  await handleUserMessage(v);
+};
+$('#aiInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); }
+});
+$('#aiReset').onclick = () => { newChat(); };
+
+function isVague(text) {
+  const t = text.toLowerCase().trim();
+  if (t.length < 60 && !/\d/.test(t)) return true;
+  return /\b(easy|hard|simple|quick|random|some|few)\b/.test(t) && !/\d+/.test(t) && t.length < 80;
+}
+
+async function handleUserMessage(text) {
+  const t = text.toLowerCase();
+  const numMatch = t.match(/(\d{1,3})\s*(questions|qs|items)/);
+  if (numMatch) chatState.count = Math.min(50, Math.max(1, parseInt(numMatch[1], 10)));
+  if (/\b(medium)\b/.test(t)) chatState.difficulty = 'medium';
+  if (/\b(hard|difficult|challenging)\b/.test(t)) chatState.difficulty = 'hard';
+  if (/\b(easy|simple)\b/.test(t)) chatState.difficulty = 'easy';
+
+  if (!chatState.topic && text.length <= 120) chatState.topic = text;
+
+  if (text.length > 400) {
+    chatState.notes += (chatState.notes ? '\n\n' : '') + text;
+    sysSay('Got it — using your pasted notes.');
+  }
+
+  const wantsGen = /generate|make|create|build|write|produce/i.test(t) || /questions/i.test(t);
+
+  if (isVague(text) && !chatState.notes) {
+    chatState.phase = 'clarifying';
+    await askClarifying(text);
+    return;
+  }
+
+  if (chatState.notes || (chatState.topic && (wantsGen || !isVague(text)))) {
+    await tryGenerate(false);
+    return;
+  }
+
+  chatState.phase = 'clarifying';
+  await askClarifying(text);
+}
+
+async function askClarifying(initial) {
+  setWaiting(true);
+  const prompt = `You are a friendly assistant helping a teacher design a quiz.
+The user said: "${initial}"
+Context so far:
+- Topic: ${chatState.topic || '(unknown)'}
+- Difficulty: ${chatState.difficulty}
+- Question count: ${chatState.count}
+- Has notes: ${chatState.notes ? 'yes' : 'no'}
+
+Ask ONE short follow-up question to narrow things down. If they have not mentioned notes/files, ask first whether they have any notes or files you can reference. Then ask about topic, difficulty, and how many questions. Do NOT generate questions yet. Reply with just the single question.`;
+  try {
+    const reply = await aiChat(prompt);
+    botSay(reply.trim());
+  } catch (e) {
+    logAIError('Clarifying question failed', e);
+    botSay("Do you have any notes or files I can reference? If not, tell me the topic, grade level, and how many questions you'd like.");
+  }
+  setWaiting(false);
+}
+
+async function tryGenerate(silent) {
+  setWaiting(true);
+  sysSay('Generating ' + chatState.count + ' ' + chatState.difficulty + ' questions…');
+  let raw = '';
+  const prompt = AI_PROMPT(chatState.count, chatState.topic, chatState.notes);
+  try {
+    raw = await aiChat(prompt);
+  } catch (e) {
+    logAIError('AI request failed', e, 'prompt chars: ' + prompt.length);
+    botSay("The AI request itself failed. Open the Errors panel above for details.");
+    setWaiting(false);
+    return;
+  }
+  let data = null;
+  try {
+    data = parseQuizJSON(raw);
+  } catch (e) {
+    logAIError('parseQuizJSON threw', e, 'raw preview: ' + raw.slice(0, 200));
+  }
+  if (!data || !data.questions || !data.questions.length) {
+    logAIError('AI returned unusable JSON', new Error('No valid questions'), 'raw preview: ' + raw.slice(0, 400));
+    botSay("The model replied but the JSON was invalid or empty. Open the Errors panel above — you'll see the raw output preview.");
+    setWaiting(false);
+    return;
+  }
+  data.title = data.title || (chatState.topic || 'Quiz');
+  addQuestionSet({ title: data.title, questions: data.questions, source: chatState.notes ? 'notes' : 'topic' });
+  botSay('Done! I saved "' + data.title + '" with ' + data.questions.length + ' questions to your Questions tab. You can play it in Battleship or assign it to a class.');
+  chatState.phase = 'idle';
+  setWaiting(false);
+}
+
+/* FIX 4: handle string OR object responses + log all failures */
+async function aiChat(prompt) {
+  if (!window.puter || !puter.ai || typeof puter.ai.chat !== 'function') {
+    const e = new Error('Puter.js is not loaded. Check that https://js.puter.com/v2/ is in <head> and not blocked.');
+    logAIError('puter.ai.chat missing', e);
+    throw e;
+  }
+  let firstErr = null;
+  try {
+    const res = await puter.ai.chat(prompt, { model: AI_MODEL });
+    return normalizePuter(res);
+  } catch (e) {
+    firstErr = e;
+    logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e);
+  }
+  try {
+    const res = await puter.ai.chat(prompt, { model: AI_FALLBACK });
+    return normalizePuter(res);
+  } catch (e2) {
+    logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2, 'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr));
+    throw e2;
+  }
+}
+function normalizePuter(res) {
+  if (typeof res === 'string') {
+    if (!res.trim()) throw new Error('Model returned an empty string.');
+    return res;
+  }
+  if (res && res.message && typeof res.message.content === 'string') return res.message.content;
+  if (res && typeof res.text === 'string') return res.text;
+  if (res && res.error) throw new Error('Puter error: ' + (res.error.message || JSON.stringify(res.error)));
+  if (res && typeof res.toString === 'function' && res.toString() !== '[object Object]') return res.toString();
+  throw new Error('Unrecognized Puter response shape: ' + JSON.stringify(res).slice(0, 300));
+}
+
+function parseQuizJSON(raw) {
+  if (!raw) return null;
+  let s = String(raw).trim();
+  s = s.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+  const first = s.indexOf('{'), last = s.lastIndexOf('}');
+  if (first === -1 || last === -1) return null;
+  let obj;
+  try { obj = JSON.parse(s.slice(first, last + 1)); } catch (e) { return null; }
+  if (!obj || !Array.isArray(obj.questions)) return null;
+  obj.questions = obj.questions.filter(q =>
+    q && typeof q.question === 'string' &&
+    Array.isArray(q.options) && q.options.length === 4 &&
+    q.options.every(o => typeof o === 'string' && o.length) &&
+    Number.isInteger(q.correct) && q.correct >= 0 && q.correct < 4
+  ).map(q => ({
+    question: q.question,
+    options: q.options.slice(0, 4),
+    correct: q.correct,
+    timeLimit: Number.isFinite(q.timeLimit) ? q.timeLimit : 20,
+    explanation: typeof q.explanation === 'string' ? q.explanation : ''
+  }));
+  return obj;
+}
+
+/* =================== Questions view =================== */
+function renderQuestionSets() {
+  const list = $('#qsList');
+  if (!qsets.length) {
+    list.innerHTML = `<div class="qb-empty"><i class='bx bxs-list-check'></i><h3>No question sets yet</h3><p style="margin:8px 0 16px">Head to the AI Quiz tab and make one — it'll appear here.</p><button class="btn" id="qsEmptyGo">Open AI Quiz</button></div>`;
+    const b = $('#qsEmptyGo'); if (b) b.onclick = () => { nav = 'ai'; renderChat(); route(); };
+    return;
+  }
+  list.innerHTML = qsets.map(qs => `
+    <div class="qset">
+      <div class="info">
+        <b>${esc(qs.title)}</b>
+        <small>${qs.questions.length} questions · ${fmt(qs.created)}${qs.assignedTo ? ' · assigned to ' + qs.assignedTo.length + ' class(es)' : ''}</small>
+      </div>
+      <div class="acts">
+        <button class="iconbtn-sm play" data-play="${qs.id}" title="Play in Battleship"><i class='bx bxs-ship'></i></button>
+        <button class="iconbtn-sm" data-assign="${qs.id}" title="Assign to a class"><i class='bx bx-task'></i></button>
+        <button class="iconbtn-sm" data-edit="${qs.id}" title="Edit questions"><i class='bx bx-edit'></i></button>
+        <button class="iconbtn-sm danger" data-delqs="${qs.id}" title="Delete set"><i class='bx bx-trash'></i></button>
+      </div>
+    </div>`).join('');
+  list.querySelectorAll('[data-play]').forEach(b => b.onclick = () => {
+    const qs = qsets.find(x => x.id === b.dataset.play); if (qs) openBattleship(qs);
+  });
+  list.querySelectorAll('[data-assign]').forEach(b => b.onclick = () => assignQuiz(b.dataset.assign));
+  list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editQuiz(b.dataset.edit));
+  list.querySelectorAll('[data-delqs]').forEach(b => b.onclick = () => {
+    if (!confirm('Delete this question set?')) return;
+    qsets = qsets.filter(x => x.id !== b.dataset.delqs); saveQSets(); renderQuestionSets();
+  });
+}
+$('#qsToAI').onclick = () => { nav = 'ai'; renderChat(); route(); };
+
+function assignQuiz(qsId) {
+  const qs = qsets.find(x => x.id === qsId); if (!qs) return;
+  if (!classes.length) return toast('Create a class first');
+  openModal(`<h3>Assign quiz</h3><p class="sub">Pick a class to attach "${esc(qs.title)}" to.</p>
+    <div class="assign-list" id="assignList">
+      ${classes.map(c => `<button type="button" data-cid="${c.id}"><b>${esc(c.name)}</b><br><small style="color:var(--dark-grey)">Code ${c.code}</small></button>`).join('')}
+    </div>
+    <div class="foot"><button class="btn ghost" data-x>Cancel</button></div>`);
+  $('#modal [data-x]').onclick = closeModal;
+  $('#assignList').addEventListener('click', e => {
+    const b = e.target.closest('[data-cid]'); if (!b) return;
+    const c = classes.find(x => x.id === b.dataset.cid); if (!c) return;
+    c.assignments.unshift({ id: Date.now(), text: 'Quiz: ' + qs.title + ' (' + qs.questions.length + ' questions)', time: Date.now(), kind: 'quiz', quizId: qs.id });
+    c.setupDone = true;
+    qs.assignedTo = qs.assignedTo || [];
+    if (!qs.assignedTo.includes(c.id)) qs.assignedTo.push(c.id);
+    save(); saveQSets(); closeModal();
+    toast('Assigned to ' + c.name);
+    render(); renderQuestionSets();
+  });
+}
+
+function editQuiz(qsId) {
+  const qs = qsets.find(x => x.id === qsId); if (!qs) return;
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `<h3>Edit "${esc(qs.title)}"</h3><p class="sub">Change any question. Radio = correct answer.</p>
+    <div id="qlist" style="max-height:56vh;overflow-y:auto;margin-bottom:14px"></div>
+    <div class="foot"><button class="btn ghost" data-x>Cancel</button><button class="btn" data-save>Save</button></div>`;
+  openModal(wrap.innerHTML);
+  const qlist = $('#qlist');
+  qlist.innerHTML = qs.questions.map((q, qi) => `
+    <div class="q-edit" data-q="${qi}">
+      <label>Question ${qi + 1}</label>
+      <textarea data-field="question" rows="2">${esc(q.question)}</textarea>
+      <label style="margin-top:8px">Options · pick the correct one</label>
+      ${q.options.map((o, oi) => `
+        <div class="optrow">
+          <input type="radio" name="correct-${qi}" value="${oi}" ${q.correct === oi ? 'checked' : ''}>
+          <input type="text" data-opt="${oi}" value="${esc(o)}">
+        </div>`).join('')}
+      <div class="row" style="margin-top:10px">
+        <div><label>Time limit (s)</label><input type="text" data-field="timeLimit" value="${q.timeLimit || 20}"></div>
+        <div><label>Explanation</label><input type="text" data-field="explanation" value="${esc(q.explanation || '')}"></div>
+      </div>
+    </div>`).join('');
+  $('#modal [data-x]').onclick = closeModal;
+  $('#modal [data-save]').onclick = () => {
+    qlist.querySelectorAll('.q-edit').forEach(el => {
+      const qi = parseInt(el.dataset.q, 10);
+      const q = qs.questions[qi];
+      q.question = el.querySelector('[data-field="question"]').value.trim() || q.question;
+      q.options = [0, 1, 2, 3].map(i => el.querySelector('[data-opt="' + i + '"]').value.trim() || q.options[i]);
+      const picked = el.querySelector('input[type=radio]:checked');
+      q.correct = picked ? parseInt(picked.value, 10) : q.correct;
+      const tl = parseInt(el.querySelector('[data-field="timeLimit"]').value, 10);
+      q.timeLimit = Number.isFinite(tl) ? tl : (q.timeLimit || 20);
+      q.explanation = el.querySelector('[data-field="explanation"]').value.trim();
+    });
+    saveQSets(); closeModal(); renderQuestionSets(); toast('Saved');
+  };
+}
+
+/* =================== Battleship embed =================== */
+function openBattleship(qs) {
+  const frame = $('#battleFrame');
+  const qs_ = (qs && Array.isArray(qs.questions) && qs.questions.length)
+    ? qs
+    : { title: 'Preset Quiz', questions: PRESET_QUESTIONS };
+  frame.srcdoc = buildBattleshipHTML(qs_.questions, qs_.title);
+  $('#battleWrap').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+$('#battleClose').onclick = () => {
+  $('#battleWrap').classList.remove('show');
+  $('#battleFrame').srcdoc = '';
+  document.body.style.overflow = '';
+};
+
+function buildBattleshipHTML(questions, title) {
+  const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
+  const T = JSON.stringify(title).replace(/</g, '\\u003c');
+  return `<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Battleship</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#061824;--bg2:#0a3a4d;--sea:#0d4f66;--sea-light:#14708f;--cell:#0e5a72;--cell-hover:#1a7a96;--text:#e8f4f8;--accent:#f0c14b;--hit:#d64545;--miss:#7eb8c9;--ship-placed:#5c8a9e;--sunk:#8b2e2e;--fog:#0a2f3d;--valid:rgba(80,200,140,.45);--invalid:rgba(214,69,69,.45)}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse at 20% 10%,rgba(20,112,143,.35),transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(6,40,60,.6),transparent 45%),linear-gradient(165deg,#031018,var(--bg) 40%,var(--bg2));min-height:100vh;color:var(--text);-webkit-tap-highlight-color:transparent}
+.wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
+.hidden{display:none!important}
+.level-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center}
+.level-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.level-header h1,.header h1{margin:0;font-size:clamp(1.4rem,4vw,2rem)}
+.level-screen>p{margin:0 0 24px;opacity:.9}
+.level-buttons{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px}
+.level-btn{padding:16px 20px;min-height:44px;border:2px solid rgba(255,255,255,.3);border-radius:12px;background:rgba(255,255,255,.08);color:inherit;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.level-btn:hover{background:rgba(255,255,255,.15)}
+.level-name{font-weight:700;font-size:1.1rem}.level-desc{font-size:.85rem;opacity:.85}
+.help-btn{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:inherit;font-size:1.1rem;font-weight:700;cursor:pointer}
+.game-screen{width:100%;max-width:920px;flex:1;display:flex;flex-direction:column;position:relative}
+.header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.level-badge{padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-size:.8rem;font-weight:600}
+.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(240,193,75,.18);border:1px solid rgba(240,193,75,.5);color:var(--accent);font-size:.9rem;font-weight:700}
+.ammo-badge.low{background:rgba(214,69,69,.18);border-color:rgba(214,69,69,.6);color:#ff8a8a}
+.header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
+.hud{font-weight:600;font-size:.9rem;max-width:280px}
+.btn{padding:10px 14px;min-height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.4)}
+.btn-large{padding:12px 22px}.btn-rotate{min-width:88px;min-height:44px}.btn:disabled{opacity:.4;cursor:not-allowed}
+.placement-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:10px;border:1px solid rgba(255,255,255,.12)}
+.placement-bar.hidden-bar{display:none}
+.ship-tray{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.ship-chip{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:8px 10px;min-height:44px;border:2px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.06);color:inherit;font-family:inherit;cursor:pointer}
+.ship-chip:hover:not(:disabled){background:rgba(255,255,255,.12)}
+.ship-chip.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.ship-chip.placed{opacity:.45;cursor:default}
+.ship-chip-name{font-weight:700;font-size:.8rem}
+.ship-chip-cells{display:flex;gap:2px}
+.ship-chip-cell{width:10px;height:10px;border-radius:2px;background:var(--ship-placed)}
+.placement-controls{display:flex;gap:8px;flex-wrap:wrap}
+.boards{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:flex-start}
+.board-panel{flex:1 1 300px;max-width:420px;min-width:0}
+.board-title{margin:0 0 8px;font-size:1rem;font-weight:600;text-align:center;opacity:.95}
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;aspect-ratio:1;width:100%;background:var(--sea);padding:4px;border-radius:8px;border:2px solid rgba(255,255,255,.15);user-select:none}
+.cell{aspect-ratio:1;border-radius:3px;background:var(--cell);border:none;padding:0;cursor:default;position:relative;min-width:0;min-height:0;font-family:inherit;color:inherit}
+.cell.fog{background:var(--fog)}.cell.ship{background:var(--ship-placed)}
+.cell.preview-valid{background:var(--valid)}.cell.preview-invalid{background:var(--invalid)}
+.cell.miss{background:var(--sea-light)}
+.cell.miss::after{content:"";position:absolute;inset:28%;border-radius:50%;background:var(--miss);opacity:.85}
+.cell.hit{background:var(--hit)}
+.cell.hit::after{content:"";position:absolute;inset:22%;background:var(--accent);clip-path:polygon(10% 0,50% 35%,90% 0,100% 10%,65% 50%,100% 90%,90% 100%,50% 65%,10% 100%,0 90%,35% 50%,0 10%)}
+.cell.sunk{background:var(--sunk)}
+.cell.sunk::after{content:"";position:absolute;inset:18%;border-radius:2px;background:rgba(0,0,0,.45);border:2px solid var(--accent)}
+.board.combat-target .cell:not(.miss):not(.hit):not(.sunk){cursor:pointer}
+.board.combat-target .cell:not(.miss):not(.hit):not(.sunk):hover{background:var(--cell-hover)}
+.board.placing .cell{cursor:pointer}
+.result-overlay,.help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.result-overlay{position:absolute;border-radius:8px}
+.result-box,.help-modal{background:linear-gradient(160deg,#0a3040,#0d4a5c);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:24px;max-width:420px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.help-modal{text-align:left;max-height:85vh;overflow-y:auto}
+.result-box h2,.help-header h2{margin:0 0 8px}
+.result-box p{margin:0;opacity:.9;line-height:1.45}
+.result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.help-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.help-close{width:44px;height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.12);color:inherit;font-size:1.5rem;cursor:pointer;line-height:1}
+.help-body p{margin:0 0 12px;line-height:1.45}.help-body ul{margin:0;padding-left:1.2rem;line-height:1.5}.help-body li{margin-bottom:8px}
+.quiz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.quiz-box{background:linear-gradient(160deg,#0a3040,#0d4a5c);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:22px;max-width:520px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.quiz-box h3{margin:0 0 6px;font-size:1.15rem}
+.quiz-box .sub{opacity:.85;font-size:.9rem;margin-bottom:14px}
+.quiz-box .qtext{font-size:1.05rem;font-weight:600;margin-bottom:14px;line-height:1.4}
+.opts{display:grid;gap:8px;margin-bottom:14px}
+.opt{padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:inherit;font-family:inherit;text-align:left;font-size:.98rem;cursor:pointer}
+.opt:hover:not(:disabled){background:rgba(255,255,255,.14)}
+.opt.correct{background:#26890c;border-color:#26890c;color:#fff}
+.opt.wrong{background:#b3261e;border-color:#b3261e;color:#fff}
+.quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;opacity:.85}
+@media (max-width:720px){.boards{flex-direction:column;align-items:stretch}.board-panel{max-width:none;flex:1 1 auto}.hud{max-width:100%;width:100%;order:5}.header-actions{width:100%}.placement-bar{flex-direction:column;align-items:stretch}.placement-controls{justify-content:stretch}.placement-controls .btn{flex:1}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div id="levelScreen" class="level-screen">
+    <div class="level-header"><h1>Battleship</h1><button type="button" id="helpBtnLevel" class="help-btn" aria-label="How to play">?</button></div>
+    <p>Start with <b>5 ammo</b>. Every shot costs 1. Answer questions to reload.</p>
+    <div class="level-buttons">
+      <button type="button" data-level="easy" class="level-btn"><span class="level-name">Easy</span><span class="level-desc">Random fire · no hunt</span></button>
+      <button type="button" data-level="medium" class="level-btn"><span class="level-name">Medium</span><span class="level-desc">Hunt after hit</span></button>
+      <button type="button" data-level="hard" class="level-btn"><span class="level-name">Hard</span><span class="level-desc">Hunt + target adjacency</span></button>
+    </div>
+  </div>
+
+  <div id="gameScreen" class="game-screen hidden">
+    <header class="header">
+      <h1>Battleship</h1>
+      <button type="button" id="helpBtnGame" class="help-btn" aria-label="How to play">?</button>
+      <span class="level-badge" id="levelBadge">Easy</span>
+      <span class="ammo-badge" id="ammoBadge">Ammo: 5</span>
+      <div class="header-actions">
+        <span id="hud" class="hud">Place your fleet</span>
+        <button type="button" id="changeLevelBtn" class="btn btn-ghost">Change Level</button>
+        <button type="button" id="newGameBtn" class="btn">New Game</button>
+      </div>
+    </header>
+
+    <div id="placementBar" class="placement-bar">
+      <div id="shipTray" class="ship-tray" aria-label="Ship tray"></div>
+      <div class="placement-controls">
+        <button type="button" id="rotateBtn" class="btn btn-rotate">Rotate</button>
+        <button type="button" id="readyBtn" class="btn" disabled>Ready</button>
+      </div>
+    </div>
+
+    <main class="boards">
+      <section class="board-panel"><h2 class="board-title">Your Fleet</h2><div id="playerBoard" class="board" role="grid"></div></section>
+      <section class="board-panel"><h2 class="board-title">Enemy Waters</h2><div id="enemyBoard" class="board" role="grid"></div></section>
+    </main>
+
+    <div id="resultOverlay" class="result-overlay hidden">
+      <div class="result-box">
+        <h2 id="resultTitle"></h2>
+        <p id="resultMsg"></p>
+        <div class="result-actions">
+          <button type="button" id="playAgainBtn" class="btn btn-large">Play Again</button>
+          <button type="button" id="changeLevelFromResultBtn" class="btn btn-ghost">Change Level</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="helpOverlay" class="help-overlay hidden" aria-hidden="true">
+  <div class="help-modal" role="dialog" aria-modal="true">
+    <div class="help-header"><h2>How to play</h2><button type="button" id="helpClose" class="help-close" aria-label="Close">&times;</button></div>
+    <div class="help-body">
+      <p>You have <b>5 ammo</b>. Each shot at the enemy costs 1 ammo. When you run out, a quiz question pops up. Answer correctly to reload (+3 ammo).</p>
+      <ul>
+        <li><strong>Fleet:</strong> Carrier (5), Battleship (4), Cruiser (3), Submarine (3), Destroyer (2).</li>
+        <li><strong>Placement:</strong> Select a ship, press Rotate or R, then click your board. Double-click a placed ship to pick it back up.</li>
+        <li><strong>Combat:</strong> Click an enemy cell to fire (costs 1 ammo). The AI fires back after 2 seconds.</li>
+        <li><strong>Reload:</strong> Ammo gone? Answer a question. Correct = +3 ammo. Wrong = +1 ammo (consolation).</li>
+        <li><strong>Win:</strong> Sink the entire enemy fleet.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var QUIZ_TITLE = ${T};
+var QUESTIONS = ${Q};
+
+var SIZE=10;
+var FLEET=[
+  {id:"carrier",name:"Carrier",length:5},
+  {id:"battleship",name:"Battleship",length:4},
+  {id:"cruiser",name:"Cruiser",length:3},
+  {id:"submarine",name:"Submarine",length:3},
+  {id:"destroyer",name:"Destroyer",length:2}
+];
+var LEVEL_LABELS={easy:"Easy",medium:"Medium",hard:"Hard"};
+
+var levelScreen=document.getElementById("levelScreen");
+var gameScreen=document.getElementById("gameScreen");
+var levelBadge=document.getElementById("levelBadge");
+var ammoBadge=document.getElementById("ammoBadge");
+var hud=document.getElementById("hud");
+var placementBar=document.getElementById("placementBar");
+var shipTray=document.getElementById("shipTray");
+var rotateBtn=document.getElementById("rotateBtn");
+var readyBtn=document.getElementById("readyBtn");
+var playerBoardEl=document.getElementById("playerBoard");
+var enemyBoardEl=document.getElementById("enemyBoard");
+var resultOverlay=document.getElementById("resultOverlay");
+var resultTitle=document.getElementById("resultTitle");
+var resultMsg=document.getElementById("resultMsg");
+var helpOverlay=document.getElementById("helpOverlay");
+var newGameBtn=document.getElementById("newGameBtn");
+var changeLevelBtn=document.getElementById("changeLevelBtn");
+var playAgainBtn=document.getElementById("playAgainBtn");
+var changeLevelFromResultBtn=document.getElementById("changeLevelFromResultBtn");
+var helpBtnLevel=document.getElementById("helpBtnLevel");
+var helpBtnGame=document.getElementById("helpBtnGame");
+var helpClose=document.getElementById("helpClose");
+
+var level="easy";
+var phase="level";
+var horizontal=true;
+var selectedShipId=null;
+var playerTurn=true;
+var aiThinking=false;
+var hoverCell=null;
+
+var playerGrid=createEmptyGrid();
+var enemyGrid=createEmptyGrid();
+var playerShips=[];
+var enemyShips=[];
+var playerShots=createShotMap();
+var enemyShots=createShotMap();
+
+var aiHuntQueue=[];var aiHitCells=[];var aiParity=0;
+
+var AMMO_START=5;
+var AMMO_PER_CORRECT=3;
+var AMMO_PER_WRONG=1;
+var ammo=AMMO_START;
+var quizIndex=0;
+var quizOpen=false;
+
+function updateAmmoUI(){
+  ammoBadge.textContent="Ammo: "+ammo;
+  ammoBadge.classList.toggle("low", ammo<=1);
+}
+
+function createEmptyGrid(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
+function createShotMap(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
+function key(r,c){return r+","+c;}
+function inBounds(r,c){return r>=0&&r<SIZE&&c>=0&&c<SIZE;}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function shipCells(r,c,length,isHorizontal){var cells=[];for(var i=0;i<length;i++)cells.push({r:isHorizontal?r:r+i,c:isHorizontal?c+i:c});return cells;}
+function canPlace(grid,r,c,length,isHorizontal){var cells=shipCells(r,c,length,isHorizontal);for(var i=0;i<cells.length;i++){var cell=cells[i];if(!inBounds(cell.r,cell.c))return false;if(grid[cell.r][cell.c]!==null)return false;}return true;}
+function placeShipOnGrid(grid,ships,def,r,c,isHorizontal){if(!canPlace(grid,r,c,def.length,isHorizontal))return false;var cells=shipCells(r,c,def.length,isHorizontal);var ship={id:def.id,name:def.name,length:def.length,cells:cells.map(function(x){return{r:x.r,c:x.c};}),hits:0,sunk:false};cells.forEach(function(x){grid[x.r][x.c]=def.id;});ships.push(ship);return true;}
+function removeShip(grid,ships,shipId){var idx=ships.findIndex(function(s){return s.id===shipId;});if(idx===-1)return;var ship=ships[idx];ship.cells.forEach(function(x){grid[x.r][x.c]=null;});ships.splice(idx,1);}
+function autoPlaceFleet(grid,ships){for(var i=0;i<SIZE;i++)for(var j=0;j<SIZE;j++)grid[i][j]=null;ships.length=0;for(var k=0;k<FLEET.length;k++){var def=FLEET[k];var placed=false;for(var attempt=0;attempt<400&&!placed;attempt++){var isH=Math.random()<0.5;var r=Math.floor(Math.random()*SIZE);var c=Math.floor(Math.random()*SIZE);placed=placeShipOnGrid(grid,ships,def,r,c,isH);}if(!placed)return false;}return true;}
+function findShip(ships,shipId){return ships.find(function(s){return s.id===shipId;});}
+function allPlaced(){return playerShips.length===FLEET.length;}
+function fleetSunk(ships){return ships.length>0&&ships.every(function(s){return s.sunk;});}
+function applyShot(grid,ships,shots,r,c){if(shots[r][c]!==null)return null;var shipId=grid[r][c];if(!shipId){shots[r][c]="miss";return{result:"miss",ship:null};}shots[r][c]="hit";var ship=findShip(ships,shipId);ship.hits+=1;if(ship.hits>=ship.length){ship.sunk=true;ship.cells.forEach(function(x){shots[x.r][x.c]="sunk";});return{result:"sunk",ship:ship};}return{result:"hit",ship:ship};}
+
+function resetAiMemory(){aiHuntQueue=[];aiHitCells=[];aiParity=Math.random()<0.5?0:1;}
+function neighbors(r,c){return[{r:r-1,c:c},{r:r+1,c:c},{r:r,c:c-1},{r:r,c:c+1}].filter(function(n){return inBounds(n.r,n.c);});}
+function unshotCells(){var cells=[];for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++)if(enemyShots[r][c]===null)cells.push({r:r,c:c});return cells;}
+function enqueueHuntAround(r,c){var around=shuffle(neighbors(r,c));around.forEach(function(n){if(enemyShots[n.r][n.c]!==null)return;if(!aiHuntQueue.some(function(q){return q.r===n.r&&q.c===n.c;}))aiHuntQueue.push(n);});}
+function pruneHuntQueue(){aiHuntQueue=aiHuntQueue.filter(function(n){return enemyShots[n.r][n.c]===null;});}
+function alignedContinuation(){if(aiHitCells.length<2)return null;var rows=aiHitCells.map(function(h){return h.r;});var cols=aiHitCells.map(function(h){return h.c;});var sameRow=rows.every(function(r){return r===rows[0];});var sameCol=cols.every(function(c){return c===cols[0];});if(!sameRow&&!sameCol)return null;var candidates=[];if(sameRow){var row=rows[0];var sorted=cols.slice().sort(function(a,b){return a-b;});var left=sorted[0]-1;var right=sorted[sorted.length-1]+1;if(inBounds(row,left)&&enemyShots[row][left]===null)candidates.push({r:row,c:left});if(inBounds(row,right)&&enemyShots[row][right]===null)candidates.push({r:row,c:right});}else{var col=cols[0];var sorted2=rows.slice().sort(function(a,b){return a-b;});var up=sorted2[0]-1;var down=sorted2[sorted2.length-1]+1;if(inBounds(up,col)&&enemyShots[up][col]===null)candidates.push({r:up,c:col});if(inBounds(down,col)&&enemyShots[down][col]===null)candidates.push({r:down,c:col});}if(!candidates.length)return null;return candidates[Math.floor(Math.random()*candidates.length)];}
+function pickParityCell(){var open=unshotCells();var parity=open.filter(function(cell){return (cell.r+cell.c)%2===aiParity;});var pool=parity.length?parity:open;if(!pool.length)return null;return pool[Math.floor(Math.random()*pool.length)];}
+function pickRandomUnshot(){var open=unshotCells();if(!open.length)return null;return open[Math.floor(Math.random()*open.length)];}
+function chooseAiShot(){if(level==="easy")return pickRandomUnshot();pruneHuntQueue();if(level==="hard"){var cont=alignedContinuation();if(cont)return cont;}while(aiHuntQueue.length){var next=aiHuntQueue.shift();if(enemyShots[next.r][next.c]===null)return next;}if(level==="hard")return pickParityCell();return pickRandomUnshot();}
+function onAiShotResult(r,c,outcome){if(level==="easy")return;if(outcome.result==="hit"){aiHitCells.push({r:r,c:c});enqueueHuntAround(r,c);}else if(outcome.result==="sunk"){aiHitCells=[];aiHuntQueue=[];}else if(outcome.result==="miss"){pruneHuntQueue();}}
+
+function buildBoards(){playerBoardEl.innerHTML="";enemyBoardEl.innerHTML="";for(var r=0;r<SIZE;r++){for(var c=0;c<SIZE;c++){var p=document.createElement("button");p.type="button";p.className="cell";p.dataset.r=String(r);p.dataset.c=String(c);playerBoardEl.appendChild(p);var e=document.createElement("button");e.type="button";e.className="cell fog";e.dataset.r=String(r);e.dataset.c=String(c);enemyBoardEl.appendChild(e);}}}
+
+function renderShipTray(){shipTray.innerHTML="";FLEET.forEach(function(def){var placed=!!findShip(playerShips,def.id);var btn=document.createElement("button");btn.type="button";btn.className="ship-chip"+(placed?" placed":"")+(selectedShipId===def.id?" selected":"");btn.disabled=placed;var name=document.createElement("span");name.className="ship-chip-name";name.textContent=def.name+" ("+def.length+")";btn.appendChild(name);var cells=document.createElement("span");cells.className="ship-chip-cells";for(var i=0;i<def.length;i++){var dot=document.createElement("span");dot.className="ship-chip-cell";cells.appendChild(dot);}btn.appendChild(cells);if(!placed){btn.addEventListener("click",function(){selectedShipId=def.id;renderShipTray();renderBoards();setHud("Place "+def.name+" · Rotate or R to turn");});}shipTray.appendChild(btn);});readyBtn.disabled=!allPlaced();}
+
+function getPreviewCells(){if(phase!=="placement"||!selectedShipId||!hoverCell)return null;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return null;var cells=shipCells(hoverCell.r,hoverCell.c,def.length,horizontal);var valid=canPlace(playerGrid,hoverCell.r,hoverCell.c,def.length,horizontal);return{cells:cells,valid:valid};}
+
+function renderBoards(){var preview=getPreviewCells();var previewSet=new Set();if(preview){preview.cells.forEach(function(cell){if(inBounds(cell.r,cell.c))previewSet.add(key(cell.r,cell.c));});}playerBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r);var c=Number(el.dataset.c);el.className="cell";var shot=enemyShots[r][c];var occupied=playerGrid[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else if(occupied)el.classList.add("ship");if(preview&&previewSet.has(key(r,c)))el.classList.add(preview.valid?"preview-valid":"preview-invalid");});enemyBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r);var c=Number(el.dataset.c);el.className="cell";var shot=playerShots[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else el.classList.add("fog");});playerBoardEl.classList.toggle("placing",phase==="placement");enemyBoardEl.classList.toggle("combat-target",phase==="combat"&&playerTurn&&!aiThinking&&!quizOpen);}
+function setHud(text){hud.textContent=text;}
+function showHelp(show){helpOverlay.classList.toggle("hidden",!show);helpOverlay.setAttribute("aria-hidden",show?"false":"true");}
+function showResult(won){phase="result";resultOverlay.classList.remove("hidden");if(won){resultTitle.textContent="Victory!";resultMsg.textContent="You sank the enemy fleet. The seas are yours.";}else{resultTitle.textContent="Defeat";resultMsg.textContent="Your fleet has been destroyed. Better luck next time.";}playerTurn=false;aiThinking=false;renderBoards();}
+
+function startPlacement(){phase="placement";horizontal=true;selectedShipId=FLEET[0].id;playerTurn=true;aiThinking=false;hoverCell=null;playerGrid=createEmptyGrid();enemyGrid=createEmptyGrid();playerShips=[];enemyShips=[];playerShots=createShotMap();enemyShots=createShotMap();resetAiMemory();resultOverlay.classList.add("hidden");placementBar.classList.remove("hidden-bar");levelBadge.textContent=LEVEL_LABELS[level];ammo=AMMO_START;updateAmmoUI();setHud("Select a ship and place it on your board");renderShipTray();renderBoards();}
+
+function startCombat(){var ok=false;for(var i=0;i<50&&!ok;i++)ok=autoPlaceFleet(enemyGrid,enemyShips);if(!ok){setHud("Could not place enemy fleet — try Ready again");return;}phase="combat";playerTurn=true;aiThinking=false;selectedShipId=null;hoverCell=null;placementBar.classList.add("hidden-bar");setHud("Your turn — fire on enemy waters");renderBoards();}
+
+function endIfOver(){if(fleetSunk(enemyShips)){showResult(true);return true;}if(fleetSunk(playerShips)){showResult(false);return true;}return false;}
+
+function handlePlayerFire(r,c){
+  if(phase!=="combat"||!playerTurn||aiThinking||quizOpen)return;
+  if(playerShots[r][c]!==null)return;
+  if(ammo<=0){openQuiz();return;}
+  ammo--;updateAmmoUI();
+  var outcome=applyShot(enemyGrid,enemyShips,playerShots,r,c);
+  if(!outcome)return;
+  if(outcome.result==="miss")setHud("Miss");
+  else if(outcome.result==="hit")setHud("Hit!");
+  else setHud("You sank the enemy "+outcome.ship.name+"!");
+  renderBoards();
+  if(endIfOver())return;
+  playerTurn=false;
+  scheduleAiTurn();
+}
+
+function scheduleAiTurn(){aiThinking=true;setHud("Enemy targeting… (2s)");renderBoards();setTimeout(function(){if(phase!=="combat")return;var target=chooseAiShot();if(!target){aiThinking=false;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();return;}var outcome=applyShot(playerGrid,playerShips,enemyShots,target.r,target.c);onAiShotResult(target.r,target.c,outcome);if(outcome.result==="miss")setHud("Enemy missed");else if(outcome.result==="hit")setHud("Enemy hit your "+outcome.ship.name+"!");else setHud("Enemy sank your "+outcome.ship.name+"!");renderBoards();aiThinking=false;if(endIfOver())return;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();},2000);}
+
+function tryPlaceAt(r,c){if(phase!=="placement"||!selectedShipId)return;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return;if(findShip(playerShips,def.id))return;if(!canPlace(playerGrid,r,c,def.length,horizontal)){setHud("Invalid placement — try another cell or rotate");return;}placeShipOnGrid(playerGrid,playerShips,def,r,c,horizontal);var next=FLEET.find(function(s){return !findShip(playerShips,s.id);});selectedShipId=next?next.id:null;hoverCell=null;renderShipTray();renderBoards();if(allPlaced()){setHud("Fleet ready — press Ready to battle");}else if(selectedShipId){var n=FLEET.find(function(s){return s.id===selectedShipId;});setHud("Place "+n.name);}}
+
+function openQuiz(){
+  if(quizOpen)return;
+  if(!QUESTIONS||!QUESTIONS.length){
+    ammo+=AMMO_PER_CORRECT;updateAmmoUI();
+    setHud("Out of ammo — preset reload (+"+AMMO_PER_CORRECT+").");
+    return;
+  }
+  quizOpen=true;
+  var q=QUESTIONS[quizIndex%QUESTIONS.length];
+  quizIndex++;
+  var ov=document.createElement("div");
+  ov.className="quiz-overlay";
+  ov.id="quizOverlay";
+  var correct=q.correct;
+  var letterBox=document.createElement("div");
+  letterBox.className="quiz-box";
+  letterBox.innerHTML='<h3>Out of ammo — reload!</h3><p class="sub">Answer correctly for +'+AMMO_PER_CORRECT+' ammo. Wrong gets +'+AMMO_PER_WRONG+'.</p><div class="qtext"></div><div class="opts"></div><div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
+  letterBox.querySelector(".qtext").textContent=q.question;
+  var optsEl=letterBox.querySelector(".opts");
+  var letters=["A","B","C","D"];
+  q.options.forEach(function(text,idx){
+    var b=document.createElement("button");
+    b.type="button";b.className="opt";
+    b.textContent=letters[idx]+". "+text;
+    b.addEventListener("click",function(){
+      if(b.disabled)return;
+      var ok=idx===correct;
+      b.classList.add(ok?"correct":"wrong");
+      if(!ok){optsEl.children[correct].classList.add("correct");}
+      Array.prototype.forEach.call(optsEl.children,function(x){x.disabled=true;});
+      var gained=ok?AMMO_PER_CORRECT:AMMO_PER_WRONG;
+      ammo+=gained;updateAmmoUI();
+      document.getElementById("qFeedback").textContent=(ok?"Correct! ":"Nope. ")+" +"+gained+" ammo"+(q.explanation?(" · "+q.explanation):"");
+      var nw=document.getElementById("qNextWrap");
+      var nb=document.createElement("button");
+      nb.type="button";nb.className="btn";nb.textContent="Continue";
+      nb.addEventListener("click",closeQuiz);
+      nw.appendChild(nb);
+    });
+    optsEl.appendChild(b);
+  });
+  ov.appendChild(letterBox);
+  document.body.appendChild(ov);
+  renderBoards();
+}
+function closeQuiz(){
+  var ov=document.getElementById("quizOverlay");
+  if(ov)ov.remove();
+  quizOpen=false;
+  setHud("Your turn — fire on enemy waters");
+  renderBoards();
+}
+
+function openLevelScreen(){phase="level";gameScreen.classList.add("hidden");levelScreen.classList.remove("hidden");resultOverlay.classList.add("hidden");showHelp(false);}
+function beginLevel(selected){level=selected;levelScreen.classList.add("hidden");gameScreen.classList.remove("hidden");startPlacement();}
+
+function onPlayerBoardClick(e){var cell=e.target.closest(".cell");if(!cell||!playerBoardEl.contains(cell))return;tryPlaceAt(Number(cell.dataset.r),Number(cell.dataset.c));}
+function onPlayerBoardMove(e){if(phase!=="placement"||!selectedShipId)return;var cell=e.target.closest(".cell");if(!cell||!playerBoardEl.contains(cell))return;var r=Number(cell.dataset.r);var c=Number(cell.dataset.c);if(!hoverCell||hoverCell.r!==r||hoverCell.c!==c){hoverCell={r:r,c:c};renderBoards();}}
+function onPlayerBoardLeave(){if(phase!=="placement")return;if(hoverCell){hoverCell=null;renderBoards();}}
+function onEnemyBoardClick(e){var cell=e.target.closest(".cell");if(!cell||!enemyBoardEl.contains(cell))return;handlePlayerFire(Number(cell.dataset.r),Number(cell.dataset.c));}
+
+document.querySelectorAll(".level-btn").forEach(function(btn){btn.addEventListener("click",function(){beginLevel(btn.dataset.level);});});
+rotateBtn.addEventListener("click",function(){if(phase!=="placement")return;horizontal=!horizontal;renderBoards();setHud(horizontal?"Orientation: horizontal":"Orientation: vertical");});
+readyBtn.addEventListener("click",function(){if(!allPlaced())return;startCombat();});
+newGameBtn.addEventListener("click",startPlacement);
+changeLevelBtn.addEventListener("click",openLevelScreen);
+playAgainBtn.addEventListener("click",startPlacement);
+changeLevelFromResultBtn.addEventListener("click",openLevelScreen);
+helpBtnLevel.addEventListener("click",function(){showHelp(true);});
+helpBtnGame.addEventListener("click",function(){showHelp(true);});
+helpClose.addEventListener("click",function(){showHelp(false);});
+helpOverlay.addEventListener("click",function(e){if(e.target===helpOverlay)showHelp(false);});
+playerBoardEl.addEventListener("click",onPlayerBoardClick);
+playerBoardEl.addEventListener("mousemove",onPlayerBoardMove);
+playerBoardEl.addEventListener("mouseleave",onPlayerBoardLeave);
+enemyBoardEl.addEventListener("click",onEnemyBoardClick);
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!helpOverlay.classList.contains("hidden")){showHelp(false);return;}if(phase!=="placement")return;if(e.key==="r"||e.key==="R"){if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"))return;e.preventDefault();horizontal=!horizontal;renderBoards();setHud(horizontal?"Orientation: horizontal":"Orientation: vertical");}});
+playerBoardEl.addEventListener("dblclick",function(e){if(phase!=="placement")return;var cell=e.target.closest(".cell");if(!cell)return;var r=Number(cell.dataset.r);var c=Number(cell.dataset.c);var shipId=playerGrid[r][c];if(!shipId)return;removeShip(playerGrid,playerShips,shipId);selectedShipId=shipId;renderShipTray();renderBoards();var def=FLEET.find(function(s){return s.id===shipId;});setHud("Reposition "+def.name);});
+
+updateAmmoUI();
+buildBoards();
+openLevelScreen();
+})();
+<\/script>
+</body>
+</html>`;
+}
+
+/* =================== Boot =================== */
+document.querySelectorAll('#sidebar .side-menu.top li a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+render();
+route();
+renderAIErrors();
+</script>
+</body>
+</html>
