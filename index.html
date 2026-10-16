@@ -8,7 +8,6 @@
 <link href='https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap' rel='stylesheet'>
 <script src="https://js.puter.com/v2/"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<!-- FIX 3: configure pdf.js worker -->
 <script>
 window.addEventListener('load', function () {
   if (window.pdfjsLib) {
@@ -64,7 +63,6 @@ button{font-family:inherit;cursor:pointer}
 #content nav .swith-lm .ball{background:var(--blue);border-radius:50%;position:absolute;top:2px;left:2px;height:20px;width:20px;transition:transform .2s linear}
 #content nav .checkbox:checked+.swith-lm .ball{transform:translateX(22px)}
 .bxs-moon{color:var(--yellow)}.bx-sun{color:var(--orange)}
-
 main{padding:28px 24px;color:var(--dark)}
 .classes{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
 .rail{background:var(--light);border-radius:16px;padding:16px;position:sticky;top:76px}
@@ -77,7 +75,6 @@ main{padding:28px 24px;color:var(--dark)}
 .classes.railclosed{grid-template-columns:1fr}
 .classes.railclosed .rail{display:none}
 .classes.railclosed .railopen{display:flex}
-/* FIX 2: keep .classes grid when .view.on sets display:block */
 .classes.view.on{display:grid}
 .rail .own{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border:none;background:none;border-radius:8px;color:var(--dark);font-size:15px;text-align:left}
 .rail .own:hover{background:var(--grey)}
@@ -177,8 +174,6 @@ main{padding:28px 24px;color:var(--dark)}
 .nothing{padding:60px 20px;text-align:center;color:var(--dark-grey)}
 @media(max-width:768px){.classes{grid-template-columns:1fr}.rail{position:static}#content nav .nav-link{display:none}}
 @media(max-width:576px){#content nav .form-input input{display:none}.tabs button{padding:10px 12px;font-size:14px}}
-
-/* ============ AI + Questions + Battleship ============ */
 .view{display:none}
 .view.on{display:block}
 .pagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
@@ -199,7 +194,6 @@ main{padding:28px 24px;color:var(--dark)}
 .chat-actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 12px 12px}
 .chat-actions .chip{background:var(--grey);border:none;color:var(--dark);padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
 .chat-actions .chip:hover{background:var(--light-blue);color:var(--blue)}
-/* AI error log */
 .ai-errors{background:#fde8e6;border:1px solid #f2c1bd;border-radius:10px;margin:0 0 12px;overflow:hidden}
 .ai-errors[hidden]{display:none}
 .ai-errors .hd{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8d5d2;color:#8a2721;font-weight:600;font-size:14px}
@@ -209,15 +203,20 @@ main{padding:28px 24px;color:var(--dark)}
 .ai-errors ol{margin:0;padding:10px 14px 12px 34px;max-height:220px;overflow-y:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.5;color:#5a1a16}
 .ai-errors li{margin-bottom:8px;word-break:break-word}
 .ai-errors li b{display:block;color:#8a2721;margin-bottom:2px;font-family:var(--poppins)}
-.tag.red{background:#fde8e6;color:#8a2721}
-.qset{background:var(--light);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);flex-wrap:wrap}
+.qset{background:var(--light);border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.qset .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
 .qset .info{flex:1;min-width:200px}
 .qset .info b{font-size:16px}
 .qset .info small{color:var(--dark-grey);display:block;margin-top:2px}
 .qset .acts{display:flex;gap:8px;flex-wrap:wrap}
+.qset .playrow{display:flex;gap:8px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--grey)}
+.playbtn{display:flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;color:#fff;cursor:pointer}
+.playbtn.battleship{background:#2F65C8}
+.playbtn.bubble{background:#7c3aed}
+.playbtn.asteroids{background:#0d9488}
+.playbtn:hover{filter:brightness(1.1)}
 .iconbtn-sm{width:40px;height:40px;border-radius:8px;border:none;background:var(--grey);color:var(--dark);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center}
 .iconbtn-sm:hover{background:var(--light-blue);color:var(--blue)}
-.iconbtn-sm.play:hover{background:#e6f5e9;color:#26890c}
 .iconbtn-sm.danger:hover{background:#fde8e6;color:var(--red)}
 .q-edit{background:var(--light);padding:16px;border-radius:10px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .q-edit label{display:block;font-size:12px;color:var(--dark-grey);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
@@ -237,11 +236,6 @@ main{padding:28px 24px;color:var(--dark)}
 .assign-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:16px}
 .assign-list button{text-align:left;padding:12px 14px;border:1px solid #ccc;background:transparent;color:var(--dark);border-radius:8px;font-size:15px;cursor:pointer}
 .assign-list button:hover{background:var(--light-blue);border-color:var(--blue);color:var(--blue)}
-.assign-list button.pick{background:var(--light-blue);border-color:var(--blue);color:var(--blue);font-weight:600}
-.tagline{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.tag{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--light-blue);color:var(--blue)}
-.tag.green{background:#e6f5e9;color:#26890c}
-.tag.yellow{background:#fff6d6;color:#8a6b00}
 .spin{display:inline-block;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
@@ -253,7 +247,6 @@ main{padding:28px 24px;color:var(--dark)}
     <li class="active" data-view="classes"><a href="#"><i class='bx bxs-graduation bx-sm'></i><span class="text">Classes</span></a></li>
     <li data-view="ai"><a href="#"><i class='bx bxs-bot bx-sm'></i><span class="text">AI Quiz</span></a></li>
     <li data-view="questions"><a href="#"><i class='bx bxs-list-check bx-sm'></i><span class="text">Questions</span></a></li>
-    <li data-view="battleship"><a href="#"><i class='bx bxs-ship bx-sm'></i><span class="text">Battleship</span></a></li>
     <li><a href="#"><i class='bx bxs-shopping-bag-alt bx-sm'></i><span class="text">My Store</span></a></li>
     <li><a href="#"><i class='bx bxs-doughnut-chart bx-sm'></i><span class="text">Analytics</span></a></li>
     <li><a href="#"><i class='bx bxs-message-dots bx-sm'></i><span class="text">Message</span></a></li>
@@ -282,7 +275,7 @@ main{padding:28px 24px;color:var(--dark)}
     <div class="classes view on" id="classes" data-view="classes">
       <button class="railopen" id="railOpen"><i class='bx bx-menu-alt-left'></i>Classes</button>
       <aside class="rail">
-        <div class="railhd"><b>Classes</b><button id="railClose" aria-label="Close classes panel" title="Close panel"><i class='bx bx-x'></i></button></div>
+        <div class="railhd"><b>Classes</b><button id="railClose" aria-label="Close classes panel"><i class='bx bx-x'></i></button></div>
         <button class="own" id="ownBtn" aria-expanded="true"><i class='bx bx-group bx-sm'></i><span>Owned classes <small id="ownCount"></small></span><i class='bx bx-chevron-down chev'></i></button>
         <div id="ownedList"></div>
         <h4>Recent classes</h4>
@@ -303,17 +296,10 @@ main{padding:28px 24px;color:var(--dark)}
           <button class="btn ghost" id="aiReset"><i class='bx bx-refresh'></i> New chat</button>
         </div>
       </div>
-
       <div class="ai-errors" id="aiErrors" hidden>
-        <div class="hd">
-          <i class='bx bx-error-circle'></i>
-          AI error log
-          <span class="count" id="aiErrTotal">0</span>
-          <button type="button" id="aiErrorsClear" title="Clear">&times;</button>
-        </div>
+        <div class="hd"><i class='bx bx-error-circle'></i> AI error log <span class="count" id="aiErrTotal">0</span><button type="button" id="aiErrorsClear" title="Clear">&times;</button></div>
         <ol id="aiErrorList"></ol>
       </div>
-
       <div class="chat-wrap">
         <div class="chat-log" id="chatLog"></div>
         <div class="chat-actions" id="chatChips">
@@ -335,7 +321,7 @@ main{padding:28px 24px;color:var(--dark)}
       <div class="pagehead">
         <div>
           <h1>Question Sets</h1>
-          <p>Every quiz you make with the AI lands here. Play it in Battleship or assign it to a class.</p>
+          <p>Every quiz you make with the AI lands here. Click a play button to launch a game with that set.</p>
         </div>
         <button class="btn ghost" id="qsToAI"><i class='bx bx-plus'></i> Make a new set</button>
       </div>
@@ -349,11 +335,10 @@ main{padding:28px 24px;color:var(--dark)}
 
 <div class="battle-wrap" id="battleWrap">
   <button class="battle-close" id="battleClose" title="Close"><i class='bx bx-x'></i></button>
-  <iframe class="battle-frame" id="battleFrame" title="Battleship"></iframe>
+  <iframe class="battle-frame" id="battleFrame" title="Game"></iframe>
 </div>
 
 <script>
-/* FIX 5: global error bar */
 window.addEventListener('error', function (e) {
   var el = document.getElementById('__errbar');
   if (!el) {
@@ -362,28 +347,20 @@ window.addEventListener('error', function (e) {
     el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#DB504A;color:#fff;padding:10px 14px;font:13px ui-monospace,monospace;z-index:999999;white-space:pre-wrap';
     document.body.appendChild(el);
   }
-  el.textContent = 'Error: ' + (e.message || 'unknown') +
-    (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '');
+  el.textContent = 'Error: ' + (e.message || 'unknown') + (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '');
 });
 
-/* FIX 1: nav/VIEWS at top so render() can call route() safely */
 let nav = 'classes';
 const VIEWS = ['classes', 'ai', 'questions'];
 
-/* =================== ORIGINAL DASHBOARD CODE =================== */
+/* ============== ORIGINAL DASHBOARD ============== */
 const KEY = 'adminhub_classes_v1';
 let railOpen = true;
 try { railOpen = localStorage.getItem('adminhub_rail_open') !== '0'; } catch (e) {}
 let classes = [], activeId = null, tab = 'activity', memStore = null, ownOpen = true;
 try { ownOpen = localStorage.getItem('adminhub_owned_open') !== '0'; } catch (e) {}
-function load() {
-  try { const r = localStorage.getItem(KEY); if (r) return JSON.parse(r); } catch (e) {}
-  return memStore || [];
-}
-function save() {
-  memStore = classes;
-  try { localStorage.setItem(KEY, JSON.stringify(classes)); } catch (e) {}
-}
+function load() { try { const r = localStorage.getItem(KEY); if (r) return JSON.parse(r); } catch (e) {} return memStore || []; }
+function save() { memStore = classes; try { localStorage.setItem(KEY, JSON.stringify(classes)); } catch (e) {} }
 classes = load();
 if (classes.length) activeId = classes[0].id;
 
@@ -391,7 +368,6 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cur = () => classes.find(c => c.id === activeId);
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800); }
-
 function makeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', buf = new Uint32Array(10);
   crypto.getRandomValues(buf);
@@ -400,7 +376,6 @@ function makeCode() {
   while (classes.some(c => c.code === code));
   return code;
 }
-
 function openModal(html) { $('#modal').innerHTML = html; $('#scrim').classList.add('show'); const i = $('#modal input[type=text]'); if (i) i.focus(); }
 function closeModal() { $('#scrim').classList.remove('show'); }
 $('#scrim').addEventListener('click', e => { if (e.target.id === 'scrim') closeModal(); });
@@ -411,7 +386,6 @@ function ask(title, sub, label, cb, initial = '') {
   $('#modal [data-x]').onclick = closeModal; $('#modal [data-ok]').onclick = go;
   $('#ask').onkeydown = e => { if (e.key === 'Enter') go(); };
 }
-
 function createClass() {
   ask('Create class', 'Give your class a name. It gets its own join code.', 'Class name', name => {
     const c = { id: Date.now().toString(36), name, code: makeCode(), created: Date.now(),
@@ -455,9 +429,8 @@ const fmt = t => new Date(t).toLocaleString([], { month: 'short', day: 'numeric'
 function listHtml(items, key, empty) {
   if (!items.length) return `<div class="card"><div class="empty">${empty}</div></div>`;
   return `<div class="card">${items.map(i => `<div class="post"><div class="meta"><div class="avatar"><i class='bx bxs-user'></i></div><div><b>Teacher</b><small>${fmt(i.time)}${i.kind === 'quiz' ? ' · quiz' : ''}</small></div>
-    <button class="del" data-del="${key}:${i.id}" aria-label="Delete"><i class='bx bx-trash'></i></button></div><p>${esc(i.text)}</p>${i.kind === 'quiz' && i.quizId ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" style="padding:6px 14px;font-size:14px" data-play-quiz="${i.quizId}"><i class='bx bxs-ship'></i> Play in Battleship</button></div>` : ''}</div>`).join('')}</div>`;
+    <button class="del" data-del="${key}:${i.id}" aria-label="Delete"><i class='bx bx-trash'></i></button></div><p>${esc(i.text)}</p>${i.kind === 'quiz' && i.quizId ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="playbtn battleship" data-play-quiz="${i.quizId}" data-game="battleship"><i class='bx bxs-ship'></i> Battleship</button><button class="playbtn bubble" data-play-quiz="${i.quizId}" data-game="bubble"><i class='bx bxs-circle'></i> Bubble</button><button class="playbtn asteroids" data-play-quiz="${i.quizId}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button></div>` : ''}</div>`).join('')}</div>`;
 }
-
 function dashHtml(c) {
   const steps = [['Share the join code', c.codeShared], ['Write a post', c.posts.length > 0], ['Create an assignment', c.assignments.length > 0]];
   const done = steps.filter(x => x[1]).length, pct = Math.round(done / steps.length * 100);
@@ -523,7 +496,11 @@ $('#classView').addEventListener('click', e => {
   const t = e.target.closest('[data-tab]'); if (t) { tab = t.dataset.tab; render(); return; }
   if (e.target.closest('#joinBtn')) return showCode();
   if (e.target.closest('#gear')) return showSettings();
-  const pq = e.target.closest('[data-play-quiz]'); if (pq) { const qs = getQuestionSets().find(x => x.id === pq.dataset.playQuiz); if (qs) openBattleship(qs); else openBattleship(null); return; }
+  const pq = e.target.closest('[data-play-quiz]'); if (pq) {
+    const qs = getQuestionSets().find(x => x.id === pq.dataset.playQuiz);
+    openGame(pq.dataset.game || 'battleship', qs || null);
+    return;
+  }
   const d = e.target.closest('[data-del]'); if (d) { const [k, id] = d.dataset.del.split(':'); const c = cur(); c[k] = c[k].filter(x => String(x.id) !== id); save(); return render(); }
   const a = e.target.closest('[data-act]'); if (!a) return;
   ({ post: focusPost, share: showCode, assign: addAssignment, code: showCode })[a.dataset.act]();
@@ -542,7 +519,7 @@ $('#notificationIcon').onclick = e => { e.preventDefault(); $('#notificationMenu
 $('#profileIcon').onclick = e => { e.preventDefault(); $('#profileMenu').classList.toggle('show'); $('#notificationMenu').classList.remove('show'); };
 addEventListener('click', e => { if (!e.target.closest('.notification') && !e.target.closest('.profile')) document.querySelectorAll('.dd').forEach(d => d.classList.remove('show')); });
 
-/* =================== Top-level navigation =================== */
+/* ============== Top nav ============== */
 function route() {
   VIEWS.forEach(v => {
     const el = document.querySelector('.view[data-view="' + v + '"]');
@@ -560,7 +537,6 @@ document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
     e.preventDefault();
     const v = li.dataset.view;
     if (!v) return;
-    if (v === 'battleship') { openBattleship(null); return; }
     nav = v;
     if (v === 'ai') renderChat();
     if (v === 'questions') renderQuestionSets();
@@ -568,69 +544,40 @@ document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
   });
 });
 
-/* =================== Question-set storage =================== */
-const QKEY = 'adminhub_questions_v1';
+/* ============== Questions storage ============== */
+const QKEY = 'adminhub_questions_v2';
 let qsets = [];
 try { const r = localStorage.getItem(QKEY); if (r) qsets = JSON.parse(r); } catch (e) {}
 function saveQSets() { try { localStorage.setItem(QKEY, JSON.stringify(qsets)); } catch (e) {} }
 function getQuestionSets() { return qsets; }
 function addQuestionSet(set) {
-  set.id = 'qs_' + Date.now().toString(36);
-  set.created = Date.now();
+  set.id = set.id || 'qs_' + Date.now().toString(36);
+  set.created = set.created || Date.now();
   qsets.unshift(set); saveQSets();
   toast('Saved "' + set.title + '" · ' + set.questions.length + ' questions');
   if (nav === 'questions') renderQuestionSets();
 }
 
-/* Preset fallback used by Battleship when no set is loaded. */
 const PRESET_QUESTIONS = [
-  { question: "Which planet is known as the Red Planet?",
-    options: ["Venus", "Mars", "Jupiter", "Mercury"],
-    correct: 1, timeLimit: 20, explanation: "Iron oxide on Mars gives it a red color." },
-  { question: "What is the largest ocean on Earth?",
-    options: ["Atlantic", "Indian", "Arctic", "Pacific"],
-    correct: 3, timeLimit: 20, explanation: "The Pacific covers about a third of the planet." },
-  { question: "How many continents are there?",
-    options: ["5", "6", "7", "8"],
-    correct: 2, timeLimit: 15, explanation: "Africa, Antarctica, Asia, Australia, Europe, N. America, S. America." },
-  { question: "Who wrote Romeo and Juliet?",
-    options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
-    correct: 1, timeLimit: 20, explanation: "Shakespeare wrote it around 1595." },
-  { question: "What gas do plants absorb from the air?",
-    options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
-    correct: 2, timeLimit: 20, explanation: "Plants take in CO₂ for photosynthesis." },
-  { question: "What is the capital of France?",
-    options: ["Lyon", "Marseille", "Paris", "Nice"],
-    correct: 2, timeLimit: 15, explanation: "Paris has been the capital since the 10th century." },
-  { question: "Which is the longest river in the world?",
-    options: ["Amazon", "Nile", "Yangtze", "Mississippi"],
-    correct: 1, timeLimit: 25, explanation: "The Nile is traditionally measured as the longest, though the Amazon is close." },
-  { question: "What is 7 × 8?",
-    options: ["54", "56", "58", "64"],
-    correct: 1, timeLimit: 10, explanation: "7 × 8 = 56." },
-  { question: "Which animal is the largest mammal?",
-    options: ["Elephant", "Blue whale", "Giraffe", "Hippopotamus"],
-    correct: 1, timeLimit: 15, explanation: "Blue whales can reach 30 meters and 150 tonnes." },
-  { question: "In which year did WWII end?",
-    options: ["1943", "1944", "1945", "1946"],
-    correct: 2, timeLimit: 20, explanation: "WWII ended in 1945." }
+  { question: "Which planet is known as the Red Planet?", options: ["Venus","Mars","Jupiter","Mercury"], correct: 1, timeLimit: 20, explanation: "Iron oxide on Mars gives it a red color." },
+  { question: "What is the largest ocean on Earth?", options: ["Atlantic","Indian","Arctic","Pacific"], correct: 3, timeLimit: 20, explanation: "The Pacific covers about a third of the planet." },
+  { question: "How many continents are there?", options: ["5","6","7","8"], correct: 2, timeLimit: 15, explanation: "Africa, Antarctica, Asia, Australia, Europe, N. America, S. America." },
+  { question: "Who wrote Romeo and Juliet?", options: ["Charles Dickens","William Shakespeare","Jane Austen","Mark Twain"], correct: 1, timeLimit: 20, explanation: "Shakespeare wrote it around 1595." },
+  { question: "What gas do plants absorb from the air?", options: ["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"], correct: 2, timeLimit: 20, explanation: "Plants take in CO2 for photosynthesis." },
+  { question: "What is the capital of France?", options: ["Lyon","Marseille","Paris","Nice"], correct: 2, timeLimit: 15, explanation: "Paris has been the capital since the 10th century." },
+  { question: "Which is the longest river in the world?", options: ["Amazon","Nile","Yangtze","Mississippi"], correct: 1, timeLimit: 25, explanation: "The Nile is traditionally measured as the longest." },
+  { question: "What is 7 × 8?", options: ["54","56","58","64"], correct: 1, timeLimit: 10, explanation: "7 × 8 = 56." },
+  { question: "Which animal is the largest mammal?", options: ["Elephant","Blue whale","Giraffe","Hippopotamus"], correct: 1, timeLimit: 15, explanation: "Blue whales can reach 30 meters." },
+  { question: "In which year did WWII end?", options: ["1943","1944","1945","1946"], correct: 2, timeLimit: 20, explanation: "WWII ended in 1945." }
 ];
 
-/* =================== AI Quiz view =================== */
+/* ============== AI Quiz ============== */
 const AI_MODEL = 'gpt-4o-mini';
 const AI_FALLBACK = 'gpt-4o';
-
-/* ---- AI error log ---- */
 let aiErrors = [];
 function logAIError(label, err, context) {
   const detail = (err && (err.stack || err.message)) ? (err.stack || err.message) : String(err);
-  const entry = {
-    time: new Date().toLocaleTimeString(),
-    label: label,
-    detail: detail,
-    context: context || ''
-  };
-  aiErrors.unshift(entry);
+  aiErrors.unshift({ time: new Date().toLocaleTimeString(), label, detail, context: context || '' });
   renderAIErrors();
   console.error('[AI]', label, err, context || '');
 }
@@ -643,21 +590,10 @@ function renderAIErrors() {
   cnt.textContent = aiErrors.length;
   tot.textContent = aiErrors.length;
   panel.hidden = aiErrors.length === 0;
-  list.innerHTML = aiErrors.map(e => `
-    <li>
-      <b>${esc(e.label)} <span style="opacity:.6;font-weight:400">· ${esc(e.time)}</span></b>
-      ${esc(e.detail)}
-      ${e.context ? '<br><span style="opacity:.7">' + esc(e.context) + '</span>' : ''}
-    </li>`).join('');
+  list.innerHTML = aiErrors.map(e => `<li><b>${esc(e.label)} <span style="opacity:.6;font-weight:400">· ${esc(e.time)}</span></b>${esc(e.detail)}${e.context ? '<br><span style="opacity:.7">' + esc(e.context) + '</span>' : ''}</li>`).join('');
 }
-document.getElementById('aiErrorsToggle').onclick = () => {
-  const panel = document.getElementById('aiErrors');
-  panel.hidden = !panel.hidden;
-};
-document.getElementById('aiErrorsClear').onclick = () => {
-  aiErrors = [];
-  renderAIErrors();
-};
+document.getElementById('aiErrorsToggle').onclick = () => { const p = document.getElementById('aiErrors'); p.hidden = !p.hidden; };
+document.getElementById('aiErrorsClear').onclick = () => { aiErrors = []; renderAIErrors(); };
 
 const AI_PROMPT = (n, topic, notes) => `You are a quiz generator. Return ONLY valid JSON. No prose, no markdown.
 Shape: {"title":"...","questions":[{"question":"...","options":["A","B","C","D"],"correct":0,"timeLimit":20,"explanation":"..."}]}
@@ -677,22 +613,14 @@ ${notes || '(none — rely on the topic)'}`;
 
 let chatState = null;
 function newChat() {
-  chatState = {
-    log: [],
-    phase: 'idle',
-    notes: '',
-    topic: '',
-    count: 5,
-    difficulty: 'medium',
-    waiting: false
-  };
+  chatState = { log: [], phase: 'idle', notes: '', topic: '', count: 5, difficulty: 'medium', waiting: false };
   $('#chatLog').innerHTML = '';
   botSay("Hi! Tell me what you want questions about — or paste/upload notes and I'll go from there. If it's vague (like 'easy dinosaur questions'), I'll ask you a few clarifying questions first.");
 }
 function renderChat() { if (!chatState) newChat(); }
-function botSay(text) { addMsg('bot', text); }
-function userSay(text) { addMsg('user', text); }
-function sysSay(text) { addMsg('sys', text); }
+function botSay(t) { addMsg('bot', t); }
+function userSay(t) { addMsg('user', t); }
+function sysSay(t) { addMsg('sys', t); }
 function addMsg(kind, text) {
   const log = $('#chatLog');
   const el = document.createElement('div');
@@ -706,14 +634,12 @@ function setWaiting(w) {
   $('#aiSend').innerHTML = w ? "<i class='bx bx-loader-alt spin'></i>" : "<i class='bx bx-send'></i>";
   $('#aiSend').disabled = w;
 }
-
 $('#chatChips').addEventListener('click', e => {
   const c = e.target.closest('[data-chip]'); if (!c) return;
   if (c.dataset.chip === 'I want to upload a PDF') return $('#aiFile').click();
   $('#aiInput').value = c.dataset.chip;
   $('#aiInput').focus();
 });
-
 $('#aiAttach').onclick = () => $('#aiFile').click();
 $('#aiFile').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
@@ -724,12 +650,7 @@ $('#aiFile').onchange = async e => {
   try {
     let text = '';
     if (/\.pdf$/i.test(f.name)) {
-      if (!window.pdfjsLib) {
-        const err = new Error('pdfjsLib not loaded');
-        logAIError('PDF upload failed — pdf.js missing', err);
-        botSay("PDF support failed to load (pdf.js not available). Please paste the text instead.");
-        return;
-      }
+      if (!window.pdfjsLib) { logAIError('PDF upload failed — pdf.js missing', new Error('pdfjsLib not loaded')); botSay("PDF support failed to load. Paste the text instead."); return; }
       const buf = await f.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
       const parts = [];
@@ -739,26 +660,16 @@ $('#aiFile').onchange = async e => {
         parts.push(content.items.map(x => x.str).join(' '));
       }
       text = parts.join('\n\n');
-    } else {
-      text = await f.text();
-    }
+    } else { text = await f.text(); }
     text = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
     const words = text.split(/\s+/).length;
-    if (words < 20) {
-      logAIError('File had too little text', new Error(words + ' words extracted'), f.name);
-      botSay("That file looks empty or has no selectable text — scanned PDFs aren't supported yet. Can you paste the notes instead?");
-      return;
-    }
+    if (words < 20) { logAIError('File had too little text', new Error(words + ' words'), f.name); botSay("That file has no selectable text — scanned PDFs aren't supported yet."); return; }
     chatState.notes += (chatState.notes ? '\n\n' : '') + text;
     sysSay('Added ~' + words.toLocaleString() + ' words from ' + f.name);
     if (chatState.phase !== 'clarifying' || chatState.topic) await tryGenerate(true);
     else botSay("Got your notes. What should the questions focus on, and how many do you want?");
-  } catch (err) {
-    logAIError('File read failed', err, f.name);
-    botSay("I couldn't read that file. You can paste the text instead.");
-  }
+  } catch (err) { logAIError('File read failed', err, f.name); botSay("I couldn't read that file."); }
 };
-
 $('#aiSend').onclick = async () => {
   if (!chatState) newChat();
   const v = $('#aiInput').value.trim();
@@ -767,9 +678,7 @@ $('#aiSend').onclick = async () => {
   userSay(v);
   await handleUserMessage(v);
 };
-$('#aiInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); }
-});
+$('#aiInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); } });
 $('#aiReset').onclick = () => { newChat(); };
 
 function isVague(text) {
@@ -777,7 +686,6 @@ function isVague(text) {
   if (t.length < 60 && !/\d/.test(t)) return true;
   return /\b(easy|hard|simple|quick|random|some|few)\b/.test(t) && !/\d+/.test(t) && t.length < 80;
 }
-
 async function handleUserMessage(text) {
   const t = text.toLowerCase();
   const numMatch = t.match(/(\d{1,3})\s*(questions|qs|items)/);
@@ -785,85 +693,45 @@ async function handleUserMessage(text) {
   if (/\b(medium)\b/.test(t)) chatState.difficulty = 'medium';
   if (/\b(hard|difficult|challenging)\b/.test(t)) chatState.difficulty = 'hard';
   if (/\b(easy|simple)\b/.test(t)) chatState.difficulty = 'easy';
-
   if (!chatState.topic && text.length <= 120) chatState.topic = text;
-
-  if (text.length > 400) {
-    chatState.notes += (chatState.notes ? '\n\n' : '') + text;
-    sysSay('Got it — using your pasted notes.');
-  }
-
+  if (text.length > 400) { chatState.notes += (chatState.notes ? '\n\n' : '') + text; sysSay('Got it — using your pasted notes.'); }
   const wantsGen = /generate|make|create|build|write|produce/i.test(t) || /questions/i.test(t);
-
-  if (isVague(text) && !chatState.notes) {
-    chatState.phase = 'clarifying';
-    await askClarifying(text);
-    return;
-  }
-
-  if (chatState.notes || (chatState.topic && (wantsGen || !isVague(text)))) {
-    await tryGenerate(false);
-    return;
-  }
-
+  if (isVague(text) && !chatState.notes) { chatState.phase = 'clarifying'; await askClarifying(text); return; }
+  if (chatState.notes || (chatState.topic && (wantsGen || !isVague(text)))) { await tryGenerate(false); return; }
   chatState.phase = 'clarifying';
   await askClarifying(text);
 }
-
 async function askClarifying(initial) {
   setWaiting(true);
   const prompt = `You are a friendly assistant helping a teacher design a quiz.
 The user said: "${initial}"
-Context so far:
-- Topic: ${chatState.topic || '(unknown)'}
-- Difficulty: ${chatState.difficulty}
-- Question count: ${chatState.count}
-- Has notes: ${chatState.notes ? 'yes' : 'no'}
-
+Context: Topic: ${chatState.topic || '(unknown)'} | Difficulty: ${chatState.difficulty} | Count: ${chatState.count} | Notes: ${chatState.notes ? 'yes' : 'no'}
 Ask ONE short follow-up question to narrow things down. If they have not mentioned notes/files, ask first whether they have any notes or files you can reference. Then ask about topic, difficulty, and how many questions. Do NOT generate questions yet. Reply with just the single question.`;
-  try {
-    const reply = await aiChat(prompt);
-    botSay(reply.trim());
-  } catch (e) {
-    logAIError('Clarifying question failed', e);
-    botSay("Do you have any notes or files I can reference? If not, tell me the topic, grade level, and how many questions you'd like.");
-  }
+  try { const reply = await aiChat(prompt); botSay(reply.trim()); }
+  catch (e) { logAIError('Clarifying question failed', e); botSay("Do you have any notes or files I can reference? If not, tell me the topic, grade level, and how many questions."); }
   setWaiting(false);
 }
-
 async function tryGenerate(silent) {
   setWaiting(true);
   sysSay('Generating ' + chatState.count + ' ' + chatState.difficulty + ' questions…');
   let raw = '';
   const prompt = AI_PROMPT(chatState.count, chatState.topic, chatState.notes);
-  try {
-    raw = await aiChat(prompt);
-  } catch (e) {
-    logAIError('AI request failed', e, 'prompt chars: ' + prompt.length);
-    botSay("The AI request itself failed. Open the Errors panel above for details.");
-    setWaiting(false);
-    return;
-  }
+  try { raw = await aiChat(prompt); }
+  catch (e) { logAIError('AI request failed', e, 'prompt chars: ' + prompt.length); botSay("The AI request failed. Open the Errors panel above."); setWaiting(false); return; }
   let data = null;
-  try {
-    data = parseQuizJSON(raw);
-  } catch (e) {
-    logAIError('parseQuizJSON threw', e, 'raw preview: ' + raw.slice(0, 200));
-  }
+  try { data = parseQuizJSON(raw); } catch (e) { logAIError('parseQuizJSON threw', e, 'raw preview: ' + raw.slice(0, 200)); }
   if (!data || !data.questions || !data.questions.length) {
     logAIError('AI returned unusable JSON', new Error('No valid questions'), 'raw preview: ' + raw.slice(0, 400));
-    botSay("The model replied but the JSON was invalid or empty. Open the Errors panel above — you'll see the raw output preview.");
+    botSay("The model replied but the JSON was invalid or empty. Open the Errors panel above.");
     setWaiting(false);
     return;
   }
   data.title = data.title || (chatState.topic || 'Quiz');
   addQuestionSet({ title: data.title, questions: data.questions, source: chatState.notes ? 'notes' : 'topic' });
-  botSay('Done! I saved "' + data.title + '" with ' + data.questions.length + ' questions to your Questions tab. You can play it in Battleship or assign it to a class.');
+  botSay('Done! I saved "' + data.title + '" with ' + data.questions.length + ' questions. Head to the Questions tab to play or assign it.');
   chatState.phase = 'idle';
   setWaiting(false);
 }
-
-/* FIX 4: handle string OR object responses + log all failures */
 async function aiChat(prompt) {
   if (!window.puter || !puter.ai || typeof puter.ai.chat !== 'function') {
     const e = new Error('Puter.js is not loaded. Check that https://js.puter.com/v2/ is in <head> and not blocked.');
@@ -871,37 +739,22 @@ async function aiChat(prompt) {
     throw e;
   }
   let firstErr = null;
-  try {
-    const res = await puter.ai.chat(prompt, { model: AI_MODEL });
-    return normalizePuter(res);
-  } catch (e) {
-    firstErr = e;
-    logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e);
-  }
-  try {
-    const res = await puter.ai.chat(prompt, { model: AI_FALLBACK });
-    return normalizePuter(res);
-  } catch (e2) {
-    logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2, 'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr));
-    throw e2;
-  }
+  try { const res = await puter.ai.chat(prompt, { model: AI_MODEL }); return normalizePuter(res); }
+  catch (e) { firstErr = e; logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e); }
+  try { const res = await puter.ai.chat(prompt, { model: AI_FALLBACK }); return normalizePuter(res); }
+  catch (e2) { logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2, 'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr)); throw e2; }
 }
 function normalizePuter(res) {
-  if (typeof res === 'string') {
-    if (!res.trim()) throw new Error('Model returned an empty string.');
-    return res;
-  }
+  if (typeof res === 'string') { if (!res.trim()) throw new Error('Model returned an empty string.'); return res; }
   if (res && res.message && typeof res.message.content === 'string') return res.message.content;
   if (res && typeof res.text === 'string') return res.text;
   if (res && res.error) throw new Error('Puter error: ' + (res.error.message || JSON.stringify(res.error)));
   if (res && typeof res.toString === 'function' && res.toString() !== '[object Object]') return res.toString();
   throw new Error('Unrecognized Puter response shape: ' + JSON.stringify(res).slice(0, 300));
 }
-
 function parseQuizJSON(raw) {
   if (!raw) return null;
-  let s = String(raw).trim();
-  s = s.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+  let s = String(raw).trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
   const first = s.indexOf('{'), last = s.lastIndexOf('}');
   if (first === -1 || last === -1) return null;
   let obj;
@@ -922,7 +775,7 @@ function parseQuizJSON(raw) {
   return obj;
 }
 
-/* =================== Questions view =================== */
+/* ============== Questions view ============== */
 function renderQuestionSets() {
   const list = $('#qsList');
   if (!qsets.length) {
@@ -932,19 +785,26 @@ function renderQuestionSets() {
   }
   list.innerHTML = qsets.map(qs => `
     <div class="qset">
-      <div class="info">
-        <b>${esc(qs.title)}</b>
-        <small>${qs.questions.length} questions · ${fmt(qs.created)}${qs.assignedTo ? ' · assigned to ' + qs.assignedTo.length + ' class(es)' : ''}</small>
+      <div class="top">
+        <div class="info">
+          <b>${esc(qs.title)}</b>
+          <small>${qs.questions.length} questions · ${fmt(qs.created)}${qs.assignedTo ? ' · assigned to ' + qs.assignedTo.length + ' class(es)' : ''}</small>
+        </div>
+        <div class="acts">
+          <button class="iconbtn-sm" data-assign="${qs.id}" title="Assign to a class"><i class='bx bx-task'></i></button>
+          <button class="iconbtn-sm" data-edit="${qs.id}" title="Edit questions"><i class='bx bx-edit'></i></button>
+          <button class="iconbtn-sm danger" data-delqs="${qs.id}" title="Delete set"><i class='bx bx-trash'></i></button>
+        </div>
       </div>
-      <div class="acts">
-        <button class="iconbtn-sm play" data-play="${qs.id}" title="Play in Battleship"><i class='bx bxs-ship'></i></button>
-        <button class="iconbtn-sm" data-assign="${qs.id}" title="Assign to a class"><i class='bx bx-task'></i></button>
-        <button class="iconbtn-sm" data-edit="${qs.id}" title="Edit questions"><i class='bx bx-edit'></i></button>
-        <button class="iconbtn-sm danger" data-delqs="${qs.id}" title="Delete set"><i class='bx bx-trash'></i></button>
+      <div class="playrow">
+        <button class="playbtn battleship" data-play="${qs.id}" data-game="battleship"><i class='bx bxs-ship'></i> Battleship</button>
+        <button class="playbtn bubble" data-play="${qs.id}" data-game="bubble"><i class='bx bxs-circle'></i> Bubble Shooter</button>
+        <button class="playbtn asteroids" data-play="${qs.id}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button>
       </div>
     </div>`).join('');
   list.querySelectorAll('[data-play]').forEach(b => b.onclick = () => {
-    const qs = qsets.find(x => x.id === b.dataset.play); if (qs) openBattleship(qs);
+    const qs = qsets.find(x => x.id === b.dataset.play);
+    openGame(b.dataset.game, qs);
   });
   list.querySelectorAll('[data-assign]').forEach(b => b.onclick = () => assignQuiz(b.dataset.assign));
   list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editQuiz(b.dataset.edit));
@@ -976,25 +836,18 @@ function assignQuiz(qsId) {
     render(); renderQuestionSets();
   });
 }
-
 function editQuiz(qsId) {
   const qs = qsets.find(x => x.id === qsId); if (!qs) return;
-  const wrap = document.createElement('div');
-  wrap.innerHTML = `<h3>Edit "${esc(qs.title)}"</h3><p class="sub">Change any question. Radio = correct answer.</p>
+  openModal(`<h3>Edit "${esc(qs.title)}"</h3><p class="sub">Change any question. Radio = correct answer.</p>
     <div id="qlist" style="max-height:56vh;overflow-y:auto;margin-bottom:14px"></div>
-    <div class="foot"><button class="btn ghost" data-x>Cancel</button><button class="btn" data-save>Save</button></div>`;
-  openModal(wrap.innerHTML);
+    <div class="foot"><button class="btn ghost" data-x>Cancel</button><button class="btn" data-save>Save</button></div>`);
   const qlist = $('#qlist');
   qlist.innerHTML = qs.questions.map((q, qi) => `
     <div class="q-edit" data-q="${qi}">
       <label>Question ${qi + 1}</label>
       <textarea data-field="question" rows="2">${esc(q.question)}</textarea>
       <label style="margin-top:8px">Options · pick the correct one</label>
-      ${q.options.map((o, oi) => `
-        <div class="optrow">
-          <input type="radio" name="correct-${qi}" value="${oi}" ${q.correct === oi ? 'checked' : ''}>
-          <input type="text" data-opt="${oi}" value="${esc(o)}">
-        </div>`).join('')}
+      ${q.options.map((o, oi) => `<div class="optrow"><input type="radio" name="correct-${qi}" value="${oi}" ${q.correct === oi ? 'checked' : ''}><input type="text" data-opt="${oi}" value="${esc(o)}"></div>`).join('')}
       <div class="row" style="margin-top:10px">
         <div><label>Time limit (s)</label><input type="text" data-field="timeLimit" value="${q.timeLimit || 20}"></div>
         <div><label>Explanation</label><input type="text" data-field="explanation" value="${esc(q.explanation || '')}"></div>
@@ -1006,7 +859,7 @@ function editQuiz(qsId) {
       const qi = parseInt(el.dataset.q, 10);
       const q = qs.questions[qi];
       q.question = el.querySelector('[data-field="question"]').value.trim() || q.question;
-      q.options = [0, 1, 2, 3].map(i => el.querySelector('[data-opt="' + i + '"]').value.trim() || q.options[i]);
+      q.options = [0,1,2,3].map(i => el.querySelector('[data-opt="' + i + '"]').value.trim() || q.options[i]);
       const picked = el.querySelector('input[type=radio]:checked');
       q.correct = picked ? parseInt(picked.value, 10) : q.correct;
       const tl = parseInt(el.querySelector('[data-field="timeLimit"]').value, 10);
@@ -1017,13 +870,16 @@ function editQuiz(qsId) {
   };
 }
 
-/* =================== Battleship embed =================== */
-function openBattleship(qs) {
+/* ============== Game launcher ============== */
+function openGame(type, qs) {
   const frame = $('#battleFrame');
   const qs_ = (qs && Array.isArray(qs.questions) && qs.questions.length)
-    ? qs
-    : { title: 'Preset Quiz', questions: PRESET_QUESTIONS };
-  frame.srcdoc = buildBattleshipHTML(qs_.questions, qs_.title);
+    ? qs : { title: 'Preset Quiz', questions: PRESET_QUESTIONS };
+  let html;
+  if (type === 'bubble') html = buildBubbleHTML(qs_.questions, qs_.title);
+  else if (type === 'asteroids') html = buildAsteroidsHTML(qs_.questions, qs_.title);
+  else html = buildBattleshipHTML(qs_.questions, qs_.title);
+  frame.srcdoc = html;
   $('#battleWrap').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
@@ -1033,6 +889,78 @@ $('#battleClose').onclick = () => {
   document.body.style.overflow = '';
 };
 
+/* ---------- Shared in-game quiz modal + ammo helpers ---------- */
+const GAME_QUIZ_HELPERS = `
+function makeQuizModal(getState) {
+  return function openQuiz(onDone) {
+    if (getState().quizOpen) return;
+    if (!QUESTIONS || !QUESTIONS.length) {
+      getState().ammo += getState().ammoPerCorrect;
+      getState().updateAmmo();
+      return;
+    }
+    getState().quizOpen = true;
+    var q = QUESTIONS[getState().quizIdx % QUESTIONS.length];
+    getState().quizIdx++;
+    var ov = document.createElement("div");
+    ov.className = "quiz-overlay";
+    ov.id = "quizOverlay";
+    var box = document.createElement("div");
+    box.className = "quiz-box";
+    box.innerHTML = '<h3>Out of ammo — reload!</h3><p class="sub">Correct = +' + getState().ammoPerCorrect + ' ammo. Wrong = +' + getState().ammoPerWrong + '.</p><div class="qtext"></div><div class="opts"></div><div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
+    box.querySelector(".qtext").textContent = q.question;
+    var optsEl = box.querySelector(".opts");
+    var letters = ["A","B","C","D"];
+    q.options.forEach(function(text, idx) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt";
+      b.textContent = letters[idx] + ". " + text;
+      b.addEventListener("click", function() {
+        if (b.disabled) return;
+        var ok = idx === q.correct;
+        b.classList.add(ok ? "correct" : "wrong");
+        if (!ok) optsEl.children[q.correct].classList.add("correct");
+        Array.prototype.forEach.call(optsEl.children, function(x) { x.disabled = true; });
+        var gain = ok ? getState().ammoPerCorrect : getState().ammoPerWrong;
+        getState().ammo += gain;
+        getState().updateAmmo();
+        document.getElementById("qFeedback").textContent = (ok ? "Correct! " : "Nope. ") + "+" + gain + " ammo" + (q.explanation ? " · " + q.explanation : "");
+        var nw = document.getElementById("qNextWrap");
+        var nb = document.createElement("button");
+        nb.type = "button"; nb.className = "btn"; nb.textContent = "Continue";
+        nb.addEventListener("click", function() {
+          ov.remove();
+          getState().quizOpen = false;
+          if (typeof onDone === "function") onDone();
+        });
+        nw.appendChild(nb);
+      });
+      optsEl.appendChild(b);
+    });
+    ov.appendChild(box);
+    document.body.appendChild(ov);
+  };
+}
+`;
+
+const GAME_QUIZ_CSS = `
+.quiz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.quiz-box{background:#0d1a2b;border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:22px;max-width:520px;width:100%;color:#e8f4f8;font-family:"Outfit",sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.quiz-box h3{margin:0 0 6px;font-size:1.15rem}
+.quiz-box .sub{opacity:.85;font-size:.9rem;margin-bottom:14px}
+.quiz-box .qtext{font-size:1.05rem;font-weight:600;margin-bottom:14px;line-height:1.4}
+.quiz-box .opts{display:grid;gap:8px;margin-bottom:14px}
+.quiz-box .opt{padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:inherit;font-family:inherit;text-align:left;font-size:.98rem;cursor:pointer}
+.quiz-box .opt:hover:not(:disabled){background:rgba(255,255,255,.14)}
+.quiz-box .opt.correct{background:#26890c;border-color:#26890c;color:#fff}
+.quiz-box .opt.wrong{background:#b3261e;border-color:#b3261e;color:#fff}
+.quiz-box .quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;opacity:.85}
+.quiz-box .btn{padding:8px 14px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
+.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(240,193,75,.18);border:1px solid rgba(240,193,75,.5);color:#f0c14b;font-size:.9rem;font-weight:700}
+.ammo-badge.low{background:rgba(214,69,69,.18);border-color:rgba(214,69,69,.6);color:#ff8a8a}
+`;
+
+/* ---------- BATTLESHIP builder (unchanged core, quiz + ammo) ---------- */
 function buildBattleshipHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
   const T = JSON.stringify(title).replace(/</g, '\\u003c');
@@ -1105,36 +1033,25 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .help-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .help-close{width:44px;height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.12);color:inherit;font-size:1.5rem;cursor:pointer;line-height:1}
 .help-body p{margin:0 0 12px;line-height:1.45}.help-body ul{margin:0;padding-left:1.2rem;line-height:1.5}.help-body li{margin-bottom:8px}
-.quiz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
-.quiz-box{background:linear-gradient(160deg,#0a3040,#0d4a5c);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:22px;max-width:520px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.5)}
-.quiz-box h3{margin:0 0 6px;font-size:1.15rem}
-.quiz-box .sub{opacity:.85;font-size:.9rem;margin-bottom:14px}
-.quiz-box .qtext{font-size:1.05rem;font-weight:600;margin-bottom:14px;line-height:1.4}
-.opts{display:grid;gap:8px;margin-bottom:14px}
-.opt{padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:inherit;font-family:inherit;text-align:left;font-size:.98rem;cursor:pointer}
-.opt:hover:not(:disabled){background:rgba(255,255,255,.14)}
-.opt.correct{background:#26890c;border-color:#26890c;color:#fff}
-.opt.wrong{background:#b3261e;border-color:#b3261e;color:#fff}
-.quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;opacity:.85}
+${GAME_QUIZ_CSS}
 @media (max-width:720px){.boards{flex-direction:column;align-items:stretch}.board-panel{max-width:none;flex:1 1 auto}.hud{max-width:100%;width:100%;order:5}.header-actions{width:100%}.placement-bar{flex-direction:column;align-items:stretch}.placement-controls{justify-content:stretch}.placement-controls .btn{flex:1}}
 </style>
 </head>
 <body>
 <div class="wrapper">
   <div id="levelScreen" class="level-screen">
-    <div class="level-header"><h1>Battleship</h1><button type="button" id="helpBtnLevel" class="help-btn" aria-label="How to play">?</button></div>
-    <p>Start with <b>5 ammo</b>. Every shot costs 1. Answer questions to reload.</p>
+    <div class="level-header"><h1>Battleship</h1><button type="button" id="helpBtnLevel" class="help-btn">?</button></div>
+    <p>Start with <b>5 ammo</b>. Every shot costs 1. Correct answers reload.</p>
     <div class="level-buttons">
       <button type="button" data-level="easy" class="level-btn"><span class="level-name">Easy</span><span class="level-desc">Random fire · no hunt</span></button>
       <button type="button" data-level="medium" class="level-btn"><span class="level-name">Medium</span><span class="level-desc">Hunt after hit</span></button>
       <button type="button" data-level="hard" class="level-btn"><span class="level-name">Hard</span><span class="level-desc">Hunt + target adjacency</span></button>
     </div>
   </div>
-
   <div id="gameScreen" class="game-screen hidden">
     <header class="header">
       <h1>Battleship</h1>
-      <button type="button" id="helpBtnGame" class="help-btn" aria-label="How to play">?</button>
+      <button type="button" id="helpBtnGame" class="help-btn">?</button>
       <span class="level-badge" id="levelBadge">Easy</span>
       <span class="ammo-badge" id="ammoBadge">Ammo: 5</span>
       <div class="header-actions">
@@ -1143,24 +1060,20 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
         <button type="button" id="newGameBtn" class="btn">New Game</button>
       </div>
     </header>
-
     <div id="placementBar" class="placement-bar">
-      <div id="shipTray" class="ship-tray" aria-label="Ship tray"></div>
+      <div id="shipTray" class="ship-tray"></div>
       <div class="placement-controls">
         <button type="button" id="rotateBtn" class="btn btn-rotate">Rotate</button>
         <button type="button" id="readyBtn" class="btn" disabled>Ready</button>
       </div>
     </div>
-
     <main class="boards">
-      <section class="board-panel"><h2 class="board-title">Your Fleet</h2><div id="playerBoard" class="board" role="grid"></div></section>
-      <section class="board-panel"><h2 class="board-title">Enemy Waters</h2><div id="enemyBoard" class="board" role="grid"></div></section>
+      <section class="board-panel"><h2 class="board-title">Your Fleet</h2><div id="playerBoard" class="board"></div></section>
+      <section class="board-panel"><h2 class="board-title">Enemy Waters</h2><div id="enemyBoard" class="board"></div></section>
     </main>
-
     <div id="resultOverlay" class="result-overlay hidden">
       <div class="result-box">
-        <h2 id="resultTitle"></h2>
-        <p id="resultMsg"></p>
+        <h2 id="resultTitle"></h2><p id="resultMsg"></p>
         <div class="result-actions">
           <button type="button" id="playAgainBtn" class="btn btn-large">Play Again</button>
           <button type="button" id="changeLevelFromResultBtn" class="btn btn-ghost">Change Level</button>
@@ -1169,244 +1082,358 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
     </div>
   </div>
 </div>
-
-<div id="helpOverlay" class="help-overlay hidden" aria-hidden="true">
-  <div class="help-modal" role="dialog" aria-modal="true">
-    <div class="help-header"><h2>How to play</h2><button type="button" id="helpClose" class="help-close" aria-label="Close">&times;</button></div>
+<div id="helpOverlay" class="help-overlay hidden">
+  <div class="help-modal">
+    <div class="help-header"><h2>How to play</h2><button type="button" id="helpClose" class="help-close">&times;</button></div>
     <div class="help-body">
-      <p>You have <b>5 ammo</b>. Each shot at the enemy costs 1 ammo. When you run out, a quiz question pops up. Answer correctly to reload (+3 ammo).</p>
-      <ul>
-        <li><strong>Fleet:</strong> Carrier (5), Battleship (4), Cruiser (3), Submarine (3), Destroyer (2).</li>
-        <li><strong>Placement:</strong> Select a ship, press Rotate or R, then click your board. Double-click a placed ship to pick it back up.</li>
-        <li><strong>Combat:</strong> Click an enemy cell to fire (costs 1 ammo). The AI fires back after 2 seconds.</li>
-        <li><strong>Reload:</strong> Ammo gone? Answer a question. Correct = +3 ammo. Wrong = +1 ammo (consolation).</li>
-        <li><strong>Win:</strong> Sink the entire enemy fleet.</li>
-      </ul>
+      <p>You have <b>5 ammo</b>. Each shot costs 1 ammo. When you run out, answer a question: correct = +3 ammo, wrong = +1 ammo.</p>
+      <ul><li>Place ships, then fire on enemy waters.</li><li>AI fires back after 2 seconds.</li><li>Sink the whole enemy fleet to win.</li></ul>
     </div>
   </div>
 </div>
-
 <script>
 (function(){
 "use strict";
-var QUIZ_TITLE = ${T};
 var QUESTIONS = ${Q};
-
 var SIZE=10;
-var FLEET=[
-  {id:"carrier",name:"Carrier",length:5},
-  {id:"battleship",name:"Battleship",length:4},
-  {id:"cruiser",name:"Cruiser",length:3},
-  {id:"submarine",name:"Submarine",length:3},
-  {id:"destroyer",name:"Destroyer",length:2}
-];
+var FLEET=[{id:"carrier",name:"Carrier",length:5},{id:"battleship",name:"Battleship",length:4},{id:"cruiser",name:"Cruiser",length:3},{id:"submarine",name:"Submarine",length:3},{id:"destroyer",name:"Destroyer",length:2}];
 var LEVEL_LABELS={easy:"Easy",medium:"Medium",hard:"Hard"};
-
-var levelScreen=document.getElementById("levelScreen");
-var gameScreen=document.getElementById("gameScreen");
-var levelBadge=document.getElementById("levelBadge");
-var ammoBadge=document.getElementById("ammoBadge");
-var hud=document.getElementById("hud");
-var placementBar=document.getElementById("placementBar");
-var shipTray=document.getElementById("shipTray");
-var rotateBtn=document.getElementById("rotateBtn");
-var readyBtn=document.getElementById("readyBtn");
-var playerBoardEl=document.getElementById("playerBoard");
-var enemyBoardEl=document.getElementById("enemyBoard");
-var resultOverlay=document.getElementById("resultOverlay");
-var resultTitle=document.getElementById("resultTitle");
-var resultMsg=document.getElementById("resultMsg");
+var levelScreen=document.getElementById("levelScreen"),gameScreen=document.getElementById("gameScreen");
+var levelBadge=document.getElementById("levelBadge"),ammoBadge=document.getElementById("ammoBadge"),hud=document.getElementById("hud");
+var placementBar=document.getElementById("placementBar"),shipTray=document.getElementById("shipTray");
+var rotateBtn=document.getElementById("rotateBtn"),readyBtn=document.getElementById("readyBtn");
+var playerBoardEl=document.getElementById("playerBoard"),enemyBoardEl=document.getElementById("enemyBoard");
+var resultOverlay=document.getElementById("resultOverlay"),resultTitle=document.getElementById("resultTitle"),resultMsg=document.getElementById("resultMsg");
 var helpOverlay=document.getElementById("helpOverlay");
-var newGameBtn=document.getElementById("newGameBtn");
-var changeLevelBtn=document.getElementById("changeLevelBtn");
-var playAgainBtn=document.getElementById("playAgainBtn");
-var changeLevelFromResultBtn=document.getElementById("changeLevelFromResultBtn");
-var helpBtnLevel=document.getElementById("helpBtnLevel");
-var helpBtnGame=document.getElementById("helpBtnGame");
-var helpClose=document.getElementById("helpClose");
-
-var level="easy";
-var phase="level";
-var horizontal=true;
-var selectedShipId=null;
-var playerTurn=true;
-var aiThinking=false;
-var hoverCell=null;
-
-var playerGrid=createEmptyGrid();
-var enemyGrid=createEmptyGrid();
-var playerShips=[];
-var enemyShips=[];
-var playerShots=createShotMap();
-var enemyShots=createShotMap();
-
-var aiHuntQueue=[];var aiHitCells=[];var aiParity=0;
-
-var AMMO_START=5;
-var AMMO_PER_CORRECT=3;
-var AMMO_PER_WRONG=1;
-var ammo=AMMO_START;
-var quizIndex=0;
-var quizOpen=false;
-
-function updateAmmoUI(){
-  ammoBadge.textContent="Ammo: "+ammo;
-  ammoBadge.classList.toggle("low", ammo<=1);
-}
-
+var level="easy",phase="level",horizontal=true,selectedShipId=null,playerTurn=true,aiThinking=false,hoverCell=null;
+var playerGrid=createEmptyGrid(),enemyGrid=createEmptyGrid(),playerShips=[],enemyShips=[],playerShots=createShotMap(),enemyShots=createShotMap();
+var aiHuntQueue=[],aiHitCells=[],aiParity=0;
+var AMMO_START=5, AMMO_PER_CORRECT=3, AMMO_PER_WRONG=1;
+var ammo=AMMO_START,quizIdx=0,quizOpen=false;
+function gState(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};}
+function setAmmo(v){ammo=v;} function setQuizIdx(v){quizIdx=v;} function setQuizOpen(v){quizOpen=v;}
+${GAME_QUIZ_HELPERS}
+var openQuiz = makeQuizModal(function(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};});
+function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=1);}
 function createEmptyGrid(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
 function createShotMap(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
 function key(r,c){return r+","+c;}
 function inBounds(r,c){return r>=0&&r<SIZE&&c>=0&&c<SIZE;}
-function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
-function shipCells(r,c,length,isHorizontal){var cells=[];for(var i=0;i<length;i++)cells.push({r:isHorizontal?r:r+i,c:isHorizontal?c+i:c});return cells;}
-function canPlace(grid,r,c,length,isHorizontal){var cells=shipCells(r,c,length,isHorizontal);for(var i=0;i<cells.length;i++){var cell=cells[i];if(!inBounds(cell.r,cell.c))return false;if(grid[cell.r][cell.c]!==null)return false;}return true;}
-function placeShipOnGrid(grid,ships,def,r,c,isHorizontal){if(!canPlace(grid,r,c,def.length,isHorizontal))return false;var cells=shipCells(r,c,def.length,isHorizontal);var ship={id:def.id,name:def.name,length:def.length,cells:cells.map(function(x){return{r:x.r,c:x.c};}),hits:0,sunk:false};cells.forEach(function(x){grid[x.r][x.c]=def.id;});ships.push(ship);return true;}
-function removeShip(grid,ships,shipId){var idx=ships.findIndex(function(s){return s.id===shipId;});if(idx===-1)return;var ship=ships[idx];ship.cells.forEach(function(x){grid[x.r][x.c]=null;});ships.splice(idx,1);}
-function autoPlaceFleet(grid,ships){for(var i=0;i<SIZE;i++)for(var j=0;j<SIZE;j++)grid[i][j]=null;ships.length=0;for(var k=0;k<FLEET.length;k++){var def=FLEET[k];var placed=false;for(var attempt=0;attempt<400&&!placed;attempt++){var isH=Math.random()<0.5;var r=Math.floor(Math.random()*SIZE);var c=Math.floor(Math.random()*SIZE);placed=placeShipOnGrid(grid,ships,def,r,c,isH);}if(!placed)return false;}return true;}
-function findShip(ships,shipId){return ships.find(function(s){return s.id===shipId;});}
+function shuffle(a){var s=a.slice();for(var i=s.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=s[i];s[i]=s[j];s[j]=t;}return s;}
+function shipCells(r,c,length,isH){var cells=[];for(var i=0;i<length;i++)cells.push({r:isH?r:r+i,c:isH?c+i:c});return cells;}
+function canPlace(g,r,c,length,isH){var cells=shipCells(r,c,length,isH);for(var i=0;i<cells.length;i++){var cell=cells[i];if(!inBounds(cell.r,cell.c))return false;if(g[cell.r][cell.c]!==null)return false;}return true;}
+function placeShipOnGrid(g,ships,def,r,c,isH){if(!canPlace(g,r,c,def.length,isH))return false;var cells=shipCells(r,c,def.length,isH);var ship={id:def.id,name:def.name,length:def.length,cells:cells.map(function(x){return{r:x.r,c:x.c};}),hits:0,sunk:false};cells.forEach(function(x){g[x.r][x.c]=def.id;});ships.push(ship);return true;}
+function removeShip(g,ships,id){var idx=ships.findIndex(function(s){return s.id===id;});if(idx===-1)return;var ship=ships[idx];ship.cells.forEach(function(x){g[x.r][x.c]=null;});ships.splice(idx,1);}
+function autoPlaceFleet(g,ships){for(var i=0;i<SIZE;i++)for(var j=0;j<SIZE;j++)g[i][j]=null;ships.length=0;for(var k=0;k<FLEET.length;k++){var def=FLEET[k];var placed=false;for(var a=0;a<400&&!placed;a++){var isH=Math.random()<0.5;var r=Math.floor(Math.random()*SIZE);var c=Math.floor(Math.random()*SIZE);placed=placeShipOnGrid(g,ships,def,r,c,isH);}if(!placed)return false;}return true;}
+function findShip(ships,id){return ships.find(function(s){return s.id===id;});}
 function allPlaced(){return playerShips.length===FLEET.length;}
 function fleetSunk(ships){return ships.length>0&&ships.every(function(s){return s.sunk;});}
-function applyShot(grid,ships,shots,r,c){if(shots[r][c]!==null)return null;var shipId=grid[r][c];if(!shipId){shots[r][c]="miss";return{result:"miss",ship:null};}shots[r][c]="hit";var ship=findShip(ships,shipId);ship.hits+=1;if(ship.hits>=ship.length){ship.sunk=true;ship.cells.forEach(function(x){shots[x.r][x.c]="sunk";});return{result:"sunk",ship:ship};}return{result:"hit",ship:ship};}
-
+function applyShot(g,ships,shots,r,c){if(shots[r][c]!==null)return null;var shipId=g[r][c];if(!shipId){shots[r][c]="miss";return{result:"miss",ship:null};}shots[r][c]="hit";var ship=findShip(ships,shipId);ship.hits+=1;if(ship.hits>=ship.length){ship.sunk=true;ship.cells.forEach(function(x){shots[x.r][x.c]="sunk";});return{result:"sunk",ship:ship};}return{result:"hit",ship:ship};}
 function resetAiMemory(){aiHuntQueue=[];aiHitCells=[];aiParity=Math.random()<0.5?0:1;}
 function neighbors(r,c){return[{r:r-1,c:c},{r:r+1,c:c},{r:r,c:c-1},{r:r,c:c+1}].filter(function(n){return inBounds(n.r,n.c);});}
 function unshotCells(){var cells=[];for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++)if(enemyShots[r][c]===null)cells.push({r:r,c:c});return cells;}
 function enqueueHuntAround(r,c){var around=shuffle(neighbors(r,c));around.forEach(function(n){if(enemyShots[n.r][n.c]!==null)return;if(!aiHuntQueue.some(function(q){return q.r===n.r&&q.c===n.c;}))aiHuntQueue.push(n);});}
 function pruneHuntQueue(){aiHuntQueue=aiHuntQueue.filter(function(n){return enemyShots[n.r][n.c]===null;});}
-function alignedContinuation(){if(aiHitCells.length<2)return null;var rows=aiHitCells.map(function(h){return h.r;});var cols=aiHitCells.map(function(h){return h.c;});var sameRow=rows.every(function(r){return r===rows[0];});var sameCol=cols.every(function(c){return c===cols[0];});if(!sameRow&&!sameCol)return null;var candidates=[];if(sameRow){var row=rows[0];var sorted=cols.slice().sort(function(a,b){return a-b;});var left=sorted[0]-1;var right=sorted[sorted.length-1]+1;if(inBounds(row,left)&&enemyShots[row][left]===null)candidates.push({r:row,c:left});if(inBounds(row,right)&&enemyShots[row][right]===null)candidates.push({r:row,c:right});}else{var col=cols[0];var sorted2=rows.slice().sort(function(a,b){return a-b;});var up=sorted2[0]-1;var down=sorted2[sorted2.length-1]+1;if(inBounds(up,col)&&enemyShots[up][col]===null)candidates.push({r:up,c:col});if(inBounds(down,col)&&enemyShots[down][col]===null)candidates.push({r:down,c:col});}if(!candidates.length)return null;return candidates[Math.floor(Math.random()*candidates.length)];}
-function pickParityCell(){var open=unshotCells();var parity=open.filter(function(cell){return (cell.r+cell.c)%2===aiParity;});var pool=parity.length?parity:open;if(!pool.length)return null;return pool[Math.floor(Math.random()*pool.length)];}
+function alignedContinuation(){if(aiHitCells.length<2)return null;var rows=aiHitCells.map(function(h){return h.r;});var cols=aiHitCells.map(function(h){return h.c;});var sameRow=rows.every(function(r){return r===rows[0];});var sameCol=cols.every(function(c){return c===cols[0];});if(!sameRow&&!sameCol)return null;var cands=[];if(sameRow){var row=rows[0];var s=cols.slice().sort(function(a,b){return a-b;});var l=s[0]-1,r2=s[s.length-1]+1;if(inBounds(row,l)&&enemyShots[row][l]===null)cands.push({r:row,c:l});if(inBounds(row,r2)&&enemyShots[row][r2]===null)cands.push({r:row,c:r2});}else{var col=cols[0];var s2=rows.slice().sort(function(a,b){return a-b;});var up=s2[0]-1,dn=s2[s2.length-1]+1;if(inBounds(up,col)&&enemyShots[up][col]===null)cands.push({r:up,c:col});if(inBounds(dn,col)&&enemyShots[dn][col]===null)cands.push({r:dn,c:col});}if(!cands.length)return null;return cands[Math.floor(Math.random()*cands.length)];}
+function pickParityCell(){var open=unshotCells();var par=open.filter(function(cell){return (cell.r+cell.c)%2===aiParity;});var pool=par.length?par:open;if(!pool.length)return null;return pool[Math.floor(Math.random()*pool.length)];}
 function pickRandomUnshot(){var open=unshotCells();if(!open.length)return null;return open[Math.floor(Math.random()*open.length)];}
-function chooseAiShot(){if(level==="easy")return pickRandomUnshot();pruneHuntQueue();if(level==="hard"){var cont=alignedContinuation();if(cont)return cont;}while(aiHuntQueue.length){var next=aiHuntQueue.shift();if(enemyShots[next.r][next.c]===null)return next;}if(level==="hard")return pickParityCell();return pickRandomUnshot();}
+function chooseAiShot(){if(level==="easy")return pickRandomUnshot();pruneHuntQueue();if(level==="hard"){var cont=alignedContinuation();if(cont)return cont;}while(aiHuntQueue.length){var nx=aiHuntQueue.shift();if(enemyShots[nx.r][nx.c]===null)return nx;}if(level==="hard")return pickParityCell();return pickRandomUnshot();}
 function onAiShotResult(r,c,outcome){if(level==="easy")return;if(outcome.result==="hit"){aiHitCells.push({r:r,c:c});enqueueHuntAround(r,c);}else if(outcome.result==="sunk"){aiHitCells=[];aiHuntQueue=[];}else if(outcome.result==="miss"){pruneHuntQueue();}}
-
-function buildBoards(){playerBoardEl.innerHTML="";enemyBoardEl.innerHTML="";for(var r=0;r<SIZE;r++){for(var c=0;c<SIZE;c++){var p=document.createElement("button");p.type="button";p.className="cell";p.dataset.r=String(r);p.dataset.c=String(c);playerBoardEl.appendChild(p);var e=document.createElement("button");e.type="button";e.className="cell fog";e.dataset.r=String(r);e.dataset.c=String(c);enemyBoardEl.appendChild(e);}}}
-
-function renderShipTray(){shipTray.innerHTML="";FLEET.forEach(function(def){var placed=!!findShip(playerShips,def.id);var btn=document.createElement("button");btn.type="button";btn.className="ship-chip"+(placed?" placed":"")+(selectedShipId===def.id?" selected":"");btn.disabled=placed;var name=document.createElement("span");name.className="ship-chip-name";name.textContent=def.name+" ("+def.length+")";btn.appendChild(name);var cells=document.createElement("span");cells.className="ship-chip-cells";for(var i=0;i<def.length;i++){var dot=document.createElement("span");dot.className="ship-chip-cell";cells.appendChild(dot);}btn.appendChild(cells);if(!placed){btn.addEventListener("click",function(){selectedShipId=def.id;renderShipTray();renderBoards();setHud("Place "+def.name+" · Rotate or R to turn");});}shipTray.appendChild(btn);});readyBtn.disabled=!allPlaced();}
-
+function buildBoards(){playerBoardEl.innerHTML="";enemyBoardEl.innerHTML="";for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){var p=document.createElement("button");p.type="button";p.className="cell";p.dataset.r=r;p.dataset.c=c;playerBoardEl.appendChild(p);var e=document.createElement("button");e.type="button";e.className="cell fog";e.dataset.r=r;e.dataset.c=c;enemyBoardEl.appendChild(e);}}
+function renderShipTray(){shipTray.innerHTML="";FLEET.forEach(function(def){var placed=!!findShip(playerShips,def.id);var btn=document.createElement("button");btn.type="button";btn.className="ship-chip"+(placed?" placed":"")+(selectedShipId===def.id?" selected":"");btn.disabled=placed;var n=document.createElement("span");n.className="ship-chip-name";n.textContent=def.name+" ("+def.length+")";btn.appendChild(n);var cells=document.createElement("span");cells.className="ship-chip-cells";for(var i=0;i<def.length;i++){var dot=document.createElement("span");dot.className="ship-chip-cell";cells.appendChild(dot);}btn.appendChild(cells);if(!placed){btn.addEventListener("click",function(){selectedShipId=def.id;renderShipTray();renderBoards();setHud("Place "+def.name);});}shipTray.appendChild(btn);});readyBtn.disabled=!allPlaced();}
 function getPreviewCells(){if(phase!=="placement"||!selectedShipId||!hoverCell)return null;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return null;var cells=shipCells(hoverCell.r,hoverCell.c,def.length,horizontal);var valid=canPlace(playerGrid,hoverCell.r,hoverCell.c,def.length,horizontal);return{cells:cells,valid:valid};}
-
-function renderBoards(){var preview=getPreviewCells();var previewSet=new Set();if(preview){preview.cells.forEach(function(cell){if(inBounds(cell.r,cell.c))previewSet.add(key(cell.r,cell.c));});}playerBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r);var c=Number(el.dataset.c);el.className="cell";var shot=enemyShots[r][c];var occupied=playerGrid[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else if(occupied)el.classList.add("ship");if(preview&&previewSet.has(key(r,c)))el.classList.add(preview.valid?"preview-valid":"preview-invalid");});enemyBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r);var c=Number(el.dataset.c);el.className="cell";var shot=playerShots[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else el.classList.add("fog");});playerBoardEl.classList.toggle("placing",phase==="placement");enemyBoardEl.classList.toggle("combat-target",phase==="combat"&&playerTurn&&!aiThinking&&!quizOpen);}
-function setHud(text){hud.textContent=text;}
-function showHelp(show){helpOverlay.classList.toggle("hidden",!show);helpOverlay.setAttribute("aria-hidden",show?"false":"true");}
-function showResult(won){phase="result";resultOverlay.classList.remove("hidden");if(won){resultTitle.textContent="Victory!";resultMsg.textContent="You sank the enemy fleet. The seas are yours.";}else{resultTitle.textContent="Defeat";resultMsg.textContent="Your fleet has been destroyed. Better luck next time.";}playerTurn=false;aiThinking=false;renderBoards();}
-
-function startPlacement(){phase="placement";horizontal=true;selectedShipId=FLEET[0].id;playerTurn=true;aiThinking=false;hoverCell=null;playerGrid=createEmptyGrid();enemyGrid=createEmptyGrid();playerShips=[];enemyShips=[];playerShots=createShotMap();enemyShots=createShotMap();resetAiMemory();resultOverlay.classList.add("hidden");placementBar.classList.remove("hidden-bar");levelBadge.textContent=LEVEL_LABELS[level];ammo=AMMO_START;updateAmmoUI();setHud("Select a ship and place it on your board");renderShipTray();renderBoards();}
-
-function startCombat(){var ok=false;for(var i=0;i<50&&!ok;i++)ok=autoPlaceFleet(enemyGrid,enemyShips);if(!ok){setHud("Could not place enemy fleet — try Ready again");return;}phase="combat";playerTurn=true;aiThinking=false;selectedShipId=null;hoverCell=null;placementBar.classList.add("hidden-bar");setHud("Your turn — fire on enemy waters");renderBoards();}
-
+function renderBoards(){var pv=getPreviewCells();var ps=new Set();if(pv){pv.cells.forEach(function(cl){if(inBounds(cl.r,cl.c))ps.add(key(cl.r,cl.c));});}playerBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r),c=Number(el.dataset.c);el.className="cell";var shot=enemyShots[r][c];var occ=playerGrid[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else if(occ)el.classList.add("ship");if(pv&&ps.has(key(r,c)))el.classList.add(pv.valid?"preview-valid":"preview-invalid");});enemyBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r),c=Number(el.dataset.c);el.className="cell";var shot=playerShots[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else el.classList.add("fog");});playerBoardEl.classList.toggle("placing",phase==="placement");enemyBoardEl.classList.toggle("combat-target",phase==="combat"&&playerTurn&&!aiThinking&&!quizOpen);}
+function setHud(t){hud.textContent=t;}
+function showHelp(s){helpOverlay.classList.toggle("hidden",!s);}
+function showResult(won){phase="result";resultOverlay.classList.remove("hidden");resultTitle.textContent=won?"Victory!":"Defeat";resultMsg.textContent=won?"You sank the enemy fleet.":"Your fleet has been destroyed.";playerTurn=false;aiThinking=false;renderBoards();}
+function startPlacement(){phase="placement";horizontal=true;selectedShipId=FLEET[0].id;playerTurn=true;aiThinking=false;hoverCell=null;playerGrid=createEmptyGrid();enemyGrid=createEmptyGrid();playerShips=[];enemyShips=[];playerShots=createShotMap();enemyShots=createShotMap();resetAiMemory();resultOverlay.classList.add("hidden");placementBar.classList.remove("hidden-bar");levelBadge.textContent=LEVEL_LABELS[level];ammo=AMMO_START;updateAmmoUI();setHud("Select a ship and place it");renderShipTray();renderBoards();}
+function startCombat(){var ok=false;for(var i=0;i<50&&!ok;i++)ok=autoPlaceFleet(enemyGrid,enemyShips);if(!ok){setHud("Placement failed");return;}phase="combat";playerTurn=true;aiThinking=false;selectedShipId=null;hoverCell=null;placementBar.classList.add("hidden-bar");setHud("Your turn — fire on enemy waters");renderBoards();}
 function endIfOver(){if(fleetSunk(enemyShips)){showResult(true);return true;}if(fleetSunk(playerShips)){showResult(false);return true;}return false;}
-
 function handlePlayerFire(r,c){
   if(phase!=="combat"||!playerTurn||aiThinking||quizOpen)return;
   if(playerShots[r][c]!==null)return;
-  if(ammo<=0){openQuiz();return;}
+  if(ammo<=0){openQuiz(function(){setHud("Your turn");renderBoards();});return;}
   ammo--;updateAmmoUI();
-  var outcome=applyShot(enemyGrid,enemyShips,playerShots,r,c);
-  if(!outcome)return;
-  if(outcome.result==="miss")setHud("Miss");
-  else if(outcome.result==="hit")setHud("Hit!");
-  else setHud("You sank the enemy "+outcome.ship.name+"!");
-  renderBoards();
-  if(endIfOver())return;
-  playerTurn=false;
-  scheduleAiTurn();
+  var outcome=applyShot(enemyGrid,enemyShips,playerShots,r,c);if(!outcome)return;
+  if(outcome.result==="miss")setHud("Miss");else if(outcome.result==="hit")setHud("Hit!");else setHud("Sank enemy "+outcome.ship.name+"!");
+  renderBoards();if(endIfOver())return;playerTurn=false;scheduleAiTurn();
 }
-
-function scheduleAiTurn(){aiThinking=true;setHud("Enemy targeting… (2s)");renderBoards();setTimeout(function(){if(phase!=="combat")return;var target=chooseAiShot();if(!target){aiThinking=false;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();return;}var outcome=applyShot(playerGrid,playerShips,enemyShots,target.r,target.c);onAiShotResult(target.r,target.c,outcome);if(outcome.result==="miss")setHud("Enemy missed");else if(outcome.result==="hit")setHud("Enemy hit your "+outcome.ship.name+"!");else setHud("Enemy sank your "+outcome.ship.name+"!");renderBoards();aiThinking=false;if(endIfOver())return;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();},2000);}
-
-function tryPlaceAt(r,c){if(phase!=="placement"||!selectedShipId)return;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return;if(findShip(playerShips,def.id))return;if(!canPlace(playerGrid,r,c,def.length,horizontal)){setHud("Invalid placement — try another cell or rotate");return;}placeShipOnGrid(playerGrid,playerShips,def,r,c,horizontal);var next=FLEET.find(function(s){return !findShip(playerShips,s.id);});selectedShipId=next?next.id:null;hoverCell=null;renderShipTray();renderBoards();if(allPlaced()){setHud("Fleet ready — press Ready to battle");}else if(selectedShipId){var n=FLEET.find(function(s){return s.id===selectedShipId;});setHud("Place "+n.name);}}
-
-function openQuiz(){
-  if(quizOpen)return;
-  if(!QUESTIONS||!QUESTIONS.length){
-    ammo+=AMMO_PER_CORRECT;updateAmmoUI();
-    setHud("Out of ammo — preset reload (+"+AMMO_PER_CORRECT+").");
-    return;
-  }
-  quizOpen=true;
-  var q=QUESTIONS[quizIndex%QUESTIONS.length];
-  quizIndex++;
-  var ov=document.createElement("div");
-  ov.className="quiz-overlay";
-  ov.id="quizOverlay";
-  var correct=q.correct;
-  var letterBox=document.createElement("div");
-  letterBox.className="quiz-box";
-  letterBox.innerHTML='<h3>Out of ammo — reload!</h3><p class="sub">Answer correctly for +'+AMMO_PER_CORRECT+' ammo. Wrong gets +'+AMMO_PER_WRONG+'.</p><div class="qtext"></div><div class="opts"></div><div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
-  letterBox.querySelector(".qtext").textContent=q.question;
-  var optsEl=letterBox.querySelector(".opts");
-  var letters=["A","B","C","D"];
-  q.options.forEach(function(text,idx){
-    var b=document.createElement("button");
-    b.type="button";b.className="opt";
-    b.textContent=letters[idx]+". "+text;
-    b.addEventListener("click",function(){
-      if(b.disabled)return;
-      var ok=idx===correct;
-      b.classList.add(ok?"correct":"wrong");
-      if(!ok){optsEl.children[correct].classList.add("correct");}
-      Array.prototype.forEach.call(optsEl.children,function(x){x.disabled=true;});
-      var gained=ok?AMMO_PER_CORRECT:AMMO_PER_WRONG;
-      ammo+=gained;updateAmmoUI();
-      document.getElementById("qFeedback").textContent=(ok?"Correct! ":"Nope. ")+" +"+gained+" ammo"+(q.explanation?(" · "+q.explanation):"");
-      var nw=document.getElementById("qNextWrap");
-      var nb=document.createElement("button");
-      nb.type="button";nb.className="btn";nb.textContent="Continue";
-      nb.addEventListener("click",closeQuiz);
-      nw.appendChild(nb);
-    });
-    optsEl.appendChild(b);
-  });
-  ov.appendChild(letterBox);
-  document.body.appendChild(ov);
-  renderBoards();
-}
-function closeQuiz(){
-  var ov=document.getElementById("quizOverlay");
-  if(ov)ov.remove();
-  quizOpen=false;
-  setHud("Your turn — fire on enemy waters");
-  renderBoards();
-}
-
+function scheduleAiTurn(){aiThinking=true;setHud("Enemy targeting… (2s)");renderBoards();setTimeout(function(){if(phase!=="combat")return;var t=chooseAiShot();if(!t){aiThinking=false;playerTurn=true;setHud("Your turn");renderBoards();return;}var o=applyShot(playerGrid,playerShips,enemyShots,t.r,t.c);onAiShotResult(t.r,t.c,o);if(o.result==="miss")setHud("Enemy missed");else if(o.result==="hit")setHud("Enemy hit your "+o.ship.name+"!");else setHud("Enemy sank your "+o.ship.name+"!");renderBoards();aiThinking=false;if(endIfOver())return;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();},2000);}
+function tryPlaceAt(r,c){if(phase!=="placement"||!selectedShipId)return;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return;if(findShip(playerShips,def.id))return;if(!canPlace(playerGrid,r,c,def.length,horizontal)){setHud("Invalid placement");return;}placeShipOnGrid(playerGrid,playerShips,def,r,c,horizontal);var nx=FLEET.find(function(s){return !findShip(playerShips,s.id);});selectedShipId=nx?nx.id:null;hoverCell=null;renderShipTray();renderBoards();if(allPlaced())setHud("Fleet ready — press Ready");}
 function openLevelScreen(){phase="level";gameScreen.classList.add("hidden");levelScreen.classList.remove("hidden");resultOverlay.classList.add("hidden");showHelp(false);}
-function beginLevel(selected){level=selected;levelScreen.classList.add("hidden");gameScreen.classList.remove("hidden");startPlacement();}
-
-function onPlayerBoardClick(e){var cell=e.target.closest(".cell");if(!cell||!playerBoardEl.contains(cell))return;tryPlaceAt(Number(cell.dataset.r),Number(cell.dataset.c));}
-function onPlayerBoardMove(e){if(phase!=="placement"||!selectedShipId)return;var cell=e.target.closest(".cell");if(!cell||!playerBoardEl.contains(cell))return;var r=Number(cell.dataset.r);var c=Number(cell.dataset.c);if(!hoverCell||hoverCell.r!==r||hoverCell.c!==c){hoverCell={r:r,c:c};renderBoards();}}
-function onPlayerBoardLeave(){if(phase!=="placement")return;if(hoverCell){hoverCell=null;renderBoards();}}
-function onEnemyBoardClick(e){var cell=e.target.closest(".cell");if(!cell||!enemyBoardEl.contains(cell))return;handlePlayerFire(Number(cell.dataset.r),Number(cell.dataset.c));}
-
-document.querySelectorAll(".level-btn").forEach(function(btn){btn.addEventListener("click",function(){beginLevel(btn.dataset.level);});});
-rotateBtn.addEventListener("click",function(){if(phase!=="placement")return;horizontal=!horizontal;renderBoards();setHud(horizontal?"Orientation: horizontal":"Orientation: vertical");});
-readyBtn.addEventListener("click",function(){if(!allPlaced())return;startCombat();});
-newGameBtn.addEventListener("click",startPlacement);
-changeLevelBtn.addEventListener("click",openLevelScreen);
-playAgainBtn.addEventListener("click",startPlacement);
-changeLevelFromResultBtn.addEventListener("click",openLevelScreen);
-helpBtnLevel.addEventListener("click",function(){showHelp(true);});
-helpBtnGame.addEventListener("click",function(){showHelp(true);});
-helpClose.addEventListener("click",function(){showHelp(false);});
-helpOverlay.addEventListener("click",function(e){if(e.target===helpOverlay)showHelp(false);});
-playerBoardEl.addEventListener("click",onPlayerBoardClick);
-playerBoardEl.addEventListener("mousemove",onPlayerBoardMove);
-playerBoardEl.addEventListener("mouseleave",onPlayerBoardLeave);
-enemyBoardEl.addEventListener("click",onEnemyBoardClick);
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!helpOverlay.classList.contains("hidden")){showHelp(false);return;}if(phase!=="placement")return;if(e.key==="r"||e.key==="R"){if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"))return;e.preventDefault();horizontal=!horizontal;renderBoards();setHud(horizontal?"Orientation: horizontal":"Orientation: vertical");}});
-playerBoardEl.addEventListener("dblclick",function(e){if(phase!=="placement")return;var cell=e.target.closest(".cell");if(!cell)return;var r=Number(cell.dataset.r);var c=Number(cell.dataset.c);var shipId=playerGrid[r][c];if(!shipId)return;removeShip(playerGrid,playerShips,shipId);selectedShipId=shipId;renderShipTray();renderBoards();var def=FLEET.find(function(s){return s.id===shipId;});setHud("Reposition "+def.name);});
-
-updateAmmoUI();
-buildBoards();
-openLevelScreen();
+function beginLevel(l){level=l;levelScreen.classList.add("hidden");gameScreen.classList.remove("hidden");startPlacement();}
+document.querySelectorAll(".level-btn").forEach(function(b){b.addEventListener("click",function(){beginLevel(b.dataset.level);});});
+rotateBtn.addEventListener("click",function(){if(phase!=="placement")return;horizontal=!horizontal;renderBoards();});
+readyBtn.addEventListener("click",function(){if(allPlaced())startCombat();});
+document.getElementById("newGameBtn").addEventListener("click",startPlacement);
+document.getElementById("changeLevelBtn").addEventListener("click",openLevelScreen);
+document.getElementById("playAgainBtn").addEventListener("click",startPlacement);
+document.getElementById("changeLevelFromResultBtn").addEventListener("click",openLevelScreen);
+document.getElementById("helpBtnLevel").addEventListener("click",function(){showHelp(true);});
+document.getElementById("helpBtnGame").addEventListener("click",function(){showHelp(true);});
+document.getElementById("helpClose").addEventListener("click",function(){showHelp(false);});
+playerBoardEl.addEventListener("click",function(e){var cell=e.target.closest(".cell");if(cell)tryPlaceAt(Number(cell.dataset.r),Number(cell.dataset.c));});
+playerBoardEl.addEventListener("mousemove",function(e){if(phase!=="placement"||!selectedShipId)return;var cell=e.target.closest(".cell");if(!cell)return;var r=Number(cell.dataset.r),c=Number(cell.dataset.c);if(!hoverCell||hoverCell.r!==r||hoverCell.c!==c){hoverCell={r:r,c:c};renderBoards();}});
+playerBoardEl.addEventListener("mouseleave",function(){if(phase==="placement"&&hoverCell){hoverCell=null;renderBoards();}});
+enemyBoardEl.addEventListener("click",function(e){var cell=e.target.closest(".cell");if(cell)handlePlayerFire(Number(cell.dataset.r),Number(cell.dataset.c));});
+updateAmmoUI();buildBoards();openLevelScreen();
 })();
 <\/script>
 </body>
 </html>`;
 }
 
-/* =================== Boot =================== */
+/* ---------- BUBBLE SHOOTER builder (5 ammo per correct) ---------- */
+function buildBubbleHTML(questions, title) {
+  const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
+  return `<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bubble Shooter</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0f172a;--panel:#1e293b;--text:#f1f5f9;--accent:#38bdf8}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Outfit",sans-serif;background:linear-gradient(160deg,#020617,var(--bg));min-height:100vh;color:var(--text);-webkit-tap-highlight-color:transparent}
+.wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
+.hidden{display:none!important}
+.game-screen{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center}
+.header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%;margin-bottom:10px}
+.header h1{margin:0;font-size:clamp(1.35rem,4vw,2rem)}
+.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(56,189,248,.18);border:1px solid rgba(56,189,248,.5);color:var(--accent);font-size:.9rem;font-weight:700}
+.ammo-badge.low{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.6);color:#ff8a8a}
+.header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
+.score{font-weight:700;color:var(--accent)}
+.btn{padding:10px 14px;min-height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.4)}
+.canvas-wrap{position:relative;width:100%;max-width:400px}
+#gameCanvas{width:100%;height:auto;display:block;background:var(--panel);border-radius:12px;touch-action:none}
+.fire-btn{width:100%;margin-top:10px;background:var(--accent);color:#0f172a}
+.result-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.result-box{background:var(--panel);border:2px solid rgba(255,255,255,.2);border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center}
+.result-box h2{color:var(--accent);margin:0 0 8px}
+.result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.result-actions .btn{width:100%}
+${GAME_QUIZ_CSS}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div id="gameScreen" class="game-screen">
+    <header class="header">
+      <h1>Bubble Shooter</h1>
+      <span class="ammo-badge" id="ammoBadge">Ammo: 5</span>
+      <div class="header-actions">
+        <span id="scoreDisplay" class="score">Score: 0</span>
+        <button type="button" id="newGameBtn" class="btn">New Game</button>
+      </div>
+    </header>
+    <div class="canvas-wrap">
+      <canvas id="gameCanvas" width="400" height="560"></canvas>
+      <button type="button" id="fireBtn" class="btn fire-btn">Fire</button>
+    </div>
+    <div id="resultOverlay" class="result-overlay hidden">
+      <div class="result-box">
+        <h2 id="resultTitle"></h2>
+        <p id="resultMsg"></p>
+        <div class="result-actions">
+          <button type="button" id="playAgainBtn" class="btn">Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+var QUESTIONS = ${Q};
+var COLORS=["#ef4444","#3b82f6","#22c55e","#eab308","#a855f7","#f97316"];
+var CFG={colors:5, rows:5, speed:8};
+var COLS=8,R=18,ROW_H=R*1.75;
+var canvas=document.getElementById("gameCanvas"),ctx=canvas.getContext("2d");
+var $=function(s){return document.querySelector(s);};
+var state={grid:[],score:0,aimAngle:-Math.PI/2,current:0,next:0,flying:null,running:false,gameOver:false};
+var AMMO_START=5, AMMO_PER_CORRECT=5, AMMO_PER_WRONG=1;
+var ammo=AMMO_START, quizIdx=0, quizOpen=false;
+var ammoBadge=document.getElementById("ammoBadge");
+function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=1);}
+${GAME_QUIZ_HELPERS}
+var openQuiz = makeQuizModal(function(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};});
+function colsInRow(r){return r%2===0?COLS:COLS-1;}
+function cellCenter(r,c){var odd=r%2===1;return{x:R+c*(R*2)+(odd?R:0)+8,y:R+r*ROW_H+8};}
+function randomColor(){return Math.floor(Math.random()*CFG.colors);}
+function initGrid(){state.grid=[];for(var r=0;r<CFG.rows;r++){var row=[];var n=colsInRow(r);for(var c=0;c<n;c++)row.push(randomColor());state.grid.push(row);}}
+function neighbors(row,col){var odd=row%2===1;var deltas=odd?[[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]]:[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]];var out=[];for(var i=0;i<deltas.length;i++){var rr=row+deltas[i][0],cc=col+deltas[i][1];if(rr>=0&&rr<state.grid.length&&cc>=0&&cc<state.grid[rr].length&&state.grid[rr][cc]!==null)out.push([rr,cc]);}return out;}
+function findCluster(row,col){var color=state.grid[row][col];if(color===null)return[];var visited=new Set();var stack=[[row,col]];var cluster=[];while(stack.length){var p=stack.pop();var r=p[0],c=p[1];var k=r+","+c;if(visited.has(k))continue;visited.add(k);if(state.grid[r][c]!==color)continue;cluster.push([r,c]);neighbors(r,c).forEach(function(n){stack.push(n);});}return cluster;}
+function connectedToCeiling(){var visited=new Set();var stack=[];if(!state.grid.length)return visited;for(var c=0;c<state.grid[0].length;c++)if(state.grid[0][c]!==null)stack.push([0,c]);while(stack.length){var p=stack.pop();var r=p[0],cc=p[1];var k=r+","+cc;if(visited.has(k))continue;visited.add(k);neighbors(r,cc).forEach(function(n){stack.push(n);});}return visited;}
+function dropOrphans(){var connected=connectedToCeiling();var dropped=0;for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++)if(state.grid[r][c]!==null&&!connected.has(r+","+c)){state.grid[r][c]=null;dropped++;}while(state.grid.length&&state.grid[state.grid.length-1].every(function(v){return v===null;}))state.grid.pop();return dropped;}
+function snapBubble(x,y,color){var best=null,bestDist=Infinity;var maxRows=Math.max(state.grid.length+1,CFG.rows+2);for(var r=0;r<maxRows;r++){var n=colsInRow(r);if(!state.grid[r])state.grid[r]=Array(n).fill(null);while(state.grid[r].length<n)state.grid[r].push(null);for(var c=0;c<n;c++){if(state.grid[r][c]!==null)continue;var p=cellCenter(r,c);var d=Math.hypot(p.x-x,p.y-y);if(d<bestDist){bestDist=d;best={r:r,c:c};}}}if(!best)return;var nn=colsInRow(best.r);if(!state.grid[best.r])state.grid[best.r]=Array(nn).fill(null);state.grid[best.r][best.c]=color;var cl=findCluster(best.r,best.c);if(cl.length>=3){cl.forEach(function(p){state.grid[p[0]][p[1]]=null;});state.score+=cl.length*10;var dr=dropOrphans();state.score+=dr*15;}document.getElementById("scoreDisplay").textContent="Score: "+state.score;checkEnd();}
+function checkEnd(){var any=false,tooLow=false;var dangerY=canvas.height-80;for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++)if(state.grid[r][c]!==null){any=true;if(cellCenter(r,c).y+R>dangerY)tooLow=true;}if(!any)endGame(true);else if(tooLow)endGame(false);}
+function endGame(won){state.gameOver=true;state.running=false;state.flying=null;document.getElementById("resultTitle").textContent=won?"You cleared it!":"Game Over";document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");}
+function shoot(){if(!state.running||state.flying||state.gameOver)return;if(ammo<=0){openQuiz(function(){state.flying=null;});return;}ammo--;updateAmmoUI();var speed=CFG.speed;state.flying={x:canvas.width/2,y:canvas.height-40,vx:Math.cos(state.aimAngle)*speed,vy:Math.sin(state.aimAngle)*speed,color:state.current};state.current=state.next;state.next=randomColor();}
+function update(){if(!state.flying)return;var b=state.flying;b.x+=b.vx;b.y+=b.vy;if(b.x-R<0){b.x=R;b.vx*=-1;}if(b.x+R>canvas.width){b.x=canvas.width-R;b.vx*=-1;}if(b.y-R<=0){snapBubble(b.x,R,b.color);state.flying=null;return;}for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++){if(state.grid[r][c]===null)continue;var p=cellCenter(r,c);if(Math.hypot(p.x-b.x,p.y-b.y)<R*1.85){snapBubble(b.x,b.y,b.color);state.flying=null;return;}}}
+function drawBubble(x,y,colorIndex){ctx.beginPath();ctx.arc(x,y,R-1,0,Math.PI*2);ctx.fillStyle=COLORS[colorIndex];ctx.fill();ctx.strokeStyle="rgba(255,255,255,0.35)";ctx.lineWidth=2;ctx.stroke();}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#1e293b";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle="rgba(239,68,68,0.5)";ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(0,canvas.height-80);ctx.lineTo(canvas.width,canvas.height-80);ctx.stroke();ctx.setLineDash([]);for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++){if(state.grid[r][c]===null)continue;var p=cellCenter(r,c);drawBubble(p.x,p.y,state.grid[r][c]);}if(!state.flying&&state.running){var sx=canvas.width/2,sy=canvas.height-40;ctx.strokeStyle="rgba(255,255,255,0.35)";ctx.beginPath();ctx.moveTo(sx,sy);var ax=sx,ay=sy,vx=Math.cos(state.aimAngle),vy=Math.sin(state.aimAngle);for(var i=0;i<80;i++){ax+=vx*8;ay+=vy*8;if(ax<R||ax>canvas.width-R)vx*=-1;if(ay<0)break;ctx.lineTo(ax,ay);}ctx.stroke();}if(state.flying)drawBubble(state.flying.x,state.flying.y,state.flying.color);else if(state.running)drawBubble(canvas.width/2,canvas.height-40,state.current);ctx.fillStyle="#94a3b8";ctx.font="12px Outfit, sans-serif";ctx.fillText("Next",12,canvas.height-12);drawBubble(50,canvas.height-28,state.next);}
+function loop(){if(!state.running)return;update();draw();requestAnimationFrame(loop);}
+function setAimFromEvent(e){var rect=canvas.getBoundingClientRect();var sx=rect.width/canvas.width;var clientX=e.touches?e.touches[0].clientX:e.clientX;var clientY=e.touches?e.touches[0].clientY:e.clientY;var x=(clientX-rect.left)/sx;var y=(clientY-rect.top)/sx;var ax=canvas.width/2,ay=canvas.height-40;var angle=Math.atan2(y-ay,x-ax);if(angle>0)angle=-0.2;state.aimAngle=Math.max(-Math.PI+0.2,Math.min(-0.2,angle));}
+function startNewGame(){initGrid();state.score=0;state.current=randomColor();state.next=randomColor();state.flying=null;state.gameOver=false;state.running=true;state.aimAngle=-Math.PI/2;ammo=AMMO_START;updateAmmoUI();document.getElementById("scoreDisplay").textContent="Score: 0";document.getElementById("resultOverlay").classList.add("hidden");draw();requestAnimationFrame(loop);}
+document.getElementById("newGameBtn").addEventListener("click",startNewGame);
+document.getElementById("playAgainBtn").addEventListener("click",startNewGame);
+document.getElementById("fireBtn").addEventListener("click",shoot);
+canvas.addEventListener("mousemove",setAimFromEvent);
+canvas.addEventListener("touchmove",function(e){e.preventDefault();setAimFromEvent(e);},{passive:false});
+canvas.addEventListener("click",shoot);
+canvas.addEventListener("touchend",function(e){e.preventDefault();shoot();});
+updateAmmoUI();startNewGame();
+})();
+<\/script>
+</body>
+</html>`;
+}
+
+/* ---------- ASTEROIDS builder (10 ammo per correct) ---------- */
+function buildAsteroidsHTML(questions, title) {
+  const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
+  return `<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Asteroids</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#050816;--panel:#0b1224;--text:#e2e8f0;--accent:#38bdf8;--danger:#ef4444;--ok:#22c55e}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse at 20% 0%,rgba(56,189,248,.12),transparent 45%),radial-gradient(ellipse at 80% 20%,rgba(99,102,241,.1),transparent 40%),radial-gradient(ellipse at top,#111827,var(--bg));min-height:100vh;color:var(--text);-webkit-tap-highlight-color:transparent}
+.wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
+.hidden{display:none!important}
+.game-screen{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center}
+.header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%;margin-bottom:10px}
+.header h1{margin:0;font-size:clamp(1.3rem,4vw,2rem)}
+.level-badge{padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.25);font-size:.8rem;font-weight:600}
+.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(240,193,75,.18);border:1px solid rgba(240,193,75,.5);color:#f0c14b;font-size:.9rem;font-weight:700}
+.ammo-badge.low{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.6);color:#ff8a8a}
+.header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
+.hud{font-weight:700;color:var(--accent);font-size:.85rem}
+.btn{padding:10px 14px;min-height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
+#gameCanvas{width:100%;max-width:480px;height:auto;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.06) 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,rgba(255,255,255,.05) 0 1px,transparent 2px),var(--panel);border-radius:12px;display:block;border:1px solid rgba(148,163,184,.25)}
+.touch-controls{display:flex;gap:8px;width:100%;max-width:480px;margin-top:10px}
+.ctrl-btn{flex:1;min-height:52px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:inherit;font-size:1.1rem;font-weight:700;cursor:pointer;font-family:inherit}
+.ctrl-btn.fire{background:var(--accent);color:#0b1224}
+.result-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.result-box{background:var(--panel);border:2px solid rgba(255,255,255,.2);border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center}
+.result-box h2{color:var(--ok);margin:0 0 8px}
+.result-box h2.lose{color:var(--danger)}
+.result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.result-actions .btn{width:100%}
+${GAME_QUIZ_CSS}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div id="gameScreen" class="game-screen">
+    <header class="header">
+      <h1>Asteroids</h1>
+      <span class="ammo-badge" id="ammoBadge">Ammo: 10</span>
+      <div class="header-actions">
+        <span id="hud" class="hud">Score: 0 · Lives: 3 · Wave: 1</span>
+        <button type="button" id="newGameBtn" class="btn">New Game</button>
+      </div>
+    </header>
+    <canvas id="gameCanvas" width="480" height="560"></canvas>
+    <div class="touch-controls">
+      <button type="button" id="rotLeftBtn" class="ctrl-btn">↺</button>
+      <button type="button" id="rotRightBtn" class="ctrl-btn">↻</button>
+      <button type="button" id="thrustBtn" class="ctrl-btn">▲</button>
+      <button type="button" id="fireBtn" class="ctrl-btn fire">Fire</button>
+    </div>
+    <div id="resultOverlay" class="result-overlay hidden">
+      <div class="result-box">
+        <h2 id="resultTitle"></h2>
+        <p id="resultMsg"></p>
+        <div class="result-actions">
+          <button type="button" id="playAgainBtn" class="btn">Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+"use strict";
+var QUESTIONS = ${Q};
+var ROCK_RADII={large:40,medium:24,small:12};
+var ROCK_SCORES={large:20,medium:50,small:100};
+var BULLET_LIFE=1.15,BULLET_SPEED=420,SHIP_RADIUS=12,INVULN_MS=2000,ROT_SPEED=3.6,THRUST=260,DRAG=0.985,MAX_SPEED=320;
+var canvas=document.getElementById("gameCanvas"),ctx=canvas.getContext("2d");
+var lastTime=0;
+var state={score:0,lives:3,wave:1,running:false,gameOver:false,won:false,ship:null,rocks:[],bullets:[],ufo:null,ufoBullets:[],fireCooldown:0,keys:{left:false,right:false,thrust:false,fire:false}};
+var CFG={lives:3,startRocks:4,wavesToWin:5,speed:1.0,fireCd:180,ufoFromWave:3,ufoFireMs:1100};
+var AMMO_START=10,AMMO_PER_CORRECT=10,AMMO_PER_WRONG=2;
+var ammo=AMMO_START,quizIdx=0,quizOpen=false;
+var ammoBadge=document.getElementById("ammoBadge");
+function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=2);}
+${GAME_QUIZ_HELPERS}
+var openQuiz = makeQuizModal(function(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};});
+function wrap(v,max){if(v<0)return v+max;if(v>=max)return v-max;return v;}
+function dist(ax,ay,bx,by){var dx=ax-bx,dy=ay-by;return Math.sqrt(dx*dx+dy*dy);}
+function circleHit(ax,ay,ar,bx,by,br){return dist(ax,ay,bx,by)<ar+br;}
+function makeShip(){return{x:canvas.width/2,y:canvas.height/2,vx:0,vy:0,angle:-Math.PI/2,invulnUntil:performance.now()+INVULN_MS,alive:true};}
+function rockVerts(radius){var verts=[],n=8+Math.floor(Math.random()*4);for(var i=0;i<n;i++){var a=(i/n)*Math.PI*2;var j=radius*(0.75+Math.random()*0.35);verts.push({x:Math.cos(a)*j,y:Math.sin(a)*j});}return verts;}
+function makeRock(size,x,y,speedMul){var radius=ROCK_RADII[size];var angle=Math.random()*Math.PI*2;var speed=(20+Math.random()*50)*speedMul;return{size:size,x:x,y:y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,radius:radius,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-0.5)*1.5,verts:rockVerts(radius)};}
+function spawnRocks(count){var rocks=[];var speedMul=CFG.speed*(1+(state.wave-1)*0.08);var ship=state.ship;var attempts=0;while(rocks.length<count&&attempts<count*40){attempts++;var x=Math.random()*canvas.width,y=Math.random()*canvas.height;if(ship&&dist(x,y,ship.x,ship.y)<120)continue;rocks.push(makeRock("large",x,y,speedMul));}while(rocks.length<count){var edge=Math.floor(Math.random()*4);var x2,y2;if(edge===0){x2=Math.random()*canvas.width;y2=20;}else if(edge===1){x2=canvas.width-20;y2=Math.random()*canvas.height;}else if(edge===2){x2=Math.random()*canvas.width;y2=canvas.height-20;}else{x2=20;y2=Math.random()*canvas.height;}rocks.push(makeRock("large",x2,y2,speedMul));}return rocks;}
+function splitRock(rock){var next=rock.size==="large"?"medium":rock.size==="medium"?"small":null;if(!next)return[];var speedMul=CFG.speed*(1+(state.wave-1)*0.08);return[makeRock(next,rock.x,rock.y,speedMul*1.15),makeRock(next,rock.x,rock.y,speedMul*1.15)];}
+function updateHud(){document.getElementById("hud").textContent="Score: "+state.score+" · Lives: "+state.lives+" · Wave: "+state.wave;}
+function resetGame(){state.score=0;state.lives=CFG.lives;state.wave=1;state.gameOver=false;state.won=false;state.ship=makeShip();state.rocks=spawnRocks(CFG.startRocks);state.bullets=[];state.ufo=null;state.ufoBullets=[];state.fireCooldown=0;state.running=true;ammo=AMMO_START;updateAmmoUI();updateHud();document.getElementById("resultOverlay").classList.add("hidden");document.getElementById("resultTitle").classList.remove("lose");lastTime=performance.now();}
+function startNextWave(){state.wave++;var count=CFG.startRocks+(state.wave-1);state.rocks=spawnRocks(count);state.bullets=[];state.ufoBullets=[];state.ufo=null;state.ship.invulnUntil=performance.now()+INVULN_MS;updateHud();}
+function endGame(won){state.running=false;state.gameOver=true;state.won=won;var t=document.getElementById("resultTitle");t.textContent=won?"You Win!":"Game Over";t.classList.toggle("lose",!won);document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");}
+function fireBullet(){if(!state.running||!state.ship||!state.ship.alive)return;if(state.fireCooldown>0)return;if(ammo<=0){openQuiz(function(){});return;}ammo--;updateAmmoUI();var s=state.ship;state.bullets.push({x:s.x+Math.cos(s.angle)*16,y:s.y+Math.sin(s.angle)*16,vx:Math.cos(s.angle)*BULLET_SPEED+s.vx*0.2,vy:Math.sin(s.angle)*BULLET_SPEED+s.vy*0.2,life:BULLET_LIFE});state.fireCooldown=CFG.fireCd/1000;}
+function spawnUfoIfNeeded(){if(!CFG.ufoFromWave||state.wave<CFG.ufoFromWave)return;if(state.ufo)return;if(Math.random()>0.008)return;var fromLeft=Math.random()<0.5;state.ufo={x:fromLeft?-20:canvas.width+20,y:60+Math.random()*(canvas.height*0.5),vx:(fromLeft?1:-1)*(70+Math.random()*40)*CFG.speed,vy:(Math.random()-0.5)*30,r:14,fireTimer:0.6};}
+function killShip(){var now=performance.now();if(now<state.ship.invulnUntil)return;state.lives--;updateHud();state.bullets=[];state.ufoBullets=[];if(state.lives<=0){endGame(false);return;}state.ship=makeShip();}
+function update(dt){if(!state.running)return;var ship=state.ship,speedScale=CFG.speed;if(state.fireCooldown>0)state.fireCooldown-=dt;if(state.keys.fire)fireBullet();if(ship&&ship.alive){if(state.keys.left)ship.angle-=ROT_SPEED*dt;if(state.keys.right)ship.angle+=ROT_SPEED*dt;if(state.keys.thrust){ship.vx+=Math.cos(ship.angle)*THRUST*speedScale*dt;ship.vy+=Math.sin(ship.angle)*THRUST*speedScale*dt;}var sp=Math.sqrt(ship.vx*ship.vx+ship.vy*ship.vy);var maxSp=MAX_SPEED*speedScale;if(sp>maxSp){ship.vx=(ship.vx/sp)*maxSp;ship.vy=(ship.vy/sp)*maxSp;}var drag=Math.pow(DRAG,dt*60);ship.vx*=drag;ship.vy*=drag;ship.x=wrap(ship.x+ship.vx*dt,canvas.width);ship.y=wrap(ship.y+ship.vy*dt,canvas.height);}for(var i=state.bullets.length-1;i>=0;i--){var b=state.bullets[i];b.life-=dt;b.x=wrap(b.x+b.vx*dt,canvas.width);b.y=wrap(b.y+b.vy*dt,canvas.height);if(b.life<=0)state.bullets.splice(i,1);}for(var r=0;r<state.rocks.length;r++){var rk=state.rocks[r];rk.x=wrap(rk.x+rk.vx*dt,canvas.width);rk.y=wrap(rk.y+rk.vy*dt,canvas.height);rk.rot+=rk.rotSpeed*dt;}spawnUfoIfNeeded();if(state.ufo){var u=state.ufo;u.x+=u.vx*dt;u.y+=u.vy*dt;if(u.y<40||u.y>canvas.height*0.7)u.vy*=-1;u.fireTimer-=dt;if(u.fireTimer<=0&&ship){var ang=Math.atan2(ship.y-u.y,ship.x-u.x);var spd=180*speedScale;state.ufoBullets.push({x:u.x,y:u.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:2.2});u.fireTimer=CFG.ufoFireMs/1000;}if(u.x<-40||u.x>canvas.width+40)state.ufo=null;}for(var j=state.ufoBullets.length-1;j>=0;j--){var ub=state.ufoBullets[j];ub.life-=dt;ub.x+=ub.vx*dt;ub.y+=ub.vy*dt;if(ub.life<=0||ub.x<-20||ub.x>canvas.width+20||ub.y<-20||ub.y>canvas.height+20)state.ufoBullets.splice(j,1);}for(var bi=state.bullets.length-1;bi>=0;bi--){var b2=state.bullets[bi];var hit=false;for(var ri=state.rocks.length-1;ri>=0;ri--){var rr=state.rocks[ri];if(circleHit(b2.x,b2.y,2,rr.x,rr.y,rr.radius)){state.score+=ROCK_SCORES[rr.size];var pieces=splitRock(rr);state.rocks.splice(ri,1);for(var p=0;p<pieces.length;p++)state.rocks.push(pieces[p]);state.bullets.splice(bi,1);hit=true;updateHud();break;}}if(hit)continue;if(state.ufo&&circleHit(b2.x,b2.y,2,state.ufo.x,state.ufo.y,state.ufo.r)){state.score+=200;state.ufo=null;state.bullets.splice(bi,1);updateHud();}}if(ship&&ship.alive){for(var r2=0;r2<state.rocks.length;r2++){var rk2=state.rocks[r2];if(circleHit(ship.x,ship.y,SHIP_RADIUS,rk2.x,rk2.y,rk2.radius)){killShip();break;}}if(state.running&&state.ufo&&circleHit(ship.x,ship.y,SHIP_RADIUS,state.ufo.x,state.ufo.y,state.ufo.r))killShip();if(state.running)for(var k=0;k<state.ufoBullets.length;k++){var ub2=state.ufoBullets[k];if(circleHit(ship.x,ship.y,SHIP_RADIUS,ub2.x,ub2.y,3)){killShip();break;}}}if(state.running&&state.rocks.length===0){if(state.wave>=CFG.wavesToWin)endGame(true);else startNextWave();}}
+function drawShip(ship,now){var blinking=now<ship.invulnUntil;if(blinking&&Math.floor(now/100)%2===0)return;ctx.save();ctx.translate(ship.x,ship.y);ctx.rotate(ship.angle);ctx.strokeStyle="#f8fafc";ctx.fillStyle="rgba(56,189,248,0.25)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(-12,10);ctx.lineTo(-8,0);ctx.lineTo(-12,-10);ctx.closePath();ctx.fill();ctx.stroke();if(state.keys.thrust){ctx.strokeStyle="#fbbf24";ctx.beginPath();ctx.moveTo(-8,0);ctx.lineTo(-18-Math.random()*6,0);ctx.stroke();}ctx.restore();}
+function drawRock(rock){ctx.save();ctx.translate(rock.x,rock.y);ctx.rotate(rock.rot);ctx.strokeStyle="#cbd5e1";ctx.lineWidth=2;ctx.beginPath();for(var i=0;i<rock.verts.length;i++){var v=rock.verts[i];if(i===0)ctx.moveTo(v.x,v.y);else ctx.lineTo(v.x,v.y);}ctx.closePath();ctx.stroke();ctx.restore();}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0b1224";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="rgba(255,255,255,0.35)";for(var i=0;i<40;i++){var sx=(i*97)%canvas.width,sy=(i*53)%canvas.height;ctx.fillRect(sx,sy,1.5,1.5);}var now=performance.now();for(var r=0;r<state.rocks.length;r++)drawRock(state.rocks[r]);ctx.fillStyle="#f8fafc";for(var b=0;b<state.bullets.length;b++){var bl=state.bullets[b];ctx.beginPath();ctx.arc(bl.x,bl.y,2.2,0,Math.PI*2);ctx.fill();}ctx.fillStyle="#ef4444";for(var ub=0;ub<state.ufoBullets.length;ub++){var ubl=state.ufoBullets[ub];ctx.beginPath();ctx.arc(ubl.x,ubl.y,3,0,Math.PI*2);ctx.fill();}if(state.ufo){var u=state.ufo;ctx.save();ctx.translate(u.x,u.y);ctx.fillStyle="#a78bfa";ctx.strokeStyle="#e9d5ff";ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,0,18,8,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.ellipse(0,-4,8,6,0,Math.PI,0);ctx.stroke();ctx.restore();}if(state.ship&&state.ship.alive)drawShip(state.ship,now);}
+function loop(ts){if(!state.running)return;if(!lastTime)lastTime=ts;var dt=(ts-lastTime)/1000;lastTime=ts;if(dt>0.05)dt=0.05;update(dt);draw();if(state.running)requestAnimationFrame(loop);}
+function bindHold(el,key){var on=function(e){e.preventDefault();state.keys[key]=true;};var off=function(){state.keys[key]=false;};el.addEventListener("touchstart",on,{passive:false});el.addEventListener("touchend",off);el.addEventListener("touchcancel",off);el.addEventListener("mousedown",on);el.addEventListener("mouseup",off);el.addEventListener("mouseleave",off);}
+document.getElementById("newGameBtn").addEventListener("click",function(){resetGame();requestAnimationFrame(loop);});
+document.getElementById("playAgainBtn").addEventListener("click",function(){resetGame();requestAnimationFrame(loop);});
+window.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")state.keys.left=true;if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")state.keys.right=true;if(e.key==="ArrowUp"||e.key==="w"||e.key==="W"){e.preventDefault();state.keys.thrust=true;}if(e.key===" "||e.key==="Spacebar"){e.preventDefault();state.keys.fire=true;fireBullet();}});
+window.addEventListener("keyup",function(e){if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")state.keys.left=false;if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")state.keys.right=false;if(e.key==="ArrowUp"||e.key==="w"||e.key==="W")state.keys.thrust=false;if(e.key===" "||e.key==="Spacebar")state.keys.fire=false;});
+bindHold(document.getElementById("rotLeftBtn"),"left");
+bindHold(document.getElementById("rotRightBtn"),"right");
+bindHold(document.getElementById("thrustBtn"),"thrust");
+document.getElementById("fireBtn").addEventListener("click",fireBullet);
+document.getElementById("fireBtn").addEventListener("touchstart",function(e){e.preventDefault();fireBullet();},{passive:false});
+updateAmmoUI();
+resetGame();
+requestAnimationFrame(loop);
+})();
+<\/script>
+</body>
+</html>`;
+}
+
+/* ============== Boot ============== */
 document.querySelectorAll('#sidebar .side-menu.top li a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+
+/* Inject preset set if the user has no sets yet (or lost them). */
+(function ensurePreset() {
+  const hasPreset = qsets.some(q => q.id === 'qs_preset');
+  if (!hasPreset) {
+    qsets.push({
+      id: 'qs_preset',
+      title: 'Preset Quiz',
+      created: Date.now(),
+      questions: PRESET_QUESTIONS,
+      source: 'preset'
+    });
+    saveQSets();
+  }
+})();
+
 render();
 route();
 renderAIErrors();
