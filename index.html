@@ -238,6 +238,12 @@ main{padding:28px 24px;color:var(--dark)}
 .assign-list button:hover{background:var(--light-blue);border-color:var(--blue);color:var(--blue)}
 .spin{display:inline-block;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.auth-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:20px;background:var(--light-blue);color:var(--blue);font-size:13px;font-weight:600;transition:background .2s,color .2s}
+.auth-badge.temp{background:#fff6d6;color:#8a6b00}
+.auth-badge.signed{background:#e6f5e9;color:#26890c}
+.auth-badge.failed{background:#fde8e6;color:#8a2721}
+/* Force sidebar icons to always render visibly */
+#sidebar .side-menu li a .bx{display:inline-flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
 </style>
 </head>
 <body>
@@ -246,7 +252,7 @@ main{padding:28px 24px;color:var(--dark)}
   <ul class="side-menu top">
     <li class="active" data-view="classes"><a href="#"><i class='bx bxs-graduation bx-sm'></i><span class="text">Classes</span></a></li>
     <li data-view="ai"><a href="#"><i class='bx bxs-bot bx-sm'></i><span class="text">AI Quiz</span></a></li>
-    <li data-view="questions"><a href="#"><i class='bx bxs-list-check bx-sm'></i><span class="text">Questions</span></a></li>
+    <li data-view="questions"><a href="#"><i class='bx bx-list-check bx-sm'></i><span class="text">Questions</span></a></li>
     <li><a href="#"><i class='bx bxs-shopping-bag-alt bx-sm'></i><span class="text">My Store</span></a></li>
     <li><a href="#"><i class='bx bxs-doughnut-chart bx-sm'></i><span class="text">Analytics</span></a></li>
     <li><a href="#"><i class='bx bxs-message-dots bx-sm'></i><span class="text">Message</span></a></li>
@@ -292,6 +298,10 @@ main{padding:28px 24px;color:var(--dark)}
           <p>Paste notes, upload a PDF, or just say what you want. If it's vague, I'll chat with you until I know what to build.</p>
         </div>
         <div class="hbtns">
+          <span class="auth-badge" id="authBadge" title="Session status">
+            <i class='bx bx-loader-alt spin' id="authIcon"></i>
+            <span id="authText">Checking…</span>
+          </span>
           <button class="btn ghost" id="aiErrorsToggle"><i class='bx bx-bug'></i> Errors <span id="aiErrCount" style="background:#DB504A;color:#fff;font-size:11px;padding:1px 7px;border-radius:20px;margin-left:4px">0</span></button>
           <button class="btn ghost" id="aiReset"><i class='bx bx-refresh'></i> New chat</button>
         </div>
@@ -353,7 +363,7 @@ window.addEventListener('error', function (e) {
 let nav = 'classes';
 const VIEWS = ['classes', 'ai', 'questions'];
 
-/* ============== ORIGINAL DASHBOARD ============== */
+/* =================== ORIGINAL DASHBOARD =================== */
 const KEY = 'adminhub_classes_v1';
 let railOpen = true;
 try { railOpen = localStorage.getItem('adminhub_rail_open') !== '0'; } catch (e) {}
@@ -438,6 +448,7 @@ function dashHtml(c) {
   const R = 44, C = 2 * Math.PI * R;
   const msg = pct === 100 ? ['Your class is all set!', 'Code shared, first post and first assignment are done.'] : ['Keep setting up', 'Next: ' + left.join(', ') + '.'];
   const list = (items, empty) => items.length ? items.slice(0, 3).map(i => `<div class="li"><span>${esc(i.text)}</span><span>${fmt(i.time)}</span></div>`).join('') : `<div class="none">${empty}</div>`;
+  const qsList = qsets.length ? qsets.slice(0, 3).map(q => `<div class="li"><span>${esc(q.title)}</span><span>${q.questions.length} Q</span></div>`).join('') : '<div class="none">No question sets yet. Make one in AI Quiz.</div>';
   return `<div class="dmeta"><span>Class report</span><span>Created ${fmt(c.created)}</span><span>Hosted by Teacher</span></div>
   <div class="sumrow">
     <div class="sum ringbox"><div class="ring"><svg width="108" height="108"><circle cx="54" cy="54" r="${R}" fill="none" stroke="var(--grey)" stroke-width="9"/><circle cx="54" cy="54" r="${R}" fill="none" stroke="#26890c" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}"/></svg><b>${pct}%<small>set up</small></b></div>
@@ -449,6 +460,7 @@ function dashHtml(c) {
   <div class="reports">
     <div class="rep"><h4>Assignments (${c.assignments.length})</h4>${list(c.assignments, 'No assignments yet.')}<button class="seeall" data-tab="assignments">See all (${c.assignments.length})</button></div>
     <div class="rep"><h4>Posts (${c.posts.length})</h4>${list(c.posts, 'No posts yet.')}<button class="seeall" data-tab="activity">See all (${c.posts.length})</button></div>
+    <div class="rep"><h4><i class='bx bx-list-check' style="color:var(--blue);margin-right:6px"></i>Questions (${qsets.length})</h4>${qsList}<button class="seeall" data-goto-qs>See all (${qsets.length})</button></div>
     <div class="rep"><h4>Students (0)</h4><div class="none">No students yet. Give them the join code above.</div></div>
   </div>`;
 }
@@ -477,7 +489,7 @@ function render() {
     } else if (tab === 'dashboard') body = dashHtml(c);
     else body = listHtml(c.assignments, 'assignments', 'No assignments yet. Use Assign to create one.');
 
-    v.innerHTML = `<div class="ctop"><h1>${esc(c.name)}</h1><div class="tools"><div class="avatar" style="background:#aaa;width:48px;height:48px"><i class='bx bxs-user'></i></div><i class='bx bx-cog' id="gear" title="Teacher settings" tabindex="0"></i></div></div>
+    v.innerHTML = `<div class="ctop"><h1>${esc(c.name)}</h1><div class="tools"><i class='bx bx-list-check' id="qsShortcut" title="Question sets" tabindex="0" style="cursor:pointer"></i><div class="avatar" style="background:#aaa;width:48px;height:48px"><i class='bx bxs-user'></i></div><i class='bx bx-cog' id="gear" title="Teacher settings" tabindex="0"></i></div></div>
       <div class="row"><div class="tabs">${['activity','dashboard','assignments'].map(t => `<button data-tab="${t}" class="${tab === t ? 'on' : ''}">${t[0].toUpperCase() + t.slice(1)}</button>`).join('')}</div>
       <button class="btn" id="joinBtn">Join class</button></div>${body}`;
   }
@@ -493,6 +505,8 @@ $('#railOpen').onclick = () => setRail(true);
 $('#ownBtn').onclick = () => { ownOpen = !ownOpen; try { localStorage.setItem('adminhub_owned_open', ownOpen ? '1' : '0'); } catch (e) {} render(); };
 $('#createClass').onclick = createClass;
 $('#classView').addEventListener('click', e => {
+  if (e.target.closest('[data-goto-qs]')) { nav = 'questions'; renderQuestionSets(); route(); return; }
+  if (e.target.closest('#qsShortcut')) { nav = 'questions'; renderQuestionSets(); route(); return; }
   const t = e.target.closest('[data-tab]'); if (t) { tab = t.dataset.tab; render(); return; }
   if (e.target.closest('#joinBtn')) return showCode();
   if (e.target.closest('#gear')) return showSettings();
@@ -519,7 +533,7 @@ $('#notificationIcon').onclick = e => { e.preventDefault(); $('#notificationMenu
 $('#profileIcon').onclick = e => { e.preventDefault(); $('#profileMenu').classList.toggle('show'); $('#notificationMenu').classList.remove('show'); };
 addEventListener('click', e => { if (!e.target.closest('.notification') && !e.target.closest('.profile')) document.querySelectorAll('.dd').forEach(d => d.classList.remove('show')); });
 
-/* ============== Top nav ============== */
+/* =================== Top nav =================== */
 function route() {
   VIEWS.forEach(v => {
     const el = document.querySelector('.view[data-view="' + v + '"]');
@@ -538,13 +552,13 @@ document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
     const v = li.dataset.view;
     if (!v) return;
     nav = v;
-    if (v === 'ai') renderChat();
+    if (v === 'ai') { renderChat(); ensureAuth().then(updateAuthBadge).catch(() => {}); }
     if (v === 'questions') renderQuestionSets();
     route();
   });
 });
 
-/* ============== Questions storage ============== */
+/* =================== Questions storage =================== */
 const QKEY = 'adminhub_questions_v2';
 let qsets = [];
 try { const r = localStorage.getItem(QKEY); if (r) qsets = JSON.parse(r); } catch (e) {}
@@ -571,9 +585,10 @@ const PRESET_QUESTIONS = [
   { question: "In which year did WWII end?", options: ["1943","1944","1945","1946"], correct: 2, timeLimit: 20, explanation: "WWII ended in 1945." }
 ];
 
-/* ============== AI Quiz ============== */
+/* =================== AI Quiz =================== */
 const AI_MODEL = 'gpt-4o-mini';
 const AI_FALLBACK = 'gpt-4o';
+
 let aiErrors = [];
 function logAIError(label, err, context) {
   const detail = (err && (err.stack || err.message)) ? (err.stack || err.message) : String(err);
@@ -595,6 +610,89 @@ function renderAIErrors() {
 document.getElementById('aiErrorsToggle').onclick = () => { const p = document.getElementById('aiErrors'); p.hidden = !p.hidden; };
 document.getElementById('aiErrorsClear').onclick = () => { aiErrors = []; renderAIErrors(); };
 
+/* =================== AUTH: temp user first, sign-in second =================== */
+let authState = 'unknown'; // unknown | temp | signed | failed
+let authAttempts = 0;
+const MAX_AUTH_ATTEMPTS = 3;
+let authInFlight = null;
+
+async function ensureAuth() {
+  if (authInFlight) return authInFlight;
+  authInFlight = (async () => {
+    if (!window.puter || !puter.auth) {
+      authState = 'failed';
+      logAIError('Puter.js auth not available', new Error('puter.auth missing'));
+      return false;
+    }
+    // Already signed in?
+    try {
+      const signedIn = await puter.auth.isSignedIn();
+      if (signedIn) {
+        const user = await puter.auth.getUser().catch(() => null);
+        authState = (user && !user.email) ? 'temp' : 'signed';
+        authAttempts = 0;
+        return true;
+      }
+    } catch (e) { /* fall through to sign-in */ }
+
+    // PRIMARY: try to auto-create a temporary (guest) user
+    try {
+      await puter.auth.signIn({ attempt_temp_user_creation: true });
+      authState = 'temp';
+      authAttempts = 0;
+      return true;
+    } catch (e) {
+      const code = e && e.error ? e.error : 'unknown';
+      if (code === 'auth_window_closed' || code === 'popup_blocked') {
+        logAIError('Temp user creation cancelled/blocked', e, 'trying normal sign-in next');
+      } else {
+        logAIError('Temp user creation failed', e, 'trying normal sign-in next');
+      }
+    }
+
+    // SECONDARY: full sign-in popup
+    try {
+      await puter.auth.signIn();
+      authState = 'signed';
+      authAttempts = 0;
+      return true;
+    } catch (e2) {
+      authState = 'failed';
+      authAttempts++;
+      logAIError('Sign-in failed (attempt ' + authAttempts + '/' + MAX_AUTH_ATTEMPTS + ')', e2,
+        e2 && e2.error ? 'code: ' + e2.error : '');
+      return false;
+    }
+  })();
+  try { return await authInFlight; }
+  finally { authInFlight = null; updateAuthBadge(); }
+}
+
+function updateAuthBadge() {
+  const badge = document.getElementById('authBadge');
+  const icon  = document.getElementById('authIcon');
+  const text  = document.getElementById('authText');
+  if (!badge || !icon || !text) return;
+  badge.classList.remove('temp', 'signed', 'failed');
+  if (authState === 'temp') {
+    badge.classList.add('temp');
+    icon.className = 'bx bx-user-check';
+    text.textContent = 'Guest session';
+  } else if (authState === 'signed') {
+    badge.classList.add('signed');
+    icon.className = 'bx bx-check-circle';
+    text.textContent = 'Signed in';
+  } else if (authState === 'failed') {
+    badge.classList.add('failed');
+    icon.className = 'bx bx-error-circle';
+    text.textContent = 'Auth failed';
+  } else {
+    icon.className = 'bx bx-loader-alt spin';
+    text.textContent = 'Checking…';
+  }
+}
+
+/* =================== AI prompts =================== */
 const AI_PROMPT = (n, topic, notes) => `You are a quiz generator. Return ONLY valid JSON. No prose, no markdown.
 Shape: {"title":"...","questions":[{"question":"...","options":["A","B","C","D"],"correct":0,"timeLimit":20,"explanation":"..."}]}
 Rules:
@@ -732,17 +830,52 @@ async function tryGenerate(silent) {
   chatState.phase = 'idle';
   setWaiting(false);
 }
+
+/* =================== aiChat: auth-aware wrapper =================== */
 async function aiChat(prompt) {
-  if (!window.puter || !puter.ai || typeof puter.ai.chat !== 'function') {
-    const e = new Error('Puter.js is not loaded. Check that https://js.puter.com/v2/ is in <head> and not blocked.');
+  const ok = await ensureAuth();
+  if (!ok) {
+    const e = new Error('Authentication failed — see the Errors panel.');
+    logAIError('AI request blocked: no auth', e);
+    throw e;
+  }
+  if (!puter.ai || typeof puter.ai.chat !== 'function') {
+    const e = new Error('puter.ai.chat missing. Check the Puter.js script tag in <head>.');
     logAIError('puter.ai.chat missing', e);
     throw e;
   }
+
+  async function attempt(model) {
+    const res = await puter.ai.chat(prompt, { model });
+    return normalizePuter(res);
+  }
+
   let firstErr = null;
-  try { const res = await puter.ai.chat(prompt, { model: AI_MODEL }); return normalizePuter(res); }
-  catch (e) { firstErr = e; logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e); }
-  try { const res = await puter.ai.chat(prompt, { model: AI_FALLBACK }); return normalizePuter(res); }
-  catch (e2) { logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2, 'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr)); throw e2; }
+  try { return await attempt(AI_MODEL); }
+  catch (e) {
+    firstErr = e;
+    if (e && (e.error === 'popup_blocked')) {
+      botSay("Your browser blocked the Puter popup. Click somewhere in the page first, then try again.");
+    }
+    // Auth-flavoured error → re-auth and retry once
+    if (e && (e.error === 'must_login_or_signup' || e.status === 401 || e.status === 403)) {
+      authState = 'unknown';
+      const reAuth = await ensureAuth();
+      if (reAuth) {
+        try { return await attempt(AI_MODEL); }
+        catch (e2) { logAIError('Retry after re-auth failed', e2); }
+      }
+    }
+    logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e,
+      'authState: ' + authState);
+  }
+
+  try { return await attempt(AI_FALLBACK); }
+  catch (e2) {
+    logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2,
+      'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr));
+    throw e2;
+  }
 }
 function normalizePuter(res) {
   if (typeof res === 'string') { if (!res.trim()) throw new Error('Model returned an empty string.'); return res; }
@@ -775,12 +908,12 @@ function parseQuizJSON(raw) {
   return obj;
 }
 
-/* ============== Questions view ============== */
+/* =================== Questions view =================== */
 function renderQuestionSets() {
   const list = $('#qsList');
   if (!qsets.length) {
-    list.innerHTML = `<div class="qb-empty"><i class='bx bxs-list-check'></i><h3>No question sets yet</h3><p style="margin:8px 0 16px">Head to the AI Quiz tab and make one — it'll appear here.</p><button class="btn" id="qsEmptyGo">Open AI Quiz</button></div>`;
-    const b = $('#qsEmptyGo'); if (b) b.onclick = () => { nav = 'ai'; renderChat(); route(); };
+    list.innerHTML = `<div class="qb-empty"><i class='bx bx-list-check'></i><h3>No question sets yet</h3><p style="margin:8px 0 16px">Head to the AI Quiz tab and make one — it'll appear here.</p><button class="btn" id="qsEmptyGo">Open AI Quiz</button></div>`;
+    const b = $('#qsEmptyGo'); if (b) b.onclick = () => { nav = 'ai'; renderChat(); ensureAuth().then(updateAuthBadge).catch(()=>{}); route(); };
     return;
   }
   list.innerHTML = qsets.map(qs => `
@@ -813,7 +946,7 @@ function renderQuestionSets() {
     qsets = qsets.filter(x => x.id !== b.dataset.delqs); saveQSets(); renderQuestionSets();
   });
 }
-$('#qsToAI').onclick = () => { nav = 'ai'; renderChat(); route(); };
+$('#qsToAI').onclick = () => { nav = 'ai'; renderChat(); ensureAuth().then(updateAuthBadge).catch(()=>{}); route(); };
 
 function assignQuiz(qsId) {
   const qs = qsets.find(x => x.id === qsId); if (!qs) return;
@@ -870,7 +1003,7 @@ function editQuiz(qsId) {
   };
 }
 
-/* ============== Game launcher ============== */
+/* =================== Game launcher =================== */
 function openGame(type, qs) {
   const frame = $('#battleFrame');
   const qs_ = (qs && Array.isArray(qs.questions) && qs.questions.length)
@@ -889,53 +1022,73 @@ $('#battleClose').onclick = () => {
   document.body.style.overflow = '';
 };
 
-/* ---------- Shared in-game quiz modal + ammo helpers ---------- */
+/* ---------- Shared Kahoot-style quiz modal + ammo API ---------- */
 const GAME_QUIZ_HELPERS = `
-function makeQuizModal(getState) {
+function escHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function makeQuizModal(opts) {
+  var SHAPES = [
+    '<svg viewBox="0 0 24 24"><polygon points="12,2 22,20 2,20" fill="#fff"/></svg>',
+    '<svg viewBox="0 0 24 24"><polygon points="12,2 22,12 12,22 2,12" fill="#fff"/></svg>',
+    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/></svg>',
+    '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" fill="#fff"/></svg>'
+  ];
   return function openQuiz(onDone) {
-    if (getState().quizOpen) return;
+    if (opts.isOpen()) return;
     if (!QUESTIONS || !QUESTIONS.length) {
-      getState().ammo += getState().ammoPerCorrect;
-      getState().updateAmmo();
+      opts.setAmmo(opts.getAmmo() + opts.gainCorrect);
+      opts.onUpdate();
+      if (typeof onDone === 'function') onDone();
       return;
     }
-    getState().quizOpen = true;
-    var q = QUESTIONS[getState().quizIdx % QUESTIONS.length];
-    getState().quizIdx++;
-    var ov = document.createElement("div");
-    ov.className = "quiz-overlay";
-    ov.id = "quizOverlay";
-    var box = document.createElement("div");
-    box.className = "quiz-box";
-    box.innerHTML = '<h3>Out of ammo — reload!</h3><p class="sub">Correct = +' + getState().ammoPerCorrect + ' ammo. Wrong = +' + getState().ammoPerWrong + '.</p><div class="qtext"></div><div class="opts"></div><div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
-    box.querySelector(".qtext").textContent = q.question;
-    var optsEl = box.querySelector(".opts");
-    var letters = ["A","B","C","D"];
-    q.options.forEach(function(text, idx) {
-      var b = document.createElement("button");
-      b.type = "button"; b.className = "opt";
-      b.textContent = letters[idx] + ". " + text;
-      b.addEventListener("click", function() {
+    opts.setOpen(true);
+    var idx = opts.getIdx();
+    var q = QUESTIONS[idx % QUESTIONS.length];
+    opts.setIdx(idx + 1);
+    var ov = document.createElement('div');
+    ov.className = 'quiz-overlay';
+    ov.id = 'quizOverlay';
+    var box = document.createElement('div');
+    box.className = 'quiz-box';
+    var letters = ['A','B','C','D'];
+    var optHtml = '';
+    for (var i = 0; i < 4; i++) {
+      optHtml += '<button type="button" class="opt" data-opt="' + i + '">' +
+        '<span class="shape">' + SHAPES[i] + '</span>' +
+        '<span class="opttext">' + letters[i] + '. ' + escHtml(q.options[i] || '') + '</span>' +
+        '</button>';
+    }
+    box.innerHTML =
+      '<h3>Out of ammo — reload!</h3>' +
+      '<p class="sub">Correct = <b>+' + opts.gainCorrect + '</b> ammo &nbsp;·&nbsp; Wrong = +' + opts.gainWrong + '</p>' +
+      '<div class="qtext">' + escHtml(q.question) + '</div>' +
+      '<div class="opts">' + optHtml + '</div>' +
+      '<div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
+    var optsEl = box.querySelector('.opts');
+    Array.prototype.forEach.call(optsEl.children, function(b, i) {
+      b.addEventListener('click', function() {
         if (b.disabled) return;
-        var ok = idx === q.correct;
-        b.classList.add(ok ? "correct" : "wrong");
-        if (!ok) optsEl.children[q.correct].classList.add("correct");
+        var correct = q.correct;
+        var ok = i === correct;
+        if (ok) b.classList.add('correct');
+        else { b.classList.add('wrong'); optsEl.children[correct].classList.add('correct'); }
         Array.prototype.forEach.call(optsEl.children, function(x) { x.disabled = true; });
-        var gain = ok ? getState().ammoPerCorrect : getState().ammoPerWrong;
-        getState().ammo += gain;
-        getState().updateAmmo();
-        document.getElementById("qFeedback").textContent = (ok ? "Correct! " : "Nope. ") + "+" + gain + " ammo" + (q.explanation ? " · " + q.explanation : "");
-        var nw = document.getElementById("qNextWrap");
-        var nb = document.createElement("button");
-        nb.type = "button"; nb.className = "btn"; nb.textContent = "Continue";
-        nb.addEventListener("click", function() {
+        var gain = ok ? opts.gainCorrect : opts.gainWrong;
+        opts.setAmmo(opts.getAmmo() + gain);
+        opts.onUpdate();
+        document.getElementById('qFeedback').innerHTML =
+          (ok ? '<b style="color:#7dd87d">✓ Correct!</b> ' : '<b style="color:#ff8a8a">✗ Nope.</b> ') +
+          '<b style="color:#f0c14b">+' + gain + ' ammo</b>' +
+          (q.explanation ? ' <span style="opacity:.8">· ' + escHtml(q.explanation) + '</span>' : '');
+        var nw = document.getElementById('qNextWrap');
+        var nb = document.createElement('button');
+        nb.type = 'button'; nb.className = 'btn'; nb.textContent = 'Continue';
+        nb.addEventListener('click', function() {
           ov.remove();
-          getState().quizOpen = false;
-          if (typeof onDone === "function") onDone();
+          opts.setOpen(false);
+          if (typeof onDone === 'function') onDone();
         });
         nw.appendChild(nb);
       });
-      optsEl.appendChild(b);
     });
     ov.appendChild(box);
     document.body.appendChild(ov);
@@ -944,33 +1097,45 @@ function makeQuizModal(getState) {
 `;
 
 const GAME_QUIZ_CSS = `
-.quiz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
-.quiz-box{background:#0d1a2b;border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:22px;max-width:520px;width:100%;color:#e8f4f8;font-family:"Outfit",sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5)}
-.quiz-box h3{margin:0 0 6px;font-size:1.15rem}
-.quiz-box .sub{opacity:.85;font-size:.9rem;margin-bottom:14px}
-.quiz-box .qtext{font-size:1.05rem;font-weight:600;margin-bottom:14px;line-height:1.4}
-.quiz-box .opts{display:grid;gap:8px;margin-bottom:14px}
-.quiz-box .opt{padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:inherit;font-family:inherit;text-align:left;font-size:.98rem;cursor:pointer}
-.quiz-box .opt:hover:not(:disabled){background:rgba(255,255,255,.14)}
-.quiz-box .opt.correct{background:#26890c;border-color:#26890c;color:#fff}
-.quiz-box .opt.wrong{background:#b3261e;border-color:#b3261e;color:#fff}
-.quiz-box .quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;opacity:.85}
-.quiz-box .btn{padding:8px 14px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
+.quiz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.quiz-box{background:#1a1a2e;border:3px solid #fff;border-radius:16px;padding:24px;max-width:640px;width:100%;color:#fff;font-family:"Outfit",sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.6);max-height:92vh;overflow-y:auto}
+.quiz-box h3{margin:0 0 6px;font-size:1.3rem;text-align:center;font-weight:800;letter-spacing:.02em}
+.quiz-box .sub{opacity:.85;font-size:.9rem;margin-bottom:16px;text-align:center}
+.quiz-box .sub b{color:#f0c14b}
+.quiz-box .qtext{font-size:1.25rem;font-weight:800;margin-bottom:20px;line-height:1.35;text-align:center;padding:18px;background:#fff;color:#1a1a2e;border-radius:12px;word-break:break-word}
+.quiz-box .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.quiz-box .opt{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:10px;border:none;color:#fff;font-family:inherit;text-align:left;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.35);transition:transform .08s ease,box-shadow .08s ease;min-height:64px}
+.quiz-box .opt:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.quiz-box .opt:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+.quiz-box .opt .shape{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center}
+.quiz-box .opt .shape svg{width:100%;height:100%;display:block}
+.quiz-box .opt .opttext{flex:1;line-height:1.3}
+.quiz-box .opt[data-opt="0"]{background:#e21b3c}
+.quiz-box .opt[data-opt="1"]{background:#1368ce}
+.quiz-box .opt[data-opt="2"]{background:#d89e00}
+.quiz-box .opt[data-opt="3"]{background:#26890c}
+.quiz-box .opt.correct{outline:4px solid #fff;outline-offset:3px;animation:pulseWin .35s ease}
+.quiz-box .opt.wrong{opacity:.4;filter:grayscale(.3)}
+@keyframes pulseWin{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+.quiz-box .quiz-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem;padding-top:10px;flex-wrap:wrap}
+.quiz-box .quiz-foot>span:first-child{flex:1;min-width:180px}
+.quiz-box .btn{padding:10px 22px;border:none;border-radius:8px;background:#fff;color:#1a1a2e;font-family:inherit;font-weight:800;cursor:pointer;font-size:.95rem}
+.quiz-box .btn:hover{background:#f0f0f0}
+@media(max-width:560px){.quiz-box .opts{grid-template-columns:1fr}.quiz-box .qtext{font-size:1.05rem}.quiz-box{padding:18px}}
 .ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(240,193,75,.18);border:1px solid rgba(240,193,75,.5);color:#f0c14b;font-size:.9rem;font-weight:700}
 .ammo-badge.low{background:rgba(214,69,69,.18);border-color:rgba(214,69,69,.6);color:#ff8a8a}
 `;
 
-/* ---------- BATTLESHIP builder (unchanged core, quiz + ammo) ---------- */
+/* ---------- BATTLESHIP ---------- */
 function buildBattleshipHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
-  const T = JSON.stringify(title).replace(/</g, '\\u003c');
   return `<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Battleship</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#061824;--bg2:#0a3a4d;--sea:#0d4f66;--sea-light:#14708f;--cell:#0e5a72;--cell-hover:#1a7a96;--text:#e8f4f8;--accent:#f0c14b;--hit:#d64545;--miss:#7eb8c9;--ship-placed:#5c8a9e;--sunk:#8b2e2e;--fog:#0a2f3d;--valid:rgba(80,200,140,.45);--invalid:rgba(214,69,69,.45)}
 *{box-sizing:border-box}
@@ -985,12 +1150,9 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .level-btn{padding:16px 20px;min-height:44px;border:2px solid rgba(255,255,255,.3);border-radius:12px;background:rgba(255,255,255,.08);color:inherit;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
 .level-btn:hover{background:rgba(255,255,255,.15)}
 .level-name{font-weight:700;font-size:1.1rem}.level-desc{font-size:.85rem;opacity:.85}
-.help-btn{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:inherit;font-size:1.1rem;font-weight:700;cursor:pointer}
 .game-screen{width:100%;max-width:920px;flex:1;display:flex;flex-direction:column;position:relative}
 .header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
 .level-badge{padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-size:.8rem;font-weight:600}
-.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(240,193,75,.18);border:1px solid rgba(240,193,75,.5);color:var(--accent);font-size:.9rem;font-weight:700}
-.ammo-badge.low{background:rgba(214,69,69,.18);border-color:rgba(214,69,69,.6);color:#ff8a8a}
 .header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
 .hud{font-weight:600;font-size:.9rem;max-width:280px}
 .btn{padding:10px 14px;min-height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
@@ -1000,7 +1162,6 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .placement-bar.hidden-bar{display:none}
 .ship-tray{display:flex;flex-wrap:wrap;gap:8px;flex:1}
 .ship-chip{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:8px 10px;min-height:44px;border:2px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(255,255,255,.06);color:inherit;font-family:inherit;cursor:pointer}
-.ship-chip:hover:not(:disabled){background:rgba(255,255,255,.12)}
 .ship-chip.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .ship-chip.placed{opacity:.45;cursor:default}
 .ship-chip-name{font-weight:700;font-size:.8rem}
@@ -1023,16 +1184,10 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .board.combat-target .cell:not(.miss):not(.hit):not(.sunk){cursor:pointer}
 .board.combat-target .cell:not(.miss):not(.hit):not(.sunk):hover{background:var(--cell-hover)}
 .board.placing .cell{cursor:pointer}
-.result-overlay,.help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
-.result-overlay{position:absolute;border-radius:8px}
-.result-box,.help-modal{background:linear-gradient(160deg,#0a3040,#0d4a5c);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:24px;max-width:420px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.45)}
-.help-modal{text-align:left;max-height:85vh;overflow-y:auto}
-.result-box h2,.help-header h2{margin:0 0 8px}
-.result-box p{margin:0;opacity:.9;line-height:1.45}
+.result-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.result-box{background:linear-gradient(160deg,#0a3040,#0d4a5c);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:24px;max-width:420px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.result-box h2{margin:0 0 8px}
 .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.help-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.help-close{width:44px;height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.12);color:inherit;font-size:1.5rem;cursor:pointer;line-height:1}
-.help-body p{margin:0 0 12px;line-height:1.45}.help-body ul{margin:0;padding-left:1.2rem;line-height:1.5}.help-body li{margin-bottom:8px}
 ${GAME_QUIZ_CSS}
 @media (max-width:720px){.boards{flex-direction:column;align-items:stretch}.board-panel{max-width:none;flex:1 1 auto}.hud{max-width:100%;width:100%;order:5}.header-actions{width:100%}.placement-bar{flex-direction:column;align-items:stretch}.placement-controls{justify-content:stretch}.placement-controls .btn{flex:1}}
 </style>
@@ -1040,7 +1195,7 @@ ${GAME_QUIZ_CSS}
 <body>
 <div class="wrapper">
   <div id="levelScreen" class="level-screen">
-    <div class="level-header"><h1>Battleship</h1><button type="button" id="helpBtnLevel" class="help-btn">?</button></div>
+    <div class="level-header"><h1>Battleship</h1></div>
     <p>Start with <b>5 ammo</b>. Every shot costs 1. Correct answers reload.</p>
     <div class="level-buttons">
       <button type="button" data-level="easy" class="level-btn"><span class="level-name">Easy</span><span class="level-desc">Random fire · no hunt</span></button>
@@ -1051,7 +1206,6 @@ ${GAME_QUIZ_CSS}
   <div id="gameScreen" class="game-screen hidden">
     <header class="header">
       <h1>Battleship</h1>
-      <button type="button" id="helpBtnGame" class="help-btn">?</button>
       <span class="level-badge" id="levelBadge">Easy</span>
       <span class="ammo-badge" id="ammoBadge">Ammo: 5</span>
       <div class="header-actions">
@@ -1082,15 +1236,6 @@ ${GAME_QUIZ_CSS}
     </div>
   </div>
 </div>
-<div id="helpOverlay" class="help-overlay hidden">
-  <div class="help-modal">
-    <div class="help-header"><h2>How to play</h2><button type="button" id="helpClose" class="help-close">&times;</button></div>
-    <div class="help-body">
-      <p>You have <b>5 ammo</b>. Each shot costs 1 ammo. When you run out, answer a question: correct = +3 ammo, wrong = +1 ammo.</p>
-      <ul><li>Place ships, then fire on enemy waters.</li><li>AI fires back after 2 seconds.</li><li>Sink the whole enemy fleet to win.</li></ul>
-    </div>
-  </div>
-</div>
 <script>
 (function(){
 "use strict";
@@ -1104,17 +1249,24 @@ var placementBar=document.getElementById("placementBar"),shipTray=document.getEl
 var rotateBtn=document.getElementById("rotateBtn"),readyBtn=document.getElementById("readyBtn");
 var playerBoardEl=document.getElementById("playerBoard"),enemyBoardEl=document.getElementById("enemyBoard");
 var resultOverlay=document.getElementById("resultOverlay"),resultTitle=document.getElementById("resultTitle"),resultMsg=document.getElementById("resultMsg");
-var helpOverlay=document.getElementById("helpOverlay");
 var level="easy",phase="level",horizontal=true,selectedShipId=null,playerTurn=true,aiThinking=false,hoverCell=null;
 var playerGrid=createEmptyGrid(),enemyGrid=createEmptyGrid(),playerShips=[],enemyShips=[],playerShots=createShotMap(),enemyShots=createShotMap();
 var aiHuntQueue=[],aiHitCells=[],aiParity=0;
 var AMMO_START=5, AMMO_PER_CORRECT=3, AMMO_PER_WRONG=1;
 var ammo=AMMO_START,quizIdx=0,quizOpen=false;
-function gState(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};}
-function setAmmo(v){ammo=v;} function setQuizIdx(v){quizIdx=v;} function setQuizOpen(v){quizOpen=v;}
-${GAME_QUIZ_HELPERS}
-var openQuiz = makeQuizModal(function(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};});
 function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=1);}
+${GAME_QUIZ_HELPERS}
+var openQuiz = makeQuizModal({
+  isOpen: function(){ return quizOpen; },
+  setOpen: function(v){ quizOpen = v; },
+  getAmmo: function(){ return ammo; },
+  setAmmo: function(v){ ammo = v; },
+  getIdx: function(){ return quizIdx; },
+  setIdx: function(v){ quizIdx = v; },
+  gainCorrect: AMMO_PER_CORRECT,
+  gainWrong: AMMO_PER_WRONG,
+  onUpdate: updateAmmoUI
+});
 function createEmptyGrid(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
 function createShotMap(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
 function key(r,c){return r+","+c;}
@@ -1123,7 +1275,6 @@ function shuffle(a){var s=a.slice();for(var i=s.length-1;i>0;i--){var j=Math.flo
 function shipCells(r,c,length,isH){var cells=[];for(var i=0;i<length;i++)cells.push({r:isH?r:r+i,c:isH?c+i:c});return cells;}
 function canPlace(g,r,c,length,isH){var cells=shipCells(r,c,length,isH);for(var i=0;i<cells.length;i++){var cell=cells[i];if(!inBounds(cell.r,cell.c))return false;if(g[cell.r][cell.c]!==null)return false;}return true;}
 function placeShipOnGrid(g,ships,def,r,c,isH){if(!canPlace(g,r,c,def.length,isH))return false;var cells=shipCells(r,c,def.length,isH);var ship={id:def.id,name:def.name,length:def.length,cells:cells.map(function(x){return{r:x.r,c:x.c};}),hits:0,sunk:false};cells.forEach(function(x){g[x.r][x.c]=def.id;});ships.push(ship);return true;}
-function removeShip(g,ships,id){var idx=ships.findIndex(function(s){return s.id===id;});if(idx===-1)return;var ship=ships[idx];ship.cells.forEach(function(x){g[x.r][x.c]=null;});ships.splice(idx,1);}
 function autoPlaceFleet(g,ships){for(var i=0;i<SIZE;i++)for(var j=0;j<SIZE;j++)g[i][j]=null;ships.length=0;for(var k=0;k<FLEET.length;k++){var def=FLEET[k];var placed=false;for(var a=0;a<400&&!placed;a++){var isH=Math.random()<0.5;var r=Math.floor(Math.random()*SIZE);var c=Math.floor(Math.random()*SIZE);placed=placeShipOnGrid(g,ships,def,r,c,isH);}if(!placed)return false;}return true;}
 function findShip(ships,id){return ships.find(function(s){return s.id===id;});}
 function allPlaced(){return playerShips.length===FLEET.length;}
@@ -1144,7 +1295,6 @@ function renderShipTray(){shipTray.innerHTML="";FLEET.forEach(function(def){var 
 function getPreviewCells(){if(phase!=="placement"||!selectedShipId||!hoverCell)return null;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return null;var cells=shipCells(hoverCell.r,hoverCell.c,def.length,horizontal);var valid=canPlace(playerGrid,hoverCell.r,hoverCell.c,def.length,horizontal);return{cells:cells,valid:valid};}
 function renderBoards(){var pv=getPreviewCells();var ps=new Set();if(pv){pv.cells.forEach(function(cl){if(inBounds(cl.r,cl.c))ps.add(key(cl.r,cl.c));});}playerBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r),c=Number(el.dataset.c);el.className="cell";var shot=enemyShots[r][c];var occ=playerGrid[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else if(occ)el.classList.add("ship");if(pv&&ps.has(key(r,c)))el.classList.add(pv.valid?"preview-valid":"preview-invalid");});enemyBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r),c=Number(el.dataset.c);el.className="cell";var shot=playerShots[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else el.classList.add("fog");});playerBoardEl.classList.toggle("placing",phase==="placement");enemyBoardEl.classList.toggle("combat-target",phase==="combat"&&playerTurn&&!aiThinking&&!quizOpen);}
 function setHud(t){hud.textContent=t;}
-function showHelp(s){helpOverlay.classList.toggle("hidden",!s);}
 function showResult(won){phase="result";resultOverlay.classList.remove("hidden");resultTitle.textContent=won?"Victory!":"Defeat";resultMsg.textContent=won?"You sank the enemy fleet.":"Your fleet has been destroyed.";playerTurn=false;aiThinking=false;renderBoards();}
 function startPlacement(){phase="placement";horizontal=true;selectedShipId=FLEET[0].id;playerTurn=true;aiThinking=false;hoverCell=null;playerGrid=createEmptyGrid();enemyGrid=createEmptyGrid();playerShips=[];enemyShips=[];playerShots=createShotMap();enemyShots=createShotMap();resetAiMemory();resultOverlay.classList.add("hidden");placementBar.classList.remove("hidden-bar");levelBadge.textContent=LEVEL_LABELS[level];ammo=AMMO_START;updateAmmoUI();setHud("Select a ship and place it");renderShipTray();renderBoards();}
 function startCombat(){var ok=false;for(var i=0;i<50&&!ok;i++)ok=autoPlaceFleet(enemyGrid,enemyShips);if(!ok){setHud("Placement failed");return;}phase="combat";playerTurn=true;aiThinking=false;selectedShipId=null;hoverCell=null;placementBar.classList.add("hidden-bar");setHud("Your turn — fire on enemy waters");renderBoards();}
@@ -1160,7 +1310,7 @@ function handlePlayerFire(r,c){
 }
 function scheduleAiTurn(){aiThinking=true;setHud("Enemy targeting… (2s)");renderBoards();setTimeout(function(){if(phase!=="combat")return;var t=chooseAiShot();if(!t){aiThinking=false;playerTurn=true;setHud("Your turn");renderBoards();return;}var o=applyShot(playerGrid,playerShips,enemyShots,t.r,t.c);onAiShotResult(t.r,t.c,o);if(o.result==="miss")setHud("Enemy missed");else if(o.result==="hit")setHud("Enemy hit your "+o.ship.name+"!");else setHud("Enemy sank your "+o.ship.name+"!");renderBoards();aiThinking=false;if(endIfOver())return;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();},2000);}
 function tryPlaceAt(r,c){if(phase!=="placement"||!selectedShipId)return;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return;if(findShip(playerShips,def.id))return;if(!canPlace(playerGrid,r,c,def.length,horizontal)){setHud("Invalid placement");return;}placeShipOnGrid(playerGrid,playerShips,def,r,c,horizontal);var nx=FLEET.find(function(s){return !findShip(playerShips,s.id);});selectedShipId=nx?nx.id:null;hoverCell=null;renderShipTray();renderBoards();if(allPlaced())setHud("Fleet ready — press Ready");}
-function openLevelScreen(){phase="level";gameScreen.classList.add("hidden");levelScreen.classList.remove("hidden");resultOverlay.classList.add("hidden");showHelp(false);}
+function openLevelScreen(){phase="level";gameScreen.classList.add("hidden");levelScreen.classList.remove("hidden");resultOverlay.classList.add("hidden");}
 function beginLevel(l){level=l;levelScreen.classList.add("hidden");gameScreen.classList.remove("hidden");startPlacement();}
 document.querySelectorAll(".level-btn").forEach(function(b){b.addEventListener("click",function(){beginLevel(b.dataset.level);});});
 rotateBtn.addEventListener("click",function(){if(phase!=="placement")return;horizontal=!horizontal;renderBoards();});
@@ -1169,9 +1319,6 @@ document.getElementById("newGameBtn").addEventListener("click",startPlacement);
 document.getElementById("changeLevelBtn").addEventListener("click",openLevelScreen);
 document.getElementById("playAgainBtn").addEventListener("click",startPlacement);
 document.getElementById("changeLevelFromResultBtn").addEventListener("click",openLevelScreen);
-document.getElementById("helpBtnLevel").addEventListener("click",function(){showHelp(true);});
-document.getElementById("helpBtnGame").addEventListener("click",function(){showHelp(true);});
-document.getElementById("helpClose").addEventListener("click",function(){showHelp(false);});
 playerBoardEl.addEventListener("click",function(e){var cell=e.target.closest(".cell");if(cell)tryPlaceAt(Number(cell.dataset.r),Number(cell.dataset.c));});
 playerBoardEl.addEventListener("mousemove",function(e){if(phase!=="placement"||!selectedShipId)return;var cell=e.target.closest(".cell");if(!cell)return;var r=Number(cell.dataset.r),c=Number(cell.dataset.c);if(!hoverCell||hoverCell.r!==r||hoverCell.c!==c){hoverCell={r:r,c:c};renderBoards();}});
 playerBoardEl.addEventListener("mouseleave",function(){if(phase==="placement"&&hoverCell){hoverCell=null;renderBoards();}});
@@ -1183,7 +1330,7 @@ updateAmmoUI();buildBoards();openLevelScreen();
 </html>`;
 }
 
-/* ---------- BUBBLE SHOOTER builder (5 ammo per correct) ---------- */
+/* ---------- BUBBLE SHOOTER ---------- */
 function buildBubbleHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
   return `<!DOCTYPE html>
@@ -1192,7 +1339,7 @@ function buildBubbleHTML(questions, title) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Bubble Shooter</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#0f172a;--panel:#1e293b;--text:#f1f5f9;--accent:#38bdf8}
 *{box-sizing:border-box}
@@ -1202,12 +1349,9 @@ body{margin:0;font-family:"Outfit",sans-serif;background:linear-gradient(160deg,
 .game-screen{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center}
 .header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%;margin-bottom:10px}
 .header h1{margin:0;font-size:clamp(1.35rem,4vw,2rem)}
-.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(56,189,248,.18);border:1px solid rgba(56,189,248,.5);color:var(--accent);font-size:.9rem;font-weight:700}
-.ammo-badge.low{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.6);color:#ff8a8a}
 .header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
 .score{font-weight:700;color:var(--accent)}
 .btn{padding:10px 14px;min-height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
-.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.4)}
 .canvas-wrap{position:relative;width:100%;max-width:400px}
 #gameCanvas{width:100%;height:auto;display:block;background:var(--panel);border-radius:12px;touch-action:none}
 .fire-btn{width:100%;margin-top:10px;background:var(--accent);color:#0f172a}
@@ -1253,14 +1397,23 @@ var COLORS=["#ef4444","#3b82f6","#22c55e","#eab308","#a855f7","#f97316"];
 var CFG={colors:5, rows:5, speed:8};
 var COLS=8,R=18,ROW_H=R*1.75;
 var canvas=document.getElementById("gameCanvas"),ctx=canvas.getContext("2d");
-var $=function(s){return document.querySelector(s);};
 var state={grid:[],score:0,aimAngle:-Math.PI/2,current:0,next:0,flying:null,running:false,gameOver:false};
 var AMMO_START=5, AMMO_PER_CORRECT=5, AMMO_PER_WRONG=1;
 var ammo=AMMO_START, quizIdx=0, quizOpen=false;
 var ammoBadge=document.getElementById("ammoBadge");
 function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=1);}
 ${GAME_QUIZ_HELPERS}
-var openQuiz = makeQuizModal(function(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};});
+var openQuiz = makeQuizModal({
+  isOpen: function(){ return quizOpen; },
+  setOpen: function(v){ quizOpen = v; },
+  getAmmo: function(){ return ammo; },
+  setAmmo: function(v){ ammo = v; },
+  getIdx: function(){ return quizIdx; },
+  setIdx: function(v){ quizIdx = v; },
+  gainCorrect: AMMO_PER_CORRECT,
+  gainWrong: AMMO_PER_WRONG,
+  onUpdate: updateAmmoUI
+});
 function colsInRow(r){return r%2===0?COLS:COLS-1;}
 function cellCenter(r,c){var odd=r%2===1;return{x:R+c*(R*2)+(odd?R:0)+8,y:R+r*ROW_H+8};}
 function randomColor(){return Math.floor(Math.random()*CFG.colors);}
@@ -1272,7 +1425,7 @@ function dropOrphans(){var connected=connectedToCeiling();var dropped=0;for(var 
 function snapBubble(x,y,color){var best=null,bestDist=Infinity;var maxRows=Math.max(state.grid.length+1,CFG.rows+2);for(var r=0;r<maxRows;r++){var n=colsInRow(r);if(!state.grid[r])state.grid[r]=Array(n).fill(null);while(state.grid[r].length<n)state.grid[r].push(null);for(var c=0;c<n;c++){if(state.grid[r][c]!==null)continue;var p=cellCenter(r,c);var d=Math.hypot(p.x-x,p.y-y);if(d<bestDist){bestDist=d;best={r:r,c:c};}}}if(!best)return;var nn=colsInRow(best.r);if(!state.grid[best.r])state.grid[best.r]=Array(nn).fill(null);state.grid[best.r][best.c]=color;var cl=findCluster(best.r,best.c);if(cl.length>=3){cl.forEach(function(p){state.grid[p[0]][p[1]]=null;});state.score+=cl.length*10;var dr=dropOrphans();state.score+=dr*15;}document.getElementById("scoreDisplay").textContent="Score: "+state.score;checkEnd();}
 function checkEnd(){var any=false,tooLow=false;var dangerY=canvas.height-80;for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++)if(state.grid[r][c]!==null){any=true;if(cellCenter(r,c).y+R>dangerY)tooLow=true;}if(!any)endGame(true);else if(tooLow)endGame(false);}
 function endGame(won){state.gameOver=true;state.running=false;state.flying=null;document.getElementById("resultTitle").textContent=won?"You cleared it!":"Game Over";document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");}
-function shoot(){if(!state.running||state.flying||state.gameOver)return;if(ammo<=0){openQuiz(function(){state.flying=null;});return;}ammo--;updateAmmoUI();var speed=CFG.speed;state.flying={x:canvas.width/2,y:canvas.height-40,vx:Math.cos(state.aimAngle)*speed,vy:Math.sin(state.aimAngle)*speed,color:state.current};state.current=state.next;state.next=randomColor();}
+function shoot(){if(!state.running||state.flying||state.gameOver)return;if(ammo<=0){openQuiz(function(){});return;}ammo--;updateAmmoUI();var speed=CFG.speed;state.flying={x:canvas.width/2,y:canvas.height-40,vx:Math.cos(state.aimAngle)*speed,vy:Math.sin(state.aimAngle)*speed,color:state.current};state.current=state.next;state.next=randomColor();}
 function update(){if(!state.flying)return;var b=state.flying;b.x+=b.vx;b.y+=b.vy;if(b.x-R<0){b.x=R;b.vx*=-1;}if(b.x+R>canvas.width){b.x=canvas.width-R;b.vx*=-1;}if(b.y-R<=0){snapBubble(b.x,R,b.color);state.flying=null;return;}for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++){if(state.grid[r][c]===null)continue;var p=cellCenter(r,c);if(Math.hypot(p.x-b.x,p.y-b.y)<R*1.85){snapBubble(b.x,b.y,b.color);state.flying=null;return;}}}
 function drawBubble(x,y,colorIndex){ctx.beginPath();ctx.arc(x,y,R-1,0,Math.PI*2);ctx.fillStyle=COLORS[colorIndex];ctx.fill();ctx.strokeStyle="rgba(255,255,255,0.35)";ctx.lineWidth=2;ctx.stroke();}
 function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#1e293b";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle="rgba(239,68,68,0.5)";ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(0,canvas.height-80);ctx.lineTo(canvas.width,canvas.height-80);ctx.stroke();ctx.setLineDash([]);for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++){if(state.grid[r][c]===null)continue;var p=cellCenter(r,c);drawBubble(p.x,p.y,state.grid[r][c]);}if(!state.flying&&state.running){var sx=canvas.width/2,sy=canvas.height-40;ctx.strokeStyle="rgba(255,255,255,0.35)";ctx.beginPath();ctx.moveTo(sx,sy);var ax=sx,ay=sy,vx=Math.cos(state.aimAngle),vy=Math.sin(state.aimAngle);for(var i=0;i<80;i++){ax+=vx*8;ay+=vy*8;if(ax<R||ax>canvas.width-R)vx*=-1;if(ay<0)break;ctx.lineTo(ax,ay);}ctx.stroke();}if(state.flying)drawBubble(state.flying.x,state.flying.y,state.flying.color);else if(state.running)drawBubble(canvas.width/2,canvas.height-40,state.current);ctx.fillStyle="#94a3b8";ctx.font="12px Outfit, sans-serif";ctx.fillText("Next",12,canvas.height-12);drawBubble(50,canvas.height-28,state.next);}
@@ -1293,7 +1446,7 @@ updateAmmoUI();startNewGame();
 </html>`;
 }
 
-/* ---------- ASTEROIDS builder (10 ammo per correct) ---------- */
+/* ---------- ASTEROIDS ---------- */
 function buildAsteroidsHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
   return `<!DOCTYPE html>
@@ -1302,7 +1455,7 @@ function buildAsteroidsHTML(questions, title) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Asteroids</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#050816;--panel:#0b1224;--text:#e2e8f0;--accent:#38bdf8;--danger:#ef4444;--ok:#22c55e}
 *{box-sizing:border-box}
@@ -1312,9 +1465,6 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .game-screen{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center}
 .header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%;margin-bottom:10px}
 .header h1{margin:0;font-size:clamp(1.3rem,4vw,2rem)}
-.level-badge{padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.25);font-size:.8rem;font-weight:600}
-.ammo-badge{padding:6px 12px;border-radius:20px;background:rgba(240,193,75,.18);border:1px solid rgba(240,193,75,.5);color:#f0c14b;font-size:.9rem;font-weight:700}
-.ammo-badge.low{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.6);color:#ff8a8a}
 .header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
 .hud{font-weight:700;color:var(--accent);font-size:.85rem}
 .btn{padding:10px 14px;min-height:44px;border:none;border-radius:8px;background:rgba(255,255,255,.25);color:inherit;font-family:inherit;font-weight:600;cursor:pointer}
@@ -1376,7 +1526,17 @@ var ammo=AMMO_START,quizIdx=0,quizOpen=false;
 var ammoBadge=document.getElementById("ammoBadge");
 function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=2);}
 ${GAME_QUIZ_HELPERS}
-var openQuiz = makeQuizModal(function(){return{ammo:ammo,quizOpen:quizOpen,quizIdx:quizIdx,ammoPerCorrect:AMMO_PER_CORRECT,ammoPerWrong:AMMO_PER_WRONG,updateAmmo:updateAmmoUI};});
+var openQuiz = makeQuizModal({
+  isOpen: function(){ return quizOpen; },
+  setOpen: function(v){ quizOpen = v; },
+  getAmmo: function(){ return ammo; },
+  setAmmo: function(v){ ammo = v; },
+  getIdx: function(){ return quizIdx; },
+  setIdx: function(v){ quizIdx = v; },
+  gainCorrect: AMMO_PER_CORRECT,
+  gainWrong: AMMO_PER_WRONG,
+  onUpdate: updateAmmoUI
+});
 function wrap(v,max){if(v<0)return v+max;if(v>=max)return v-max;return v;}
 function dist(ax,ay,bx,by){var dx=ax-bx,dy=ay-by;return Math.sqrt(dx*dx+dy*dy);}
 function circleHit(ax,ay,ar,bx,by,br){return dist(ax,ay,bx,by)<ar+br;}
@@ -1416,10 +1576,9 @@ requestAnimationFrame(loop);
 </html>`;
 }
 
-/* ============== Boot ============== */
+/* =================== Boot =================== */
 document.querySelectorAll('#sidebar .side-menu.top li a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
-/* Inject preset set if the user has no sets yet (or lost them). */
 (function ensurePreset() {
   const hasPreset = qsets.some(q => q.id === 'qs_preset');
   if (!hasPreset) {
@@ -1437,6 +1596,10 @@ document.querySelectorAll('#sidebar .side-menu.top li a').forEach(a => a.addEven
 render();
 route();
 renderAIErrors();
+updateAuthBadge();
+
+// Kick off auth as soon as the page loads so the badge settles quickly.
+ensureAuth().then(updateAuthBadge).catch(() => {});
 </script>
 </body>
 </html>
