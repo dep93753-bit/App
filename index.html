@@ -93,10 +93,11 @@ main{padding:28px 24px;color:var(--dark)}
 .ctop .tools{display:flex;align-items:center;gap:14px;font-size:26px}
 .ctop .tools .bx{cursor:pointer}
 .row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.tabs{display:flex;border:1px solid #ccc;border-radius:6px;overflow:hidden;background:var(--light)}
-.tabs button{padding:12px 24px;border:none;border-right:1px solid #ccc;background:var(--grey);color:var(--dark);font-size:16px;font-weight:600}
+.tabs{display:flex;border:1px solid #ccc;border-radius:6px;overflow:hidden;background:var(--light);flex-wrap:wrap}
+.tabs button{padding:12px 20px;border:none;border-right:1px solid #ccc;background:var(--grey);color:var(--dark);font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
 .tabs button:last-child{border-right:none}
 .tabs button.on{background:var(--light);color:var(--blue)}
+.tabs button .bx{font-size:16px}
 .btn{background:var(--blue);color:#fff;border:none;border-bottom:4px solid #1f48a0;border-radius:6px;padding:10px 28px;font-size:16px;font-weight:600}
 .btn.ghost{background:none;color:var(--blue);border:1px solid var(--blue);border-bottom-width:1px}
 .btn.danger{background:var(--red);border-bottom-color:#a53a35}
@@ -257,13 +258,11 @@ main{padding:28px 24px;color:var(--dark)}
 .qs-pick button .qst b{display:block;font-size:14px}
 .qs-pick button .qst small{color:var(--dark-grey);font-size:12px}
 
-/* ============ Teacher / Student toggle ============ */
 .mode-toggle{display:flex;background:var(--grey);border-radius:20px;padding:3px;gap:2px;font-family:var(--lato);flex:none}
 .mode-toggle button{border:none;background:transparent;padding:6px 14px;border-radius:16px;font-size:13px;font-weight:600;color:var(--dark-grey);cursor:pointer;transition:background .15s,color .15s;font-family:inherit;display:flex;align-items:center;gap:5px}
 .mode-toggle button.on{background:var(--blue);color:#fff}
 .mode-toggle button:not(.on):hover{background:var(--light-blue);color:var(--blue)}
 
-/* ============ Student view ============ */
 .student-join-wrap{display:flex;align-items:center;justify-content:center;min-height:55vh;padding:20px}
 .student-join-card{background:var(--light);border-radius:16px;padding:40px 32px;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center;max-width:420px;width:100%}
 .student-join-card .sj-icon{width:72px;height:72px;border-radius:50%;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px}
@@ -283,6 +282,39 @@ main{padding:28px 24px;color:var(--dark)}
 .student-post .meta small{display:block;color:var(--dark-grey)}
 .student-post p{white-space:pre-wrap;word-break:break-word}
 .student-empty{padding:36px 20px;text-align:center;color:var(--dark-grey)}
+
+/* Student home */
+.shwelcome{background:linear-gradient(135deg,#4a90e2,#2F65C8);color:#fff;border-radius:14px;padding:28px 24px;margin-bottom:20px}
+.shwelcome h1{font-size:26px;margin-bottom:6px}
+.shwelcome p{opacity:.92;font-size:15px}
+.shgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.shcard{background:var(--light);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:6px}
+.shcard .shc-icon{width:40px;height:40px;border-radius:10px;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:4px}
+.shcard b{font-size:26px;color:var(--dark);line-height:1.1}
+.shcard small{color:var(--dark-grey);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.shsection{background:var(--light);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.shsection h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.shsection h3 .bx{color:var(--blue);font-size:20px}
+.shsection .seeall{text-align:left;padding-top:8px}
+.shline{padding:12px 0;border-bottom:1px solid var(--grey);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.shline:last-child{border-bottom:none}
+.shline .shl-icon{width:36px;height:36px;border-radius:8px;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.shline .shl-info{flex:1;min-width:0}
+.shline .shl-info b{font-size:14px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shline .shl-info small{color:var(--dark-grey);font-size:12px}
+.shline .shl-actions{display:flex;gap:6px}
+.shquick{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Student scores */
+.score-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--grey);flex-wrap:wrap}
+.score-row:last-child{border-bottom:none}
+.score-row .sr-badge{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex:none}
+.score-row .sr-badge.win{background:#26890c}
+.score-row .sr-badge.lose{background:#b3261e}
+.score-row .sr-info{flex:1;min-width:140px}
+.score-row .sr-info b{font-size:15px;text-transform:capitalize}
+.score-row .sr-info small{display:block;color:var(--dark-grey);font-size:12px}
+.score-row .sr-score{font-size:18px;font-weight:700;color:var(--blue)}
 </style>
 </head>
 <body>
@@ -324,7 +356,6 @@ main{padding:28px 24px;color:var(--dark)}
   </nav>
 
   <main>
-    <!-- Teacher views -->
     <div class="classes view on" id="classes" data-view="classes">
       <button class="railopen" id="railOpen"><i class='bx bx-menu-alt-left'></i>Classes</button>
       <aside class="rail">
@@ -380,7 +411,6 @@ main{padding:28px 24px;color:var(--dark)}
       <div id="qsList"></div>
     </div>
 
-    <!-- Student views -->
     <div class="view" id="studentJoinView">
       <div class="student-join-wrap">
         <div class="student-join-card">
@@ -424,7 +454,6 @@ window.addEventListener('error', function (e) {
 let nav = 'classes';
 const VIEWS = ['classes', 'ai', 'questions'];
 
-/* =================== UI mode (teacher / student) =================== */
 let uiMode = 'teacher';
 try {
   const m = localStorage.getItem('adminhub_ui_mode_v1');
@@ -443,7 +472,7 @@ function saveStudentSession() {
     else localStorage.removeItem('adminhub_student_join_v1');
   } catch (e) {}
 }
-let studentTab = 'posts';
+let studentTab = 'home';
 
 function updateModeToggle() {
   document.querySelectorAll('#modeToggle button').forEach(b => {
@@ -457,7 +486,6 @@ function updateStudentSidebarExtras() {
   if (leaveBtn) leaveBtn.style.display = (uiMode === 'student' && studentSession) ? '' : 'none';
 }
 
-/* =================== ORIGINAL DASHBOARD =================== */
 const KEY = 'adminhub_classes_v1';
 let railOpen = true;
 try { railOpen = localStorage.getItem('adminhub_rail_open') !== '0'; } catch (e) {}
@@ -642,7 +670,6 @@ $('#notificationIcon').onclick = e => { e.preventDefault(); $('#notificationMenu
 $('#profileIcon').onclick = e => { e.preventDefault(); $('#profileMenu').classList.toggle('show'); $('#notificationMenu').classList.remove('show'); };
 addEventListener('click', e => { if (!e.target.closest('.notification') && !e.target.closest('.profile')) document.querySelectorAll('.dd').forEach(d => d.classList.remove('show')); });
 
-/* =================== Teacher/Student toggle =================== */
 document.getElementById('modeToggle').addEventListener('click', e => {
   const btn = e.target.closest('[data-mode]');
   if (!btn) return;
@@ -655,7 +682,7 @@ document.getElementById('modeToggle').addEventListener('click', e => {
   updateStudentSidebarExtras();
 });
 
-/* =================== Top nav (teacher) =================== */
+/* ===== ROUTER — now clears student views in teacher mode ===== */
 function route() {
   const teacherMenu = document.querySelector('.side-menu.teacher-menu');
   const studentMenu = document.querySelector('.side-menu.student-menu');
@@ -676,6 +703,12 @@ function route() {
     updateStudentSidebarExtras();
     return;
   }
+
+  /* TEACHER: hide student views explicitly to fix the bug */
+  const sj = document.getElementById('studentJoinView');
+  const sc = document.getElementById('studentClassView');
+  if (sj) sj.classList.remove('on');
+  if (sc) sc.classList.remove('on');
 
   VIEWS.forEach(v => {
     const el = document.querySelector('.view[data-view="' + v + '"]');
@@ -701,16 +734,14 @@ document.querySelectorAll('#sidebar .teacher-menu li').forEach(li => {
   });
 });
 
-/* =================== Student join + class view =================== */
+/* ===== STUDENT JOIN ===== */
 function renderStudentJoin() {
   const input = document.getElementById('joinCodeInput');
   const btn = document.getElementById('joinCodeBtn');
   const err = document.getElementById('joinCodeError');
   if (!input || !btn) return;
-
   input.value = '';
   if (err) { err.style.display = 'none'; err.textContent = ''; }
-
   const submit = () => {
     const code = input.value.trim().toUpperCase();
     if (!code) return;
@@ -724,12 +755,11 @@ function renderStudentJoin() {
     saveStudentSession();
     c.opened = Date.now();
     save();
-    studentTab = 'posts';
+    studentTab = 'home';
     toast('Joined ' + c.name);
     route();
     updateStudentSidebarExtras();
   };
-
   btn.onclick = submit;
   input.onkeydown = e => { if (e.key === 'Enter') submit(); };
   setTimeout(() => input.focus(), 100);
@@ -749,6 +779,34 @@ document.getElementById('studentLeaveBtn').addEventListener('click', e => {
   leaveStudentClass();
 });
 
+/* ===== SCORE STORAGE ===== */
+const SCORE_KEY = 'adminhub_student_scores_v1';
+function getScores(classId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
+    return all[classId] || [];
+  } catch (e) { return []; }
+}
+function recordScore(classId, game, won, score) {
+  try {
+    const all = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
+    if (!all[classId]) all[classId] = [];
+    all[classId].unshift({ game, won: !!won, score: Number(score) || 0, time: Date.now() });
+    if (all[classId].length > 100) all[classId] = all[classId].slice(0, 100);
+    localStorage.setItem(SCORE_KEY, JSON.stringify(all));
+  } catch (e) {}
+  if (uiMode === 'student' && studentSession && studentSession.classId === classId && studentTab === 'scores') {
+    renderStudentClass();
+  }
+}
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (!d || typeof d !== 'object' || d.type !== 'gameEnd') return;
+  if (uiMode !== 'student' || !studentSession) return;
+  recordScore(studentSession.classId, d.game || 'unknown', !!d.won, d.score);
+});
+
+/* ===== STUDENT CLASS VIEW (5 tabs) ===== */
 function renderStudentClass() {
   const inner = document.getElementById('studentClassInner');
   if (!inner) return;
@@ -766,31 +824,19 @@ function renderStudentClass() {
         </div>
       </div>`;
     const b = document.getElementById('studentResetBtn');
-    if (b) b.onclick = () => {
-      studentSession = null; saveStudentSession(); route(); updateStudentSidebarExtras();
-    };
+    if (b) b.onclick = () => { studentSession = null; saveStudentSession(); route(); updateStudentSidebarExtras(); };
     return;
   }
 
-  const showWall = c.settings && c.settings.wallVisible !== false;
-
-  const postsHtml = (!showWall)
-    ? `<div class="student-empty">Your teacher has hidden the posts wall for now.</div>`
-    : (c.posts.length
-        ? c.posts.map(p => `<div class="student-post"><div class="meta"><div class="avatar"><i class='bx bxs-user'></i></div><div><b>${esc(p.by || 'Teacher')}</b><small>${fmt(p.time)}</small></div></div><p>${esc(p.text)}</p></div>`).join('')
-        : `<div class="student-empty">No posts yet.</div>`);
-
-  const assignmentsHtml = c.assignments.length
-    ? c.assignments.map(a => `
-        <div class="student-post">
-          <div class="meta">
-            <div class="avatar" style="background:#2F65C8"><i class='bx bxs-task'></i></div>
-            <div><b>Assignment</b><small>${fmt(a.time)}${a.kind === 'quiz' ? ' · quiz' : ''}</small></div>
-          </div>
-          <p>${esc(a.text)}</p>
-          ${a.kind === 'quiz' && a.quizId ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="playbtn battleship" data-student-play="${a.quizId}" data-game="battleship"><i class='bx bxs-ship'></i> Battleship</button><button class="playbtn bubble" data-student-play="${a.quizId}" data-game="bubble"><i class='bx bxs-circle'></i> Bubble Shooter</button><button class="playbtn asteroids" data-student-play="${a.quizId}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button></div>` : ''}
-        </div>`).join('')
-    : `<div class="student-empty">No assignments yet. Check back soon!</div>`;
+  const scores = getScores(c.id);
+  const tabs = [
+    { id: 'home', label: 'Home', icon: 'bxs-home' },
+    { id: 'posts', label: 'Posts', icon: 'bxs-message-rounded' },
+    { id: 'assignments', label: 'Assignments', icon: 'bxs-task' },
+    { id: 'practice', label: 'Practice', icon: 'bxs-book' },
+    { id: 'scores', label: 'My scores', icon: 'bxs-bar-chart-alt-2' }
+  ];
+  const activeTab = tabs.find(t => t.id === studentTab) ? studentTab : 'home';
 
   inner.innerHTML = `
     <div class="student-class-hd">
@@ -802,13 +848,10 @@ function renderStudentClass() {
     </div>
     <div class="row">
       <div class="tabs">
-        <button data-student-tab="posts" class="${studentTab === 'posts' ? 'on' : ''}">Posts</button>
-        <button data-student-tab="assignments" class="${studentTab === 'assignments' ? 'on' : ''}">Assignments</button>
+        ${tabs.map(t => `<button data-student-tab="${t.id}" class="${activeTab === t.id ? 'on' : ''}"><i class='bx ${t.icon}'></i>${t.label}</button>`).join('')}
       </div>
     </div>
-    <div class="card" style="padding:0">
-      ${studentTab === 'posts' ? postsHtml : assignmentsHtml}
-    </div>
+    <div id="studentTabBody"></div>
   `;
 
   inner.querySelectorAll('[data-student-tab]').forEach(b => {
@@ -817,6 +860,190 @@ function renderStudentClass() {
   const lv = document.getElementById('studentLeaveBtn2');
   if (lv) lv.onclick = leaveStudentClass;
 
+  const body = document.getElementById('studentTabBody');
+  if (activeTab === 'home') renderStudentHome(c, scores);
+  else if (activeTab === 'posts') renderStudentPosts(c);
+  else if (activeTab === 'assignments') renderStudentAssignments(c);
+  else if (activeTab === 'practice') renderStudentPractice(c);
+  else if (activeTab === 'scores') renderStudentScores(c, scores);
+}
+
+function renderStudentHome(c, scores) {
+  const body = document.getElementById('studentTabBody');
+  const wins = scores.filter(s => s.won).length;
+  const gamesPlayed = scores.length;
+  const showWall = c.settings && c.settings.wallVisible !== false;
+  const nextAssign = c.assignments[0] || null;
+  const recentPosts = showWall ? c.posts.slice(0, 3) : [];
+
+  let nextAssignBlock = '';
+  if (nextAssign) {
+    nextAssignBlock = `
+      <div class="shsection">
+        <h3><i class='bx bxs-task'></i> Latest assignment</h3>
+        <div class="shline">
+          <div class="shl-icon"><i class='bx bxs-task'></i></div>
+          <div class="shl-info">
+            <b>${esc(nextAssign.text)}</b>
+            <small>${fmt(nextAssign.time)}${nextAssign.kind === 'quiz' ? ' · quiz' : ''}</small>
+          </div>
+          ${nextAssign.kind === 'quiz' && nextAssign.quizId ? `<div class="shl-actions">
+            <button class="playbtn battleship" data-student-play="${nextAssign.quizId}" data-game="battleship"><i class='bx bxs-ship'></i> Play</button>
+          </div>` : ''}
+        </div>
+        <button class="seeall" data-student-tab-link="assignments">See all assignments</button>
+      </div>`;
+  }
+
+  let postsBlock = '';
+  if (recentPosts.length) {
+    postsBlock = `
+      <div class="shsection">
+        <h3><i class='bx bxs-message-rounded'></i> Recent posts</h3>
+        ${recentPosts.map(p => `<div class="shline"><div class="shl-icon"><i class='bx bxs-user'></i></div><div class="shl-info"><b>${esc(p.text.length > 80 ? p.text.slice(0, 80) + '…' : p.text)}</b><small>${fmt(p.time)}</small></div></div>`).join('')}
+        <button class="seeall" data-student-tab-link="posts">See posts wall</button>
+      </div>`;
+  } else if (!showWall) {
+    postsBlock = `<div class="shsection"><h3><i class='bx bxs-message-rounded'></i> Recent posts</h3><div class="student-empty">Your teacher has hidden the posts wall for now.</div></div>`;
+  }
+
+  body.innerHTML = `
+    <div class="shwelcome">
+      <h1>Hi, welcome to ${esc(c.name)}!</h1>
+      <p>You're in. Everything your teacher posts and assigns will show up here.</p>
+    </div>
+    <div class="shgrid">
+      <div class="shcard">
+        <div class="shc-icon"><i class='bx bxs-message-rounded'></i></div>
+        <b>${showWall ? c.posts.length : '—'}</b>
+        <small>Posts</small>
+      </div>
+      <div class="shcard">
+        <div class="shc-icon"><i class='bx bxs-task'></i></div>
+        <b>${c.assignments.length}</b>
+        <small>Assignments</small>
+      </div>
+      <div class="shcard">
+        <div class="shc-icon"><i class='bx bxs-trophy'></i></div>
+        <b>${wins}</b>
+        <small>Wins</small>
+      </div>
+      <div class="shcard">
+        <div class="shc-icon"><i class='bx bxs-joystick'></i></div>
+        <b>${gamesPlayed}</b>
+        <small>Games played</small>
+      </div>
+    </div>
+    ${nextAssignBlock}
+    ${postsBlock}
+    <div class="shsection">
+      <h3><i class='bx bxs-book'></i> Quick practice</h3>
+      <p style="color:var(--dark-grey);font-size:14px;margin-bottom:12px">Play a game with any question set. Earn ammo by answering correctly.</p>
+      <div class="shquick">
+        ${qsets.length ? qsets.slice(0, 3).map(q => `<button class="playbtn battleship" data-student-play="${q.id}" data-game="battleship"><i class='bx bxs-ship'></i> ${esc(q.title)}</button>`).join('') : '<div class="student-empty" style="padding:12px">No question sets yet.</div>'}
+      </div>
+    </div>
+  `;
+  wireStudentBodyHandlers();
+}
+
+function renderStudentPosts(c) {
+  const body = document.getElementById('studentTabBody');
+  const showWall = c.settings && c.settings.wallVisible !== false;
+  if (!showWall) {
+    body.innerHTML = `<div class="card"><div class="student-empty">Your teacher has hidden the posts wall for now.</div></div>`;
+    return;
+  }
+  if (!c.posts.length) {
+    body.innerHTML = `<div class="card"><div class="student-empty">No posts yet.</div></div>`;
+    return;
+  }
+  body.innerHTML = `<div class="card">${c.posts.map(p => `
+    <div class="student-post">
+      <div class="meta">
+        <div class="avatar"><i class='bx bxs-user'></i></div>
+        <div><b>${esc(p.by || 'Teacher')}</b><small>${fmt(p.time)}</small></div>
+      </div>
+      <p>${esc(p.text)}</p>
+    </div>`).join('')}</div>`;
+}
+
+function renderStudentAssignments(c) {
+  const body = document.getElementById('studentTabBody');
+  if (!c.assignments.length) {
+    body.innerHTML = `<div class="card"><div class="student-empty">No assignments yet. Check back soon!</div></div>`;
+    return;
+  }
+  body.innerHTML = `<div class="card">${c.assignments.map(a => `
+    <div class="student-post">
+      <div class="meta">
+        <div class="avatar" style="background:#2F65C8"><i class='bx bxs-task'></i></div>
+        <div><b>Assignment</b><small>${fmt(a.time)}${a.kind === 'quiz' ? ' · quiz' : ''}</small></div>
+      </div>
+      <p>${esc(a.text)}</p>
+      ${a.kind === 'quiz' && a.quizId ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="playbtn battleship" data-student-play="${a.quizId}" data-game="battleship"><i class='bx bxs-ship'></i> Battleship</button><button class="playbtn bubble" data-student-play="${a.quizId}" data-game="bubble"><i class='bx bxs-circle'></i> Bubble Shooter</button><button class="playbtn asteroids" data-student-play="${a.quizId}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button></div>` : ''}
+    </div>`).join('')}</div>`;
+  wireStudentBodyHandlers();
+}
+
+function renderStudentPractice(c) {
+  const body = document.getElementById('studentTabBody');
+  if (!qsets.length) {
+    body.innerHTML = `<div class="qb-empty"><i class='bx bxs-book'></i><h3>No question sets yet</h3><p style="margin:8px 0 16px">Your teacher hasn't made any question sets.</p></div>`;
+    return;
+  }
+  body.innerHTML = qsets.map(qs => `
+    <div class="qset">
+      <div class="top">
+        <div class="info">
+          <b>${esc(qs.title)}</b>
+          <small>${qs.questions.length} questions${qs.grade ? ' · ' + esc(qs.grade) : ''}${qs.difficulty ? ' · ' + esc(qs.difficulty) : ''}</small>
+        </div>
+      </div>
+      <div class="playrow">
+        <button class="playbtn battleship" data-student-play="${qs.id}" data-game="battleship"><i class='bx bxs-ship'></i> Battleship</button>
+        <button class="playbtn bubble" data-student-play="${qs.id}" data-game="bubble"><i class='bx bxs-circle'></i> Bubble Shooter</button>
+        <button class="playbtn asteroids" data-student-play="${qs.id}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button>
+      </div>
+    </div>`).join('');
+  wireStudentBodyHandlers();
+}
+
+function renderStudentScores(c, scores) {
+  const body = document.getElementById('studentTabBody');
+  if (!scores.length) {
+    body.innerHTML = `<div class="card"><div class="student-empty"><i class='bx bxs-bar-chart-alt-2' style="font-size:42px;color:var(--blue);display:block;margin-bottom:12px"></i>No games played yet. Try one from Practice!</div></div>`;
+    return;
+  }
+  const wins = scores.filter(s => s.won).length;
+  const total = scores.length;
+  const bestScore = scores.reduce((m, s) => Math.max(m, s.score || 0), 0);
+  body.innerHTML = `
+    <div class="shgrid" style="margin-bottom:16px">
+      <div class="shcard"><div class="shc-icon"><i class='bx bxs-trophy'></i></div><b>${wins}</b><small>Wins</small></div>
+      <div class="shcard"><div class="shc-icon"><i class='bx bxs-joystick'></i></div><b>${total}</b><small>Games</small></div>
+      <div class="shcard"><div class="shc-icon"><i class='bx bxs-star'></i></div><b>${bestScore}</b><small>Best score</small></div>
+      <div class="shcard"><div class="shc-icon"><i class='bx bxs-bar-chart-alt-2'></i></div><b>${total ? Math.round(wins / total * 100) : 0}%</b><small>Win rate</small></div>
+    </div>
+    <div class="card" style="padding:0 20px">
+      ${scores.map(s => {
+        const gameNames = { battleship: 'Battleship', bubble: 'Bubble Shooter', asteroids: 'Asteroids' };
+        const name = gameNames[s.game] || s.game;
+        return `<div class="score-row">
+          <div class="sr-badge ${s.won ? 'win' : 'lose'}"><i class='bx ${s.won ? 'bxs-check' : 'bx-x'}'></i></div>
+          <div class="sr-info"><b>${esc(name)}</b><small>${s.won ? 'Won' : 'Lost'} · ${fmt(s.time)}</small></div>
+          <div class="sr-score">${s.score || 0}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function wireStudentBodyHandlers() {
+  const inner = document.getElementById('studentClassInner');
+  if (!inner) return;
+  inner.querySelectorAll('[data-student-tab-link]').forEach(b => {
+    b.onclick = () => { studentTab = b.dataset.studentTabLink; renderStudentClass(); };
+  });
   inner.querySelectorAll('[data-student-play]').forEach(b => {
     b.onclick = () => {
       const qs = qsets.find(x => x.id === b.dataset.studentPlay);
@@ -825,7 +1052,7 @@ function renderStudentClass() {
   });
 }
 
-/* =================== Questions storage =================== */
+/* ===== QUESTIONS STORAGE ===== */
 const QKEY = 'adminhub_questions_v2';
 let qsets = [];
 try { const r = localStorage.getItem(QKEY); if (r) qsets = JSON.parse(r); } catch (e) {}
@@ -852,7 +1079,7 @@ const PRESET_QUESTIONS = [
   { question: "In which year did WWII end?", options: ["1943","1944","1945","1946"], correct: 2, timeLimit: 20, explanation: "WWII ended in 1945." }
 ];
 
-/* =================== AI Quiz =================== */
+/* ===== AI QUIZ ===== */
 const AI_MODEL = 'gpt-4o-mini';
 const AI_FALLBACK = 'gpt-4o';
 
@@ -877,7 +1104,6 @@ function renderAIErrors() {
 document.getElementById('aiErrorsToggle').onclick = () => { const p = document.getElementById('aiErrors'); p.hidden = !p.hidden; };
 document.getElementById('aiErrorsClear').onclick = () => { aiErrors = []; renderAIErrors(); };
 
-/* =================== AUTH =================== */
 let authState = 'unknown';
 let authLastError = null;
 let authLastReason = '';
@@ -910,7 +1136,6 @@ function describeAuthError(e) {
   if (code) return 'Puter returned code: ' + code;
   return 'Unknown error.';
 }
-
 function showAuthPopup({ title, body, tone, actions }) {
   const scrim = document.getElementById('authScrim');
   const modal = document.getElementById('authModal');
@@ -952,7 +1177,6 @@ document.getElementById('authScrim').addEventListener('click', e => {
 async function ensureAuth(opts = {}) {
   const forceRealSignIn = !!opts.forceRealSignIn;
   const silent = !!opts.silent;
-
   if (authInFlight && !forceRealSignIn) return authInFlight;
   authInFlight = (async () => {
     if (!window.puter || !puter.auth) {
@@ -961,7 +1185,6 @@ async function ensureAuth(opts = {}) {
       logAIError('Puter.js auth not available', new Error(authLastReason));
       return false;
     }
-
     try {
       const signedIn = await puter.auth.isSignedIn();
       if (signedIn) {
@@ -973,8 +1196,7 @@ async function ensureAuth(opts = {}) {
           if (!forceRealSignIn) { authAttempts = 0; return true; }
         }
       }
-    } catch (e) { /* fall through */ }
-
+    } catch (e) {}
     if (authState === 'exhausted' || forceRealSignIn) {
       try {
         await puter.auth.signIn();
@@ -994,7 +1216,6 @@ async function ensureAuth(opts = {}) {
         return false;
       }
     }
-
     try {
       await puter.auth.signIn({ attempt_temp_user_creation: true });
       authState = 'temp';
@@ -1008,7 +1229,6 @@ async function ensureAuth(opts = {}) {
       authLastReason = describeAuthError(e);
       logAIError('Temp user creation failed', e, 'code: ' + (e && e.error ? e.error : 'unknown') + ' — trying normal sign-in next');
     }
-
     try {
       await puter.auth.signIn();
       authState = 'signed';
@@ -1026,16 +1246,12 @@ async function ensureAuth(opts = {}) {
       return false;
     }
   })();
-
   try { return await authInFlight; }
   finally { authInFlight = null; updateAuthBadge(); updateLogoutVisibility(); }
 }
 
 async function puterLogout() {
-  if (authState !== 'signed') {
-    toast('Logout only works for a full Puter account, not a guest session.');
-    return;
-  }
+  if (authState !== 'signed') { toast('Logout only works for a full Puter account, not a guest session.'); return; }
   try {
     await puter.auth.signOut();
     authState = 'unknown';
@@ -1051,10 +1267,7 @@ async function puterLogout() {
       tone: 'warn',
       actions: [
         { label: 'Reload', onClick: () => location.reload() },
-        { label: 'Sign in again', kind: 'ghost', onClick: async () => {
-          const ok = await ensureAuth({ forceRealSignIn: true, silent: true });
-          if (ok) toast('Signed in.');
-        }}
+        { label: 'Sign in again', kind: 'ghost', onClick: async () => { const ok = await ensureAuth({ forceRealSignIn: true, silent: true }); if (ok) toast('Signed in.'); }}
       ]
     });
   } catch (e) {
@@ -1076,7 +1289,6 @@ function updateAuthBadge() {
   badge.classList.remove('temp', 'signed', 'failed', 'exhausted', 'clickable');
   badge.style.cursor = '';
   badge.onclick = null;
-
   if (authState === 'temp') {
     badge.classList.add('temp', 'clickable');
     icon.className = 'bx bx-user-check';
@@ -1097,12 +1309,7 @@ function updateAuthBadge() {
     text.textContent = 'Out of credits — click to sign in';
     badge.style.cursor = 'pointer';
     badge.title = 'Guest accounts have no AI credits. Click to sign in with a real account.';
-    badge.onclick = async () => {
-      authState = 'unknown';
-      updateAuthBadge();
-      const ok = await ensureAuth({ forceRealSignIn: true });
-      if (ok) toast('Signed in.');
-    };
+    badge.onclick = async () => { authState = 'unknown'; updateAuthBadge(); const ok = await ensureAuth({ forceRealSignIn: true }); if (ok) toast('Signed in.'); };
   } else if (authState === 'failed') {
     badge.classList.add('failed', 'clickable');
     icon.className = 'bx bx-error-circle';
@@ -1114,10 +1321,7 @@ function updateAuthBadge() {
       body: authLastReason || 'Unknown error. Check the Errors panel for details.',
       tone: 'bad',
       actions: [
-        { label: 'Try again', onClick: async () => {
-          authState = 'unknown'; updateAuthBadge();
-          await ensureAuth({ forceRealSignIn: true });
-        }},
+        { label: 'Try again', onClick: async () => { authState = 'unknown'; updateAuthBadge(); await ensureAuth({ forceRealSignIn: true }); }},
         { label: 'Close', kind: 'ghost', onClick: closeAuthPopup }
       ]
     });
@@ -1131,20 +1335,10 @@ function showSessionInfo() {
   if (authState === 'temp') {
     showAuthPopup({
       title: 'Guest session active',
-      body:
-        'A temporary guest session was created successfully.\n\n' +
-        'What works:\n' +
-        '• Classes, assignments, question sets, and all three games.\n\n' +
-        'What does NOT work:\n' +
-        '• The AI quiz generator. Puter gives guest accounts zero AI credits.\n\n' +
-        'To unlock the AI, sign in with a real Puter account.',
+      body: 'A temporary guest session was created successfully.\n\nWhat works:\n• Classes, assignments, question sets, and all three games.\n\nWhat does NOT work:\n• The AI quiz generator. Puter gives guest accounts zero AI credits.\n\nTo unlock the AI, sign in with a real Puter account.',
       tone: 'warn',
       actions: [
-        { label: 'Sign in for AI', onClick: async () => {
-          authState = 'unknown'; updateAuthBadge();
-          const ok = await ensureAuth({ forceRealSignIn: true });
-          if (ok) toast('Signed in.');
-        }},
+        { label: 'Sign in for AI', onClick: async () => { authState = 'unknown'; updateAuthBadge(); const ok = await ensureAuth({ forceRealSignIn: true }); if (ok) toast('Signed in.'); }},
         { label: 'Close', kind: 'ghost', onClick: closeAuthPopup }
       ]
     });
@@ -1153,15 +1347,11 @@ function showSessionInfo() {
       title: 'Signed in',
       body: 'You are signed in with a full Puter account. AI quiz generation is enabled.',
       tone: 'ok',
-      actions: [
-        { label: 'Sign out', kind: 'ghost', onClick: puterLogout },
-        { label: 'Close', onClick: closeAuthPopup }
-      ]
+      actions: [{ label: 'Sign out', kind: 'ghost', onClick: puterLogout },{ label: 'Close', onClick: closeAuthPopup }]
     });
   }
 }
 
-/* =================== AI prompt =================== */
 const AI_PROMPT = (n, topic, notes) => `You are a quiz generator. Return ONLY valid JSON. No prose, no markdown.
 Shape: {"title":"...","questions":[{"question":"...","options":["A","B","C","D"],"correct":0,"timeLimit":20,"explanation":"..."}]}
 Rules:
@@ -1178,9 +1368,7 @@ Topic: ${topic}
 Notes/context:
 ${notes || '(none — rely on the topic)'}`;
 
-/* =================== SCRIPTED CHAT FLOW =================== */
 const FLOW_ORDER = ['topic', 'grade', 'count', 'difficulty'];
-
 const FLOW_QUESTIONS = {
   topic: 'What is your set topic? Example: "dinosaur questions" or "the water cycle".',
   grade: 'What grade level are you teaching?',
@@ -1194,36 +1382,13 @@ const FLOW_RETRIES = {
   difficulty: 'Pick one: Easy, Medium, or Hard.'
 };
 const FLOW_PARSERS = {
-  topic: v => {
-    const t = v.trim();
-    if (t.length < 3) return null;
-    if (/^(idk|i don'?t know|no|nope|nothing|anything|whatever|\?+)$/i.test(t)) return null;
-    return t;
-  },
-  grade: v => {
-    const t = v.trim();
-    if (!t) return null;
-    if (t.length > 60) return t.slice(0, 60);
-    return t;
-  },
-  count: v => {
-    const m = String(v).match(/\d{1,3}/);
-    if (!m) return null;
-    const n = parseInt(m[0], 10);
-    if (!Number.isFinite(n) || n < 1 || n > 100) return null;
-    return n;
-  },
-  difficulty: v => {
-    const t = v.toLowerCase();
-    if (/\beasy\b|\bsimple\b/.test(t)) return 'easy';
-    if (/\bmedium\b|\bmed\b|\bnormal\b/.test(t)) return 'medium';
-    if (/\bhard\b|\bdifficult\b|\bchallenging\b/.test(t)) return 'hard';
-    return null;
-  }
+  topic: v => { const t = v.trim(); if (t.length < 3) return null; if (/^(idk|i don'?t know|no|nope|nothing|anything|whatever|\?+)$/i.test(t)) return null; return t; },
+  grade: v => { const t = v.trim(); if (!t) return null; if (t.length > 60) return t.slice(0, 60); return t; },
+  count: v => { const m = String(v).match(/\d{1,3}/); if (!m) return null; const n = parseInt(m[0], 10); if (!Number.isFinite(n) || n < 1 || n > 100) return null; return n; },
+  difficulty: v => { const t = v.toLowerCase(); if (/\beasy\b|\bsimple\b/.test(t)) return 'easy'; if (/\bmedium\b|\bmed\b|\bnormal\b/.test(t)) return 'medium'; if (/\bhard\b|\bdifficult\b|\bchallenging\b/.test(t)) return 'hard'; return null; }
 };
 
 let chatFlow = null;
-
 function newChat() {
   chatFlow = { step: 'topic', notes: '', topic: '', grade: '', count: 5, difficulty: 'medium' };
   $('#chatLog').innerHTML = '';
@@ -1231,7 +1396,6 @@ function newChat() {
   updateChips();
 }
 function renderChat() { if (!chatFlow) newChat(); }
-
 function updateChips() {
   const chipsEl = document.getElementById('chatChips');
   if (!chipsEl) return;
@@ -1245,7 +1409,6 @@ function updateChips() {
   const chips = sets[chatFlow && chatFlow.step] || [];
   chipsEl.innerHTML = chips.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
 }
-
 function botSay(t) { addMsg('bot', t); }
 function userSay(t) { addMsg('user', t); }
 function sysSay(t) { addMsg('sys', t); }
@@ -1263,15 +1426,12 @@ function setWaiting(w) {
   $('#aiSend').innerHTML = w ? "<i class='bx bx-loader-alt spin'></i>" : "<i class='bx bx-send'></i>";
   $('#aiSend').disabled = w;
 }
-
 $('#chatChips').addEventListener('click', e => {
   const c = e.target.closest('[data-chip]'); if (!c) return;
   $('#aiInput').value = c.dataset.chip;
   $('#aiSend').click();
 });
-
 $('#aiAttach').onclick = () => $('#aiFile').click();
-
 $('#aiFile').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
   $('#aiFile').value = '';
@@ -1281,11 +1441,7 @@ $('#aiFile').onchange = async e => {
   try {
     let text = '';
     if (/\.pdf$/i.test(f.name)) {
-      if (!window.pdfjsLib) {
-        logAIError('PDF upload failed — pdf.js missing', new Error('pdfjsLib not loaded'));
-        botSay('PDF support failed to load. Paste the text instead.');
-        return;
-      }
+      if (!window.pdfjsLib) { logAIError('PDF upload failed — pdf.js missing', new Error('pdfjsLib not loaded')); botSay('PDF support failed to load. Paste the text instead.'); return; }
       const buf = await f.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
       const parts = [];
@@ -1295,31 +1451,15 @@ $('#aiFile').onchange = async e => {
         parts.push(content.items.map(x => x.str).join(' '));
       }
       text = parts.join('\n\n');
-    } else {
-      text = await f.text();
-    }
+    } else { text = await f.text(); }
     text = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
     const words = text.split(/\s+/).length;
-    if (words < 20) {
-      logAIError('File had too little text', new Error(words + ' words'), f.name);
-      botSay("That file has no selectable text — scanned PDFs aren't supported yet.");
-      return;
-    }
+    if (words < 20) { logAIError('File had too little text', new Error(words + ' words'), f.name); botSay("That file has no selectable text — scanned PDFs aren't supported yet."); return; }
     chatFlow.notes = (chatFlow.notes ? chatFlow.notes + '\n\n' : '') + text;
     sysSay('Added ~' + words.toLocaleString() + ' words from ' + f.name);
-
-    if (chatFlow.step === 'topic') {
-      chatFlow.topic = 'the attached ' + f.name;
-      chatFlow.step = 'grade';
-      botSay('Got your notes. ' + FLOW_QUESTIONS.grade);
-      updateChips();
-    }
-  } catch (err) {
-    logAIError('File read failed', err, f.name);
-    botSay("I couldn't read that file.");
-  }
+    if (chatFlow.step === 'topic') { chatFlow.topic = 'the attached ' + f.name; chatFlow.step = 'grade'; botSay('Got your notes. ' + FLOW_QUESTIONS.grade); updateChips(); }
+  } catch (err) { logAIError('File read failed', err, f.name); botSay("I couldn't read that file."); }
 };
-
 $('#aiSend').onclick = async () => {
   if (!chatFlow) newChat();
   const v = $('#aiInput').value.trim();
@@ -1328,14 +1468,11 @@ $('#aiSend').onclick = async () => {
   userSay(v);
   await handleFlowAnswer(v);
 };
-$('#aiInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); }
-});
+$('#aiInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); } });
 $('#aiReset').onclick = () => { newChat(); };
 
 async function handleFlowAnswer(text) {
   if (!chatFlow) newChat();
-
   if (chatFlow.step === 'topic' && text.length > 400) {
     chatFlow.notes = (chatFlow.notes ? chatFlow.notes + '\n\n' : '') + text;
     chatFlow.topic = 'the pasted notes';
@@ -1344,21 +1481,14 @@ async function handleFlowAnswer(text) {
     updateChips();
     return;
   }
-
   const step = chatFlow.step;
   const parser = FLOW_PARSERS[step];
   const parsed = parser ? parser(text) : null;
-
-  if (parsed == null) {
-    botSay(FLOW_RETRIES[step] || 'Could you try rephrasing that?');
-    return;
-  }
-
+  if (parsed == null) { botSay(FLOW_RETRIES[step] || 'Could you try rephrasing that?'); return; }
   if (step === 'topic') chatFlow.topic = parsed;
   else if (step === 'grade') chatFlow.grade = parsed;
   else if (step === 'count') chatFlow.count = parsed;
   else if (step === 'difficulty') chatFlow.difficulty = parsed;
-
   const idx = FLOW_ORDER.indexOf(step);
   if (idx < FLOW_ORDER.length - 1) {
     chatFlow.step = FLOW_ORDER[idx + 1];
@@ -1366,79 +1496,44 @@ async function handleFlowAnswer(text) {
     updateChips();
     return;
   }
-
   chatFlow.step = 'done';
   updateChips();
   await generateFromFlow();
 }
-
 async function generateFromFlow() {
   setWaiting(true);
   sysSay('Generating ' + chatFlow.count + ' ' + chatFlow.difficulty + ' questions about "' + chatFlow.topic + '" (grade ' + chatFlow.grade + ')…');
-  const prompt = AI_PROMPT(
-    chatFlow.count,
-    chatFlow.topic + ' · grade ' + chatFlow.grade + ' · difficulty ' + chatFlow.difficulty,
-    chatFlow.notes
-  );
+  const prompt = AI_PROMPT(chatFlow.count, chatFlow.topic + ' · grade ' + chatFlow.grade + ' · difficulty ' + chatFlow.difficulty, chatFlow.notes);
   let raw = '';
-  try {
-    raw = await aiChat(prompt);
-  } catch (e) {
-    logAIError('AI request failed', e, 'prompt chars: ' + prompt.length);
-    botSay('The AI request failed. See the Errors panel or the badge above.');
-    setWaiting(false);
-    chatFlow.step = 'difficulty';
-    updateChips();
-    return;
-  }
+  try { raw = await aiChat(prompt); }
+  catch (e) { logAIError('AI request failed', e, 'prompt chars: ' + prompt.length); botSay('The AI request failed. See the Errors panel or the badge above.'); setWaiting(false); chatFlow.step = 'difficulty'; updateChips(); return; }
   let data = null;
   try { data = parseQuizJSON(raw); } catch (e) { logAIError('parseQuizJSON threw', e, 'raw preview: ' + raw.slice(0, 200)); }
   if (!data || !data.questions || !data.questions.length) {
     logAIError('AI returned unusable JSON', new Error('No valid questions'), 'raw preview: ' + raw.slice(0, 400));
-    botSay("The model replied but the JSON was invalid or empty. Open the Errors panel.");
+    botSay('The model replied but the JSON was invalid or empty. Open the Errors panel.');
     setWaiting(false);
     chatFlow.step = 'difficulty';
     updateChips();
     return;
   }
   data.title = data.title || (chatFlow.topic || 'Quiz');
-  addQuestionSet({
-    title: data.title,
-    questions: data.questions,
-    source: chatFlow.notes ? 'notes' : 'topic',
-    grade: chatFlow.grade,
-    difficulty: chatFlow.difficulty
-  });
+  addQuestionSet({ title: data.title, questions: data.questions, source: chatFlow.notes ? 'notes' : 'topic', grade: chatFlow.grade, difficulty: chatFlow.difficulty });
   botSay('Done! I saved "' + data.title + '" with ' + data.questions.length + ' questions. Head to the Questions tab to play or assign it.\n\nClick "New chat" if you want to make another set.');
   setWaiting(false);
   chatFlow.step = 'done';
   updateChips();
 }
 
-/* =================== aiChat =================== */
 async function aiChat(prompt) {
   const ok = await ensureAuth();
-  if (!ok) {
-    const e = new Error('Authentication failed — see the Errors panel.');
-    logAIError('AI request blocked: no auth', e);
-    throw e;
-  }
-  if (!puter.ai || typeof puter.ai.chat !== 'function') {
-    const e = new Error('puter.ai.chat missing. Check the Puter.js script tag in <head>.');
-    logAIError('puter.ai.chat missing', e);
-    throw e;
-  }
-
-  async function attempt(model) {
-    const res = await puter.ai.chat(prompt, { model });
-    return normalizePuter(res);
-  }
-
+  if (!ok) { const e = new Error('Authentication failed — see the Errors panel.'); logAIError('AI request blocked: no auth', e); throw e; }
+  if (!puter.ai || typeof puter.ai.chat !== 'function') { const e = new Error('puter.ai.chat missing. Check the Puter.js script tag in <head>.'); logAIError('puter.ai.chat missing', e); throw e; }
+  async function attempt(model) { const res = await puter.ai.chat(prompt, { model }); return normalizePuter(res); }
   let firstErr = null;
   try { return await attempt(AI_MODEL); }
   catch (e) {
     firstErr = e;
-
     if (isCreditsError(e) && authState === 'temp') {
       logAIError('Guest account has no AI credits', e, 'prompting real sign-in');
       authState = 'exhausted';
@@ -1454,45 +1549,24 @@ async function aiChat(prompt) {
       if (btn) btn.onclick = async () => {
         btn.disabled = true; btn.textContent = 'Signing in…';
         const signed = await ensureAuth({ forceRealSignIn: true });
-        if (signed) {
-          wrap.remove();
-          botSay('Signed in. Answer the last question again — the credits come from your account now.');
-        } else {
-          btn.disabled = false; btn.textContent = 'Sign in with Puter';
-        }
+        if (signed) { wrap.remove(); botSay('Signed in. Answer the last question again — the credits come from your account now.'); }
+        else { btn.disabled = false; btn.textContent = 'Sign in with Puter'; }
       };
       throw e;
     }
-    if (isCreditsError(e)) {
-      logAIError('Account out of credits', e);
-      botSay("Your Puter account is out of AI credits. Top up at puter.com/#billing, then try again.");
-      throw e;
-    }
-    if (e && e.error === 'popup_blocked') {
-      botSay("Your browser blocked the Puter popup. Click somewhere in the page first, then try again.");
-    }
+    if (isCreditsError(e)) { logAIError('Account out of credits', e); botSay("Your Puter account is out of AI credits. Top up at puter.com/#billing, then try again."); throw e; }
+    if (e && e.error === 'popup_blocked') { botSay("Your browser blocked the Puter popup. Click somewhere in the page first, then try again."); }
     if (isAuthError(e)) {
       authState = 'unknown';
       const reAuth = await ensureAuth();
-      if (reAuth) {
-        try { return await attempt(AI_MODEL); }
-        catch (e2) { logAIError('Retry after re-auth failed', e2); }
-      }
+      if (reAuth) { try { return await attempt(AI_MODEL); } catch (e2) { logAIError('Retry after re-auth failed', e2); } }
     }
-    logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e,
-      'authState: ' + authState);
+    logAIError('Model "' + AI_MODEL + '" failed — trying fallback "' + AI_FALLBACK + '"', e, 'authState: ' + authState);
   }
-
   try { return await attempt(AI_FALLBACK); }
   catch (e2) {
-    if (isCreditsError(e2) && authState === 'temp') {
-      authState = 'exhausted';
-      updateAuthBadge();
-      botSay("Guest account is out of credits. Sign in with a real Puter account to generate quizzes.");
-      throw e2;
-    }
-    logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2,
-      'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr));
+    if (isCreditsError(e2) && authState === 'temp') { authState = 'exhausted'; updateAuthBadge(); botSay("Guest account is out of credits. Sign in with a real Puter account to generate quizzes."); throw e2; }
+    logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2, 'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr));
     throw e2;
   }
 }
@@ -1513,21 +1587,14 @@ function parseQuizJSON(raw) {
   try { obj = JSON.parse(s.slice(first, last + 1)); } catch (e) { return null; }
   if (!obj || !Array.isArray(obj.questions)) return null;
   obj.questions = obj.questions.filter(q =>
-    q && typeof q.question === 'string' &&
-    Array.isArray(q.options) && q.options.length === 4 &&
+    q && typeof q.question === 'string' && Array.isArray(q.options) && q.options.length === 4 &&
     q.options.every(o => typeof o === 'string' && o.length) &&
     Number.isInteger(q.correct) && q.correct >= 0 && q.correct < 4
-  ).map(q => ({
-    question: q.question,
-    options: q.options.slice(0, 4),
-    correct: q.correct,
-    timeLimit: Number.isFinite(q.timeLimit) ? q.timeLimit : 20,
-    explanation: typeof q.explanation === 'string' ? q.explanation : ''
-  }));
+  ).map(q => ({ question: q.question, options: q.options.slice(0, 4), correct: q.correct, timeLimit: Number.isFinite(q.timeLimit) ? q.timeLimit : 20, explanation: typeof q.explanation === 'string' ? q.explanation : '' }));
   return obj;
 }
 
-/* =================== Questions view =================== */
+/* ===== Questions view ===== */
 function renderQuestionSets() {
   const list = $('#qsList');
   if (!qsets.length) {
@@ -1538,10 +1605,7 @@ function renderQuestionSets() {
   list.innerHTML = qsets.map(qs => `
     <div class="qset">
       <div class="top">
-        <div class="info">
-          <b>${esc(qs.title)}</b>
-          <small>${qs.questions.length} questions · ${fmt(qs.created)}${qs.assignedTo ? ' · assigned to ' + qs.assignedTo.length + ' class(es)' : ''}</small>
-        </div>
+        <div class="info"><b>${esc(qs.title)}</b><small>${qs.questions.length} questions · ${fmt(qs.created)}${qs.assignedTo ? ' · assigned to ' + qs.assignedTo.length + ' class(es)' : ''}</small></div>
         <div class="acts">
           <button class="iconbtn-sm" data-assign="${qs.id}" title="Assign to a class"><i class='bx bx-task'></i></button>
           <button class="iconbtn-sm" data-edit="${qs.id}" title="Edit questions"><i class='bx bx-edit'></i></button>
@@ -1554,16 +1618,10 @@ function renderQuestionSets() {
         <button class="playbtn asteroids" data-play="${qs.id}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button>
       </div>
     </div>`).join('');
-  list.querySelectorAll('[data-play]').forEach(b => b.onclick = () => {
-    const qs = qsets.find(x => x.id === b.dataset.play);
-    openGame(b.dataset.game, qs);
-  });
+  list.querySelectorAll('[data-play]').forEach(b => b.onclick = () => { const qs = qsets.find(x => x.id === b.dataset.play); openGame(b.dataset.game, qs); });
   list.querySelectorAll('[data-assign]').forEach(b => b.onclick = () => assignQuiz(b.dataset.assign));
   list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editQuiz(b.dataset.edit));
-  list.querySelectorAll('[data-delqs]').forEach(b => b.onclick = () => {
-    if (!confirm('Delete this question set?')) return;
-    qsets = qsets.filter(x => x.id !== b.dataset.delqs); saveQSets(); renderQuestionSets();
-  });
+  list.querySelectorAll('[data-delqs]').forEach(b => b.onclick = () => { if (!confirm('Delete this question set?')) return; qsets = qsets.filter(x => x.id !== b.dataset.delqs); saveQSets(); renderQuestionSets(); });
 }
 $('#qsToAI').onclick = () => { nav = 'ai'; renderChat(); ensureAuth().then(updateAuthBadge).catch(()=>{}); route(); };
 
@@ -1586,35 +1644,20 @@ function assignQuiz(qsId) {
     renderQuestionSets();
   });
 }
-
 function addAssignmentForClass(c, qs) {
-  c.assignments.unshift({
-    id: Date.now(),
-    text: 'Quiz: ' + qs.title + ' (' + qs.questions.length + ' questions)',
-    time: Date.now(),
-    kind: 'quiz',
-    quizId: qs.id
-  });
+  c.assignments.unshift({ id: Date.now(), text: 'Quiz: ' + qs.title + ' (' + qs.questions.length + ' questions)', time: Date.now(), kind: 'quiz', quizId: qs.id });
   c.setupDone = true;
   qs.assignedTo = qs.assignedTo || [];
   if (!qs.assignedTo.includes(c.id)) qs.assignedTo.push(c.id);
   save(); saveQSets();
 }
-
 function pickAndAssignQuiz() {
   if (!qsets.length) return toast('No question sets yet — make one in AI Quiz');
   if (!classes.length) return toast('Create a class first');
   const c = cur();
   openModal(`<h3>Assign a quiz</h3><p class="sub">Pick a question set to attach to <b>${esc(c.name)}</b>.</p>
     <div class="qs-pick" id="qsPick">
-      ${qsets.map(q => `
-        <button type="button" data-qsid="${q.id}">
-          <span class="qsi"><i class='bx bx-list-check'></i></span>
-          <span class="qst">
-            <b>${esc(q.title)}</b>
-            <small>${q.questions.length} questions${q.grade ? ' · ' + esc(q.grade) : ''}${q.difficulty ? ' · ' + esc(q.difficulty) : ''}</small>
-          </span>
-        </button>`).join('')}
+      ${qsets.map(q => `<button type="button" data-qsid="${q.id}"><span class="qsi"><i class='bx bx-list-check'></i></span><span class="qst"><b>${esc(q.title)}</b><small>${q.questions.length} questions${q.grade ? ' · ' + esc(q.grade) : ''}${q.difficulty ? ' · ' + esc(q.difficulty) : ''}</small></span></button>`).join('')}
     </div>
     <div class="foot"><button class="btn ghost" data-x>Cancel</button></div>`);
   $('#modal [data-x]').onclick = closeModal;
@@ -1627,7 +1670,6 @@ function pickAndAssignQuiz() {
     render();
   });
 }
-
 function editQuiz(qsId) {
   const qs = qsets.find(x => x.id === qsId); if (!qs) return;
   openModal(`<h3>Edit "${esc(qs.title)}"</h3><p class="sub">Change any question. Radio = correct answer.</p>
@@ -1662,11 +1704,10 @@ function editQuiz(qsId) {
   };
 }
 
-/* =================== Game launcher =================== */
+/* ===== Game launcher ===== */
 function openGame(type, qs) {
   const frame = $('#battleFrame');
-  const qs_ = (qs && Array.isArray(qs.questions) && qs.questions.length)
-    ? qs : { title: 'Preset Quiz', questions: PRESET_QUESTIONS };
+  const qs_ = (qs && Array.isArray(qs.questions) && qs.questions.length) ? qs : { title: 'Preset Quiz', questions: PRESET_QUESTIONS };
   let html;
   if (type === 'bubble') html = buildBubbleHTML(qs_.questions, qs_.title);
   else if (type === 'asteroids') html = buildAsteroidsHTML(qs_.questions, qs_.title);
@@ -1681,76 +1722,36 @@ $('#battleClose').onclick = () => {
   document.body.style.overflow = '';
 };
 
-/* ---------- Kahoot-style quiz modal ---------- */
 const GAME_QUIZ_HELPERS = `
 function escHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function makeQuizModal(opts) {
-  var SHAPES = [
-    '<svg viewBox="0 0 24 24"><polygon points="12,2 22,20 2,20" fill="#fff"/></svg>',
-    '<svg viewBox="0 0 24 24"><polygon points="12,2 22,12 12,22 2,12" fill="#fff"/></svg>',
-    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/></svg>',
-    '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" fill="#fff"/></svg>'
-  ];
+  var SHAPES=['<svg viewBox="0 0 24 24"><polygon points="12,2 22,20 2,20" fill="#fff"/></svg>','<svg viewBox="0 0 24 24"><polygon points="12,2 22,12 12,22 2,12" fill="#fff"/></svg>','<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/></svg>','<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" fill="#fff"/></svg>'];
   return function openQuiz(onDone) {
     if (opts.isOpen()) return;
-    if (!QUESTIONS || !QUESTIONS.length) {
-      opts.setAmmo(opts.getAmmo() + opts.gainCorrect);
-      opts.onUpdate();
-      if (typeof onDone === 'function') onDone();
-      return;
-    }
+    if (!QUESTIONS || !QUESTIONS.length) { opts.setAmmo(opts.getAmmo() + opts.gainCorrect); opts.onUpdate(); if (typeof onDone === 'function') onDone(); return; }
     opts.setOpen(true);
-    var idx = opts.getIdx();
-    var q = QUESTIONS[idx % QUESTIONS.length];
-    opts.setIdx(idx + 1);
-    var ov = document.createElement('div');
-    ov.className = 'quiz-overlay';
-    ov.id = 'quizOverlay';
-    var box = document.createElement('div');
-    box.className = 'quiz-box';
-    var letters = ['A','B','C','D'];
-    var optHtml = '';
-    for (var i = 0; i < 4; i++) {
-      optHtml += '<button type="button" class="opt" data-opt="' + i + '">' +
-        '<span class="shape">' + SHAPES[i] + '</span>' +
-        '<span class="opttext">' + letters[i] + '. ' + escHtml(q.options[i] || '') + '</span>' +
-        '</button>';
-    }
-    box.innerHTML =
-      '<h3>Out of ammo — reload!</h3>' +
-      '<p class="sub">Correct = <b>+' + opts.gainCorrect + '</b> ammo &nbsp;·&nbsp; Wrong = +' + opts.gainWrong + '</p>' +
-      '<div class="qtext">' + escHtml(q.question) + '</div>' +
-      '<div class="opts">' + optHtml + '</div>' +
-      '<div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
+    var idx = opts.getIdx(); var q = QUESTIONS[idx % QUESTIONS.length]; opts.setIdx(idx + 1);
+    var ov = document.createElement('div'); ov.className = 'quiz-overlay'; ov.id = 'quizOverlay';
+    var box = document.createElement('div'); box.className = 'quiz-box';
+    var letters = ['A','B','C','D']; var optHtml = '';
+    for (var i = 0; i < 4; i++) optHtml += '<button type="button" class="opt" data-opt="' + i + '"><span class="shape">' + SHAPES[i] + '</span><span class="opttext">' + letters[i] + '. ' + escHtml(q.options[i] || '') + '</span></button>';
+    box.innerHTML = '<h3>Out of ammo — reload!</h3><p class="sub">Correct = <b>+' + opts.gainCorrect + '</b> ammo &nbsp;·&nbsp; Wrong = +' + opts.gainWrong + '</p><div class="qtext">' + escHtml(q.question) + '</div><div class="opts">' + optHtml + '</div><div class="quiz-foot"><span id="qFeedback"></span><span id="qNextWrap"></span></div>';
     var optsEl = box.querySelector('.opts');
     Array.prototype.forEach.call(optsEl.children, function(b, i) {
       b.addEventListener('click', function() {
         if (b.disabled) return;
-        var correct = q.correct;
-        var ok = i === correct;
-        if (ok) b.classList.add('correct');
-        else { b.classList.add('wrong'); optsEl.children[correct].classList.add('correct'); }
+        var correct = q.correct; var ok = i === correct;
+        if (ok) b.classList.add('correct'); else { b.classList.add('wrong'); optsEl.children[correct].classList.add('correct'); }
         Array.prototype.forEach.call(optsEl.children, function(x) { x.disabled = true; });
-        var gain = ok ? opts.gainCorrect : opts.gainWrong;
-        opts.setAmmo(opts.getAmmo() + gain);
-        opts.onUpdate();
-        document.getElementById('qFeedback').innerHTML =
-          (ok ? '<b style="color:#7dd87d">✓ Correct!</b> ' : '<b style="color:#ff8a8a">✗ Nope.</b> ') +
-          '<b style="color:#f0c14b">+' + gain + ' ammo</b>' +
-          (q.explanation ? ' <span style="opacity:.8">· ' + escHtml(q.explanation) + '</span>' : '');
+        var gain = ok ? opts.gainCorrect : opts.gainWrong; opts.setAmmo(opts.getAmmo() + gain); opts.onUpdate();
+        document.getElementById('qFeedback').innerHTML = (ok ? '<b style="color:#7dd87d">✓ Correct!</b> ' : '<b style="color:#ff8a8a">✗ Nope.</b> ') + '<b style="color:#f0c14b">+' + gain + ' ammo</b>' + (q.explanation ? ' <span style="opacity:.8">· ' + escHtml(q.explanation) + '</span>' : '');
         var nw = document.getElementById('qNextWrap');
-        var nb = document.createElement('button');
-        nb.type = 'button'; nb.className = 'btn'; nb.textContent = 'Continue';
-        nb.addEventListener('click', function() {
-          ov.remove();
-          opts.setOpen(false);
-          if (typeof onDone === 'function') onDone();
-        });
+        var nb = document.createElement('button'); nb.type = 'button'; nb.className = 'btn'; nb.textContent = 'Continue';
+        nb.addEventListener('click', function() { ov.remove(); opts.setOpen(false); if (typeof onDone === 'function') onDone(); });
         nw.appendChild(nb);
       });
     });
-    ov.appendChild(box);
-    document.body.appendChild(ov);
+    ov.appendChild(box); document.body.appendChild(ov);
   };
 }
 `;
@@ -1785,15 +1786,12 @@ const GAME_QUIZ_CSS = `
 .ammo-badge.low{background:rgba(214,69,69,.18);border-color:rgba(214,69,69,.6);color:#ff8a8a}
 `;
 
-/* ---------- BATTLESHIP ---------- */
+/* ----- Battleship ----- */
 function buildBattleshipHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
   return `<!DOCTYPE html>
 <html lang="en" dir="ltr">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Battleship</title>
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Battleship</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#061824;--bg2:#0a3a4d;--sea:#0d4f66;--sea-light:#14708f;--cell:#0e5a72;--cell-hover:#1a7a96;--text:#e8f4f8;--accent:#f0c14b;--hit:#d64545;--miss:#7eb8c9;--ship-placed:#5c8a9e;--sunk:#8b2e2e;--fog:#0a2f3d;--valid:rgba(80,200,140,.45);--invalid:rgba(214,69,69,.45)}
@@ -1802,8 +1800,7 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
 .hidden{display:none!important}
 .level-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center}
-.level-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.level-header h1,.header h1{margin:0;font-size:clamp(1.4rem,4vw,2rem)}
+.level-header h1{margin:0 0 8px;font-size:clamp(1.4rem,4vw,2rem)}
 .level-screen>p{margin:0 0 24px;opacity:.9}
 .level-buttons{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px}
 .level-btn{padding:16px 20px;min-height:44px;border:2px solid rgba(255,255,255,.3);border-radius:12px;background:rgba(255,255,255,.08);color:inherit;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
@@ -1811,6 +1808,7 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .level-name{font-weight:700;font-size:1.1rem}.level-desc{font-size:.85rem;opacity:.85}
 .game-screen{width:100%;max-width:920px;flex:1;display:flex;flex-direction:column;position:relative}
 .header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.header h1{margin:0;font-size:clamp(1.4rem,4vw,2rem)}
 .level-badge{padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-size:.8rem;font-weight:600}
 .header-actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
 .hud{font-weight:600;font-size:.9rem;max-width:280px}
@@ -1831,7 +1829,7 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .board-panel{flex:1 1 300px;max-width:420px;min-width:0}
 .board-title{margin:0 0 8px;font-size:1rem;font-weight:600;text-align:center;opacity:.95}
 .board{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;aspect-ratio:1;width:100%;background:var(--sea);padding:4px;border-radius:8px;border:2px solid rgba(255,255,255,.15);user-select:none}
-.cell{aspect-ratio:1;border-radius:3px;background:var(--cell);border:none;padding:0;cursor:default;position:relative;min-width:0;min-height:0;font-family:inherit;color:inherit}
+.cell{aspect-ratio:1;border-radius:3px;background:var(--cell);border:none;padding:0;cursor:default;position:relative;min-width:0;min-height:0}
 .cell.fog{background:var(--fog)}.cell.ship{background:var(--ship-placed)}
 .cell.preview-valid{background:var(--valid)}.cell.preview-invalid{background:var(--invalid)}
 .cell.miss{background:var(--sea-light)}
@@ -1849,8 +1847,7 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 ${GAME_QUIZ_CSS}
 @media (max-width:720px){.boards{flex-direction:column;align-items:stretch}.board-panel{max-width:none;flex:1 1 auto}.hud{max-width:100%;width:100%;order:5}.header-actions{width:100%}.placement-bar{flex-direction:column;align-items:stretch}.placement-controls{justify-content:stretch}.placement-controls .btn{flex:1}}
-</style>
-</head>
+</style></head>
 <body>
 <div class="wrapper">
   <div id="levelScreen" class="level-screen">
@@ -1912,20 +1909,10 @@ var level="easy",phase="level",horizontal=true,selectedShipId=null,playerTurn=tr
 var playerGrid=createEmptyGrid(),enemyGrid=createEmptyGrid(),playerShips=[],enemyShips=[],playerShots=createShotMap(),enemyShots=createShotMap();
 var aiHuntQueue=[],aiHitCells=[],aiParity=0;
 var AMMO_START=5, AMMO_PER_CORRECT=3, AMMO_PER_WRONG=1;
-var ammo=AMMO_START,quizIdx=0,quizOpen=false;
+var ammo=AMMO_START,quizIdx=0,quizOpen=false,shotsFired=0;
 function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=1);}
 ${GAME_QUIZ_HELPERS}
-var openQuiz = makeQuizModal({
-  isOpen: function(){ return quizOpen; },
-  setOpen: function(v){ quizOpen = v; },
-  getAmmo: function(){ return ammo; },
-  setAmmo: function(v){ ammo = v; },
-  getIdx: function(){ return quizIdx; },
-  setIdx: function(v){ quizIdx = v; },
-  gainCorrect: AMMO_PER_CORRECT,
-  gainWrong: AMMO_PER_WRONG,
-  onUpdate: updateAmmoUI
-});
+var openQuiz = makeQuizModal({isOpen:function(){return quizOpen;},setOpen:function(v){quizOpen=v;},getAmmo:function(){return ammo;},setAmmo:function(v){ammo=v;},getIdx:function(){return quizIdx;},setIdx:function(v){quizIdx=v;},gainCorrect:AMMO_PER_CORRECT,gainWrong:AMMO_PER_WRONG,onUpdate:updateAmmoUI});
 function createEmptyGrid(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
 function createShotMap(){return Array.from({length:SIZE},function(){return Array(SIZE).fill(null);});}
 function key(r,c){return r+","+c;}
@@ -1954,19 +1941,11 @@ function renderShipTray(){shipTray.innerHTML="";FLEET.forEach(function(def){var 
 function getPreviewCells(){if(phase!=="placement"||!selectedShipId||!hoverCell)return null;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return null;var cells=shipCells(hoverCell.r,hoverCell.c,def.length,horizontal);var valid=canPlace(playerGrid,hoverCell.r,hoverCell.c,def.length,horizontal);return{cells:cells,valid:valid};}
 function renderBoards(){var pv=getPreviewCells();var ps=new Set();if(pv){pv.cells.forEach(function(cl){if(inBounds(cl.r,cl.c))ps.add(key(cl.r,cl.c));});}playerBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r),c=Number(el.dataset.c);el.className="cell";var shot=enemyShots[r][c];var occ=playerGrid[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else if(occ)el.classList.add("ship");if(pv&&ps.has(key(r,c)))el.classList.add(pv.valid?"preview-valid":"preview-invalid");});enemyBoardEl.querySelectorAll(".cell").forEach(function(el){var r=Number(el.dataset.r),c=Number(el.dataset.c);el.className="cell";var shot=playerShots[r][c];if(shot==="sunk")el.classList.add("sunk");else if(shot==="hit")el.classList.add("hit");else if(shot==="miss")el.classList.add("miss");else el.classList.add("fog");});playerBoardEl.classList.toggle("placing",phase==="placement");enemyBoardEl.classList.toggle("combat-target",phase==="combat"&&playerTurn&&!aiThinking&&!quizOpen);}
 function setHud(t){hud.textContent=t;}
-function showResult(won){phase="result";resultOverlay.classList.remove("hidden");resultTitle.textContent=won?"Victory!":"Defeat";resultMsg.textContent=won?"You sank the enemy fleet.":"Your fleet has been destroyed.";playerTurn=false;aiThinking=false;renderBoards();}
-function startPlacement(){phase="placement";horizontal=true;selectedShipId=FLEET[0].id;playerTurn=true;aiThinking=false;hoverCell=null;playerGrid=createEmptyGrid();enemyGrid=createEmptyGrid();playerShips=[];enemyShips=[];playerShots=createShotMap();enemyShots=createShotMap();resetAiMemory();resultOverlay.classList.add("hidden");placementBar.classList.remove("hidden-bar");levelBadge.textContent=LEVEL_LABELS[level];ammo=AMMO_START;updateAmmoUI();setHud("Select a ship and place it");renderShipTray();renderBoards();}
+function showResult(won){phase="result";resultOverlay.classList.remove("hidden");resultTitle.textContent=won?"Victory!":"Defeat";resultMsg.textContent=won?"You sank the enemy fleet.":"Your fleet has been destroyed.";playerTurn=false;aiThinking=false;renderBoards();try{window.parent.postMessage({type:'gameEnd',game:'battleship',won:won,score:won?100:0},'*');}catch(e){}}
+function startPlacement(){phase="placement";horizontal=true;selectedShipId=FLEET[0].id;playerTurn=true;aiThinking=false;hoverCell=null;shotsFired=0;playerGrid=createEmptyGrid();enemyGrid=createEmptyGrid();playerShips=[];enemyShips=[];playerShots=createShotMap();enemyShots=createShotMap();resetAiMemory();resultOverlay.classList.add("hidden");placementBar.classList.remove("hidden-bar");levelBadge.textContent=LEVEL_LABELS[level];ammo=AMMO_START;updateAmmoUI();setHud("Select a ship and place it");renderShipTray();renderBoards();}
 function startCombat(){var ok=false;for(var i=0;i<50&&!ok;i++)ok=autoPlaceFleet(enemyGrid,enemyShips);if(!ok){setHud("Placement failed");return;}phase="combat";playerTurn=true;aiThinking=false;selectedShipId=null;hoverCell=null;placementBar.classList.add("hidden-bar");setHud("Your turn — fire on enemy waters");renderBoards();}
 function endIfOver(){if(fleetSunk(enemyShips)){showResult(true);return true;}if(fleetSunk(playerShips)){showResult(false);return true;}return false;}
-function handlePlayerFire(r,c){
-  if(phase!=="combat"||!playerTurn||aiThinking||quizOpen)return;
-  if(playerShots[r][c]!==null)return;
-  if(ammo<=0){openQuiz(function(){setHud("Your turn");renderBoards();});return;}
-  ammo--;updateAmmoUI();
-  var outcome=applyShot(enemyGrid,enemyShips,playerShots,r,c);if(!outcome)return;
-  if(outcome.result==="miss")setHud("Miss");else if(outcome.result==="hit")setHud("Hit!");else setHud("Sank enemy "+outcome.ship.name+"!");
-  renderBoards();if(endIfOver())return;playerTurn=false;scheduleAiTurn();
-}
+function handlePlayerFire(r,c){if(phase!=="combat"||!playerTurn||aiThinking||quizOpen)return;if(playerShots[r][c]!==null)return;if(ammo<=0){openQuiz(function(){setHud("Your turn");renderBoards();});return;}ammo--;updateAmmoUI();shotsFired++;var outcome=applyShot(enemyGrid,enemyShips,playerShots,r,c);if(!outcome)return;if(outcome.result==="miss")setHud("Miss");else if(outcome.result==="hit")setHud("Hit!");else setHud("Sank enemy "+outcome.ship.name+"!");renderBoards();if(endIfOver())return;playerTurn=false;scheduleAiTurn();}
 function scheduleAiTurn(){aiThinking=true;setHud("Enemy targeting… (2s)");renderBoards();setTimeout(function(){if(phase!=="combat")return;var t=chooseAiShot();if(!t){aiThinking=false;playerTurn=true;setHud("Your turn");renderBoards();return;}var o=applyShot(playerGrid,playerShips,enemyShots,t.r,t.c);onAiShotResult(t.r,t.c,o);if(o.result==="miss")setHud("Enemy missed");else if(o.result==="hit")setHud("Enemy hit your "+o.ship.name+"!");else setHud("Enemy sank your "+o.ship.name+"!");renderBoards();aiThinking=false;if(endIfOver())return;playerTurn=true;setHud("Your turn — fire on enemy waters");renderBoards();},2000);}
 function tryPlaceAt(r,c){if(phase!=="placement"||!selectedShipId)return;var def=FLEET.find(function(s){return s.id===selectedShipId;});if(!def)return;if(findShip(playerShips,def.id))return;if(!canPlace(playerGrid,r,c,def.length,horizontal)){setHud("Invalid placement");return;}placeShipOnGrid(playerGrid,playerShips,def,r,c,horizontal);var nx=FLEET.find(function(s){return !findShip(playerShips,s.id);});selectedShipId=nx?nx.id:null;hoverCell=null;renderShipTray();renderBoards();if(allPlaced())setHud("Fleet ready — press Ready");}
 function openLevelScreen(){phase="level";gameScreen.classList.add("hidden");levelScreen.classList.remove("hidden");resultOverlay.classList.add("hidden");}
@@ -1984,20 +1963,13 @@ playerBoardEl.addEventListener("mouseleave",function(){if(phase==="placement"&&h
 enemyBoardEl.addEventListener("click",function(e){var cell=e.target.closest(".cell");if(cell)handlePlayerFire(Number(cell.dataset.r),Number(cell.dataset.c));});
 updateAmmoUI();buildBoards();openLevelScreen();
 })();
-<\/script>
-</body>
-</html>`;
+<\/script></body></html>`;
 }
 
-/* ---------- BUBBLE SHOOTER ---------- */
+/* ----- Bubble ----- */
 function buildBubbleHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
-  return `<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bubble Shooter</title>
+  return `<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Bubble Shooter</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#0f172a;--panel:#1e293b;--text:#f1f5f9;--accent:#38bdf8}
@@ -2020,34 +1992,13 @@ body{margin:0;font-family:"Outfit",sans-serif;background:linear-gradient(160deg,
 .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 .result-actions .btn{width:100%}
 ${GAME_QUIZ_CSS}
-</style>
-</head>
+</style></head>
 <body>
-<div class="wrapper">
-  <div id="gameScreen" class="game-screen">
-    <header class="header">
-      <h1>Bubble Shooter</h1>
-      <span class="ammo-badge" id="ammoBadge">Ammo: 5</span>
-      <div class="header-actions">
-        <span id="scoreDisplay" class="score">Score: 0</span>
-        <button type="button" id="newGameBtn" class="btn">New Game</button>
-      </div>
-    </header>
-    <div class="canvas-wrap">
-      <canvas id="gameCanvas" width="400" height="560"></canvas>
-      <button type="button" id="fireBtn" class="btn fire-btn">Fire</button>
-    </div>
-    <div id="resultOverlay" class="result-overlay hidden">
-      <div class="result-box">
-        <h2 id="resultTitle"></h2>
-        <p id="resultMsg"></p>
-        <div class="result-actions">
-          <button type="button" id="playAgainBtn" class="btn">Play Again</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="wrapper"><div id="gameScreen" class="game-screen">
+  <header class="header"><h1>Bubble Shooter</h1><span class="ammo-badge" id="ammoBadge">Ammo: 5</span><div class="header-actions"><span id="scoreDisplay" class="score">Score: 0</span><button type="button" id="newGameBtn" class="btn">New Game</button></div></header>
+  <div class="canvas-wrap"><canvas id="gameCanvas" width="400" height="560"></canvas><button type="button" id="fireBtn" class="btn fire-btn">Fire</button></div>
+  <div id="resultOverlay" class="result-overlay hidden"><div class="result-box"><h2 id="resultTitle"></h2><p id="resultMsg"></p><div class="result-actions"><button type="button" id="playAgainBtn" class="btn">Play Again</button></div></div></div>
+</div></div>
 <script>
 (function(){
 "use strict";
@@ -2062,17 +2013,7 @@ var ammo=AMMO_START, quizIdx=0, quizOpen=false;
 var ammoBadge=document.getElementById("ammoBadge");
 function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=1);}
 ${GAME_QUIZ_HELPERS}
-var openQuiz = makeQuizModal({
-  isOpen: function(){ return quizOpen; },
-  setOpen: function(v){ quizOpen = v; },
-  getAmmo: function(){ return ammo; },
-  setAmmo: function(v){ ammo = v; },
-  getIdx: function(){ return quizIdx; },
-  setIdx: function(v){ quizIdx = v; },
-  gainCorrect: AMMO_PER_CORRECT,
-  gainWrong: AMMO_PER_WRONG,
-  onUpdate: updateAmmoUI
-});
+var openQuiz = makeQuizModal({isOpen:function(){return quizOpen;},setOpen:function(v){quizOpen=v;},getAmmo:function(){return ammo;},setAmmo:function(v){ammo=v;},getIdx:function(){return quizIdx;},setIdx:function(v){quizIdx=v;},gainCorrect:AMMO_PER_CORRECT,gainWrong:AMMO_PER_WRONG,onUpdate:updateAmmoUI});
 function colsInRow(r){return r%2===0?COLS:COLS-1;}
 function cellCenter(r,c){var odd=r%2===1;return{x:R+c*(R*2)+(odd?R:0)+8,y:R+r*ROW_H+8};}
 function randomColor(){return Math.floor(Math.random()*CFG.colors);}
@@ -2083,7 +2024,7 @@ function connectedToCeiling(){var visited=new Set();var stack=[];if(!state.grid.
 function dropOrphans(){var connected=connectedToCeiling();var dropped=0;for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++)if(state.grid[r][c]!==null&&!connected.has(r+","+c)){state.grid[r][c]=null;dropped++;}while(state.grid.length&&state.grid[state.grid.length-1].every(function(v){return v===null;}))state.grid.pop();return dropped;}
 function snapBubble(x,y,color){var best=null,bestDist=Infinity;var maxRows=Math.max(state.grid.length+1,CFG.rows+2);for(var r=0;r<maxRows;r++){var n=colsInRow(r);if(!state.grid[r])state.grid[r]=Array(n).fill(null);while(state.grid[r].length<n)state.grid[r].push(null);for(var c=0;c<n;c++){if(state.grid[r][c]!==null)continue;var p=cellCenter(r,c);var d=Math.hypot(p.x-x,p.y-y);if(d<bestDist){bestDist=d;best={r:r,c:c};}}}if(!best)return;var nn=colsInRow(best.r);if(!state.grid[best.r])state.grid[best.r]=Array(nn).fill(null);state.grid[best.r][best.c]=color;var cl=findCluster(best.r,best.c);if(cl.length>=3){cl.forEach(function(p){state.grid[p[0]][p[1]]=null;});state.score+=cl.length*10;var dr=dropOrphans();state.score+=dr*15;}document.getElementById("scoreDisplay").textContent="Score: "+state.score;checkEnd();}
 function checkEnd(){var any=false,tooLow=false;var dangerY=canvas.height-80;for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++)if(state.grid[r][c]!==null){any=true;if(cellCenter(r,c).y+R>dangerY)tooLow=true;}if(!any)endGame(true);else if(tooLow)endGame(false);}
-function endGame(won){state.gameOver=true;state.running=false;state.flying=null;document.getElementById("resultTitle").textContent=won?"You cleared it!":"Game Over";document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");}
+function endGame(won){state.gameOver=true;state.running=false;state.flying=null;document.getElementById("resultTitle").textContent=won?"You cleared it!":"Game Over";document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");try{window.parent.postMessage({type:'gameEnd',game:'bubble',won:won,score:state.score},'*');}catch(e){}}
 function shoot(){if(!state.running||state.flying||state.gameOver)return;if(ammo<=0){openQuiz(function(){});return;}ammo--;updateAmmoUI();var speed=CFG.speed;state.flying={x:canvas.width/2,y:canvas.height-40,vx:Math.cos(state.aimAngle)*speed,vy:Math.sin(state.aimAngle)*speed,color:state.current};state.current=state.next;state.next=randomColor();}
 function update(){if(!state.flying)return;var b=state.flying;b.x+=b.vx;b.y+=b.vy;if(b.x-R<0){b.x=R;b.vx*=-1;}if(b.x+R>canvas.width){b.x=canvas.width-R;b.vx*=-1;}if(b.y-R<=0){snapBubble(b.x,R,b.color);state.flying=null;return;}for(var r=0;r<state.grid.length;r++)for(var c=0;c<state.grid[r].length;c++){if(state.grid[r][c]===null)continue;var p=cellCenter(r,c);if(Math.hypot(p.x-b.x,p.y-b.y)<R*1.85){snapBubble(b.x,b.y,b.color);state.flying=null;return;}}}
 function drawBubble(x,y,colorIndex){ctx.beginPath();ctx.arc(x,y,R-1,0,Math.PI*2);ctx.fillStyle=COLORS[colorIndex];ctx.fill();ctx.strokeStyle="rgba(255,255,255,0.35)";ctx.lineWidth=2;ctx.stroke();}
@@ -2100,20 +2041,13 @@ canvas.addEventListener("click",shoot);
 canvas.addEventListener("touchend",function(e){e.preventDefault();shoot();});
 updateAmmoUI();startNewGame();
 })();
-<\/script>
-</body>
-</html>`;
+<\/script></body></html>`;
 }
 
-/* ---------- ASTEROIDS ---------- */
+/* ----- Asteroids ----- */
 function buildAsteroidsHTML(questions, title) {
   const Q = JSON.stringify(questions).replace(/</g, '\\u003c');
-  return `<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Asteroids</title>
+  return `<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Asteroids</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
 :root{--bg:#050816;--panel:#0b1224;--text:#e2e8f0;--accent:#38bdf8;--danger:#ef4444;--ok:#22c55e}
@@ -2138,37 +2072,14 @@ body{margin:0;font-family:"Outfit",sans-serif;background:radial-gradient(ellipse
 .result-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 .result-actions .btn{width:100%}
 ${GAME_QUIZ_CSS}
-</style>
-</head>
+</style></head>
 <body>
-<div class="wrapper">
-  <div id="gameScreen" class="game-screen">
-    <header class="header">
-      <h1>Asteroids</h1>
-      <span class="ammo-badge" id="ammoBadge">Ammo: 10</span>
-      <div class="header-actions">
-        <span id="hud" class="hud">Score: 0 · Lives: 3 · Wave: 1</span>
-        <button type="button" id="newGameBtn" class="btn">New Game</button>
-      </div>
-    </header>
-    <canvas id="gameCanvas" width="480" height="560"></canvas>
-    <div class="touch-controls">
-      <button type="button" id="rotLeftBtn" class="ctrl-btn">↺</button>
-      <button type="button" id="rotRightBtn" class="ctrl-btn">↻</button>
-      <button type="button" id="thrustBtn" class="ctrl-btn">▲</button>
-      <button type="button" id="fireBtn" class="ctrl-btn fire">Fire</button>
-    </div>
-    <div id="resultOverlay" class="result-overlay hidden">
-      <div class="result-box">
-        <h2 id="resultTitle"></h2>
-        <p id="resultMsg"></p>
-        <div class="result-actions">
-          <button type="button" id="playAgainBtn" class="btn">Play Again</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="wrapper"><div id="gameScreen" class="game-screen">
+  <header class="header"><h1>Asteroids</h1><span class="ammo-badge" id="ammoBadge">Ammo: 10</span><div class="header-actions"><span id="hud" class="hud">Score: 0 · Lives: 3 · Wave: 1</span><button type="button" id="newGameBtn" class="btn">New Game</button></div></header>
+  <canvas id="gameCanvas" width="480" height="560"></canvas>
+  <div class="touch-controls"><button type="button" id="rotLeftBtn" class="ctrl-btn">↺</button><button type="button" id="rotRightBtn" class="ctrl-btn">↻</button><button type="button" id="thrustBtn" class="ctrl-btn">▲</button><button type="button" id="fireBtn" class="ctrl-btn fire">Fire</button></div>
+  <div id="resultOverlay" class="result-overlay hidden"><div class="result-box"><h2 id="resultTitle"></h2><p id="resultMsg"></p><div class="result-actions"><button type="button" id="playAgainBtn" class="btn">Play Again</button></div></div></div>
+</div></div>
 <script>
 (function(){
 "use strict";
@@ -2185,17 +2096,7 @@ var ammo=AMMO_START,quizIdx=0,quizOpen=false;
 var ammoBadge=document.getElementById("ammoBadge");
 function updateAmmoUI(){ammoBadge.textContent="Ammo: "+ammo;ammoBadge.classList.toggle("low",ammo<=2);}
 ${GAME_QUIZ_HELPERS}
-var openQuiz = makeQuizModal({
-  isOpen: function(){ return quizOpen; },
-  setOpen: function(v){ quizOpen = v; },
-  getAmmo: function(){ return ammo; },
-  setAmmo: function(v){ ammo = v; },
-  getIdx: function(){ return quizIdx; },
-  setIdx: function(v){ quizIdx = v; },
-  gainCorrect: AMMO_PER_CORRECT,
-  gainWrong: AMMO_PER_WRONG,
-  onUpdate: updateAmmoUI
-});
+var openQuiz = makeQuizModal({isOpen:function(){return quizOpen;},setOpen:function(v){quizOpen=v;},getAmmo:function(){return ammo;},setAmmo:function(v){ammo=v;},getIdx:function(){return quizIdx;},setIdx:function(v){quizIdx=v;},gainCorrect:AMMO_PER_CORRECT,gainWrong:AMMO_PER_WRONG,onUpdate:updateAmmoUI});
 function wrap(v,max){if(v<0)return v+max;if(v>=max)return v-max;return v;}
 function dist(ax,ay,bx,by){var dx=ax-bx,dy=ay-by;return Math.sqrt(dx*dx+dy*dy);}
 function circleHit(ax,ay,ar,bx,by,br){return dist(ax,ay,bx,by)<ar+br;}
@@ -2207,7 +2108,7 @@ function splitRock(rock){var next=rock.size==="large"?"medium":rock.size==="medi
 function updateHud(){document.getElementById("hud").textContent="Score: "+state.score+" · Lives: "+state.lives+" · Wave: "+state.wave;}
 function resetGame(){state.score=0;state.lives=CFG.lives;state.wave=1;state.gameOver=false;state.won=false;state.ship=makeShip();state.rocks=spawnRocks(CFG.startRocks);state.bullets=[];state.ufo=null;state.ufoBullets=[];state.fireCooldown=0;state.running=true;ammo=AMMO_START;updateAmmoUI();updateHud();document.getElementById("resultOverlay").classList.add("hidden");document.getElementById("resultTitle").classList.remove("lose");lastTime=performance.now();}
 function startNextWave(){state.wave++;var count=CFG.startRocks+(state.wave-1);state.rocks=spawnRocks(count);state.bullets=[];state.ufoBullets=[];state.ufo=null;state.ship.invulnUntil=performance.now()+INVULN_MS;updateHud();}
-function endGame(won){state.running=false;state.gameOver=true;state.won=won;var t=document.getElementById("resultTitle");t.textContent=won?"You Win!":"Game Over";t.classList.toggle("lose",!won);document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");}
+function endGame(won){state.running=false;state.gameOver=true;state.won=won;var t=document.getElementById("resultTitle");t.textContent=won?"You Win!":"Game Over";t.classList.toggle("lose",!won);document.getElementById("resultMsg").textContent="Score: "+state.score;document.getElementById("resultOverlay").classList.remove("hidden");try{window.parent.postMessage({type:'gameEnd',game:'asteroids',won:won,score:state.score},'*');}catch(e){}}
 function fireBullet(){if(!state.running||!state.ship||!state.ship.alive)return;if(state.fireCooldown>0)return;if(ammo<=0){openQuiz(function(){});return;}ammo--;updateAmmoUI();var s=state.ship;state.bullets.push({x:s.x+Math.cos(s.angle)*16,y:s.y+Math.sin(s.angle)*16,vx:Math.cos(s.angle)*BULLET_SPEED+s.vx*0.2,vy:Math.sin(s.angle)*BULLET_SPEED+s.vy*0.2,life:BULLET_LIFE});state.fireCooldown=CFG.fireCd/1000;}
 function spawnUfoIfNeeded(){if(!CFG.ufoFromWave||state.wave<CFG.ufoFromWave)return;if(state.ufo)return;if(Math.random()>0.008)return;var fromLeft=Math.random()<0.5;state.ufo={x:fromLeft?-20:canvas.width+20,y:60+Math.random()*(canvas.height*0.5),vx:(fromLeft?1:-1)*(70+Math.random()*40)*CFG.speed,vy:(Math.random()-0.5)*30,r:14,fireTimer:0.6};}
 function killShip(){var now=performance.now();if(now<state.ship.invulnUntil)return;state.lives--;updateHud();state.bullets=[];state.ufoBullets=[];if(state.lives<=0){endGame(false);return;}state.ship=makeShip();}
@@ -2226,106 +2127,59 @@ bindHold(document.getElementById("rotRightBtn"),"right");
 bindHold(document.getElementById("thrustBtn"),"thrust");
 document.getElementById("fireBtn").addEventListener("click",fireBullet);
 document.getElementById("fireBtn").addEventListener("touchstart",function(e){e.preventDefault();fireBullet();},{passive:false});
-updateAmmoUI();
-resetGame();
-requestAnimationFrame(loop);
+updateAmmoUI();resetGame();requestAnimationFrame(loop);
 })();
-<\/script>
-</body>
-</html>`;
+<\/script></body></html>`;
 }
 
-/* =================== Boot =================== */
+/* ===== BOOT ===== */
 document.querySelectorAll('#sidebar .side-menu.top li a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
 (function ensurePreset() {
   const hasPreset = qsets.some(q => q.id === 'qs_preset');
   if (!hasPreset) {
-    qsets.push({
-      id: 'qs_preset',
-      title: 'Preset Quiz',
-      created: Date.now(),
-      questions: PRESET_QUESTIONS,
-      source: 'preset'
-    });
+    qsets.push({ id: 'qs_preset', title: 'Preset Quiz', created: Date.now(), questions: PRESET_QUESTIONS, source: 'preset' });
     saveQSets();
   }
 })();
 
-document.getElementById('puterLogout').addEventListener('click', e => {
-  e.preventDefault();
-  puterLogout();
-});
+document.getElementById('puterLogout').addEventListener('click', e => { e.preventDefault(); puterLogout(); });
 
 async function bootSession() {
-  const previouslyExhausted = (() => {
-    try { return localStorage.getItem('adminhub_auth_exhausted') === '1'; }
-    catch (e) { return false; }
-  })();
-
-  if (previouslyExhausted) {
-    authState = 'exhausted';
-    updateAuthBadge();
-    updateLogoutVisibility();
-    return;
-  }
-
+  const previouslyExhausted = (() => { try { return localStorage.getItem('adminhub_auth_exhausted') === '1'; } catch (e) { return false; }})();
+  if (previouslyExhausted) { authState = 'exhausted'; updateAuthBadge(); updateLogoutVisibility(); return; }
   authState = 'unknown';
   updateAuthBadge();
   const ok = await ensureAuth();
-
   if (ok && authState === 'temp') {
     if (!authPopupShown) {
       authPopupShown = true;
       showAuthPopup({
         title: 'Guest session ready',
-        body:
-          'A temporary guest session was created successfully.\n\n' +
-          'Everything works except the AI quiz generator. Puter only gives AI credits to signed-in users.\n\n' +
-          'Want the AI too? Sign in with a real Puter account any time.',
+        body: 'A temporary guest session was created successfully.\n\nEverything works except the AI quiz generator. Puter only gives AI credits to signed-in users.\n\nWant the AI too? Sign in with a real Puter account any time.',
         tone: 'warn',
         actions: [
           { label: 'Continue as guest', onClick: closeAuthPopup },
-          { label: 'Sign in for AI', kind: 'ghost', onClick: async () => {
-            authState = 'unknown'; updateAuthBadge();
-            const signed = await ensureAuth({ forceRealSignIn: true });
-            if (signed) toast('Signed in.');
-          }}
+          { label: 'Sign in for AI', kind: 'ghost', onClick: async () => { authState = 'unknown'; updateAuthBadge(); const signed = await ensureAuth({ forceRealSignIn: true }); if (signed) toast('Signed in.'); }}
         ]
       });
     }
   } else if (ok && authState === 'signed') {
-    if (!authPopupShown) {
-      authPopupShown = true;
-      showAuthPopup({
-        title: 'Signed in',
-        body: 'Welcome back. The AI quiz generator is enabled and uses your Puter credits.',
-        tone: 'ok',
-        actions: [{ label: 'Got it', onClick: closeAuthPopup }]
-      });
-    }
+    if (!authPopupShown) { authPopupShown = true; showAuthPopup({ title: 'Signed in', body: 'Welcome back. The AI quiz generator is enabled and uses your Puter credits.', tone: 'ok', actions: [{ label: 'Got it', onClick: closeAuthPopup }] }); }
   } else if (authState === 'failed') {
     if (!authPopupShown) {
       authPopupShown = true;
       showAuthPopup({
         title: 'Could not start a session',
-        body:
-          'Temp user creation failed.\n\n' +
-          'Reason: ' + (authLastReason || 'Unknown error.') + '\n\n' +
-          'You can still use everything except the AI.',
+        body: 'Temp user creation failed.\n\nReason: ' + (authLastReason || 'Unknown error.') + '\n\nYou can still use everything except the AI.',
         tone: 'bad',
         actions: [
-          { label: 'Retry', onClick: async () => {
-            authPopupShown = false;
-            authState = 'unknown'; updateAuthBadge();
-            await bootSession();
-          }},
+          { label: 'Retry', onClick: async () => { authPopupShown = false; authState = 'unknown'; updateAuthBadge(); await bootSession(); }},
           { label: 'Continue anyway', kind: 'ghost', onClick: closeAuthPopup }
         ]
       });
     }
   }
-
   updateAuthBadge();
   updateLogoutVisibility();
 }
