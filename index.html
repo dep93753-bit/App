@@ -246,6 +246,21 @@ main{padding:28px 24px;color:var(--dark)}
 .auth-badge.clickable{cursor:pointer}
 .auth-badge.clickable:hover{filter:brightness(1.05)}
 #sidebar .side-menu li a .bx{display:inline-flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
+
+/* Assign-quiz panel inside the Assignments tab */
+.assign-panel{background:var(--light);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.assign-panel .ap-icon{width:44px;height:44px;border-radius:12px;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.assign-panel .ap-info{flex:1;min-width:200px}
+.assign-panel .ap-info b{font-size:15px;display:block}
+.assign-panel .ap-info small{color:var(--dark-grey);font-size:13px}
+.assign-panel .ap-actions{display:flex;gap:8px;flex-wrap:wrap}
+.qs-pick{display:grid;gap:8px;max-height:50vh;overflow-y:auto;margin-bottom:12px}
+.qs-pick button{text-align:left;padding:12px 14px;border:1px solid #ccc;background:transparent;color:var(--dark);border-radius:8px;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.qs-pick button:hover{background:var(--light-blue);border-color:var(--blue)}
+.qs-pick button .qsi{width:36px;height:36px;border-radius:8px;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.qs-pick button .qst{flex:1;min-width:0}
+.qs-pick button .qst b{display:block;font-size:14px}
+.qs-pick button .qst small{color:var(--dark-grey);font-size:12px}
 </style>
 </head>
 <body>
@@ -298,7 +313,7 @@ main{padding:28px 24px;color:var(--dark)}
       <div class="pagehead">
         <div>
           <h1>AI Quiz</h1>
-          <p>Paste notes, upload a PDF, or just say what you want. If it's vague, I'll chat with you until I know what to build.</p>
+          <p>Answer four quick questions and I'll generate your quiz. Only the final generation uses AI credits.</p>
         </div>
         <div class="hbtns">
           <span class="auth-badge" id="authBadge" title="Session status">
@@ -315,16 +330,11 @@ main{padding:28px 24px;color:var(--dark)}
       </div>
       <div class="chat-wrap">
         <div class="chat-log" id="chatLog"></div>
-        <div class="chat-actions" id="chatChips">
-          <button class="chip" data-chip="I have notes to paste">I have notes to paste</button>
-          <button class="chip" data-chip="I want to upload a PDF">Upload a PDF</button>
-          <button class="chip" data-chip="Just make easy questions about dinosaurs">Vague prompt (test failsafe)</button>
-          <button class="chip" data-chip="Generate 5 medium questions about the water cycle">5 medium · water cycle</button>
-        </div>
+        <div class="chat-actions" id="chatChips"></div>
         <div class="chat-composer">
           <button class="iconbtn" id="aiAttach" title="Attach .txt or .pdf"><i class='bx bx-paperclip'></i></button>
           <input type="file" id="aiFile" accept=".txt,.pdf,text/plain,application/pdf" hidden>
-          <textarea id="aiInput" placeholder="Type notes, a topic, or say 'easy dinosaur questions'…"></textarea>
+          <textarea id="aiInput" placeholder="Type your answer…"></textarea>
           <button class="iconbtn" id="aiSend" title="Send"><i class='bx bx-send'></i></button>
         </div>
       </div>
@@ -490,8 +500,23 @@ function render() {
       body += `<h3 style="margin:8px 0 12px">Posts wall<span class="badge">${c.settings.studentsCanPost ? 'Students can post' : 'Only you can post'}</span></h3>`;
       if (!c.settings.wallVisible) body += `<div class="card"><div class="wall-off">The wall is hidden from students. Only you can see it.</div></div>`;
       body += listHtml(c.posts, 'posts', 'No posts yet. Write the first one above.');
-    } else if (tab === 'dashboard') body = dashHtml(c);
-    else body = listHtml(c.assignments, 'assignments', 'No assignments yet. Use Assign to create one.');
+    } else if (tab === 'dashboard') {
+      body = dashHtml(c);
+    } else {
+      /* ---------- Assignments tab ---------- */
+      body = `<div class="assign-panel">
+        <div class="ap-icon"><i class='bx bx-task'></i></div>
+        <div class="ap-info">
+          <b>Assign a quiz</b>
+          <small>${qsets.length ? qsets.length + ' question set' + (qsets.length === 1 ? '' : 's') + ' available to assign.' : 'No question sets yet — make one in the AI Quiz tab.'}</small>
+        </div>
+        <div class="ap-actions">
+          <button class="btn" id="assignQuizBtn"><i class='bx bx-plus'></i> Assign quiz</button>
+          <button class="btn ghost" id="assignTextBtn"><i class='bx bx-text'></i> Text assignment</button>
+        </div>
+      </div>`;
+      body += listHtml(c.assignments, 'assignments', 'No assignments yet. Use "Assign quiz" above to add one.');
+    }
 
     v.innerHTML = `<div class="ctop"><h1>${esc(c.name)}</h1><div class="tools"><i class='bx bx-list-check' id="qsShortcut" title="Question sets" tabindex="0" style="cursor:pointer"></i><div class="avatar" style="background:#aaa;width:48px;height:48px"><i class='bx bxs-user'></i></div><i class='bx bx-cog' id="gear" title="Teacher settings" tabindex="0"></i></div></div>
       <div class="row"><div class="tabs">${['activity','dashboard','assignments'].map(t => `<button data-tab="${t}" class="${tab === t ? 'on' : ''}">${t[0].toUpperCase() + t.slice(1)}</button>`).join('')}</div>
@@ -511,6 +536,8 @@ $('#createClass').onclick = createClass;
 $('#classView').addEventListener('click', e => {
   if (e.target.closest('[data-goto-qs]')) { nav = 'questions'; renderQuestionSets(); route(); return; }
   if (e.target.closest('#qsShortcut')) { nav = 'questions'; renderQuestionSets(); route(); return; }
+  if (e.target.closest('#assignQuizBtn')) return pickAndAssignQuiz();
+  if (e.target.closest('#assignTextBtn')) return addAssignment();
   const t = e.target.closest('[data-tab]'); if (t) { tab = t.dataset.tab; render(); return; }
   if (e.target.closest('#joinBtn')) return showCode();
   if (e.target.closest('#gear')) return showSettings();
@@ -614,8 +641,8 @@ function renderAIErrors() {
 document.getElementById('aiErrorsToggle').onclick = () => { const p = document.getElementById('aiErrors'); p.hidden = !p.hidden; };
 document.getElementById('aiErrorsClear').onclick = () => { aiErrors = []; renderAIErrors(); };
 
-/* =================== AUTH: temp user first, sign-in second =================== */
-let authState = 'unknown'; // unknown | temp | signed | exhausted | failed
+/* =================== AUTH =================== */
+let authState = 'unknown';
 let authLastError = null;
 let authLastReason = '';
 let authAttempts = 0;
@@ -732,7 +759,6 @@ async function ensureAuth(opts = {}) {
       }
     }
 
-    // PRIMARY: temp user creation
     try {
       await puter.auth.signIn({ attempt_temp_user_creation: true });
       authState = 'temp';
@@ -747,7 +773,6 @@ async function ensureAuth(opts = {}) {
       logAIError('Temp user creation failed', e, 'code: ' + (e && e.error ? e.error : 'unknown') + ' — trying normal sign-in next');
     }
 
-    // SECONDARY: full sign-in popup
     try {
       await puter.auth.signIn();
       authState = 'signed';
@@ -875,8 +900,8 @@ function showSessionInfo() {
         'What works:\n' +
         '• Classes, assignments, question sets, and all three games.\n\n' +
         'What does NOT work:\n' +
-        '• The AI quiz generator. Puter gives guest accounts zero AI credits, so every AI request will fail with "not enough credits".\n\n' +
-        'To unlock the AI, sign in with a real Puter account. Your work is stored in this browser, so nothing is lost when you switch.',
+        '• The AI quiz generator. Puter gives guest accounts zero AI credits.\n\n' +
+        'To unlock the AI, sign in with a real Puter account.',
       tone: 'warn',
       actions: [
         { label: 'Sign in for AI', onClick: async () => {
@@ -890,9 +915,7 @@ function showSessionInfo() {
   } else if (authState === 'signed') {
     showAuthPopup({
       title: 'Signed in',
-      body:
-        'You are signed in with a full Puter account.\n\n' +
-        'AI quiz generation is enabled and uses your Puter credits. If you run low, top up at puter.com/#billing.',
+      body: 'You are signed in with a full Puter account. AI quiz generation is enabled.',
       tone: 'ok',
       actions: [
         { label: 'Sign out', kind: 'ghost', onClick: puterLogout },
@@ -902,7 +925,7 @@ function showSessionInfo() {
   }
 }
 
-/* =================== AI prompts =================== */
+/* =================== AI prompt =================== */
 const AI_PROMPT = (n, topic, notes) => `You are a quiz generator. Return ONLY valid JSON. No prose, no markdown.
 Shape: {"title":"...","questions":[{"question":"...","options":["A","B","C","D"],"correct":0,"timeLimit":20,"explanation":"..."}]}
 Rules:
@@ -914,18 +937,80 @@ Rules:
 - Vary difficulty.
 - Return no text outside the JSON.
 
-Make ${n} questions.
-Topic: ${topic || '(infer from notes)'}
+Make EXACTLY ${n} questions.
+Topic: ${topic}
 Notes/context:
 ${notes || '(none — rely on the topic)'}`;
 
-let chatState = null;
+/* =================== SCRIPTED CHAT FLOW =================== */
+const FLOW_ORDER = ['topic', 'grade', 'count', 'difficulty'];
+
+const FLOW_QUESTIONS = {
+  topic: 'What is your set topic? Example: "dinosaur questions" or "the water cycle".',
+  grade: 'What grade level are you teaching?',
+  count: 'How many questions do you want? (1–100)',
+  difficulty: 'What difficulty? Easy, Medium, or Hard.'
+};
+const FLOW_RETRIES = {
+  topic: "That's not quite enough — try something like \"dinosaur questions\" or \"photosynthesis\".",
+  grade: 'Just tell me a grade — like "3rd grade", "7th", or "high school".',
+  count: 'Give me a number between 1 and 100.',
+  difficulty: 'Pick one: Easy, Medium, or Hard.'
+};
+const FLOW_PARSERS = {
+  topic: v => {
+    const t = v.trim();
+    if (t.length < 3) return null;
+    // reject obvious non-answers
+    if (/^(idk|i don'?t know|no|nope|nothing|anything|whatever|\?+)$/i.test(t)) return null;
+    return t;
+  },
+  grade: v => {
+    const t = v.trim();
+    if (!t) return null;
+    if (t.length > 60) return t.slice(0, 60);
+    return t;
+  },
+  count: v => {
+    const m = String(v).match(/\d{1,3}/);
+    if (!m) return null;
+    const n = parseInt(m[0], 10);
+    if (!Number.isFinite(n) || n < 1 || n > 100) return null;
+    return n;
+  },
+  difficulty: v => {
+    const t = v.toLowerCase();
+    if (/\beasy\b|\bsimple\b/.test(t)) return 'easy';
+    if (/\bmedium\b|\bmed\b|\bnormal\b/.test(t)) return 'medium';
+    if (/\bhard\b|\bdifficult\b|\bchallenging\b/.test(t)) return 'hard';
+    return null;
+  }
+};
+
+let chatFlow = null;
+
 function newChat() {
-  chatState = { log: [], phase: 'idle', notes: '', topic: '', count: 5, difficulty: 'medium', waiting: false };
+  chatFlow = { step: 'topic', notes: '', topic: '', grade: '', count: 5, difficulty: 'medium' };
   $('#chatLog').innerHTML = '';
-  botSay("Hi! Tell me what you want questions about — or paste/upload notes and I'll go from there. If it's vague (like 'easy dinosaur questions'), I'll ask you a few clarifying questions first.");
+  botSay('Hi! Let\'s build a quiz. ' + FLOW_QUESTIONS.topic);
+  updateChips();
 }
-function renderChat() { if (!chatState) newChat(); }
+function renderChat() { if (!chatFlow) newChat(); }
+
+function updateChips() {
+  const chipsEl = document.getElementById('chatChips');
+  if (!chipsEl) return;
+  const sets = {
+    topic: ['Dinosaur questions', 'The water cycle', 'World War II', 'Parts of a cell'],
+    grade: ['3rd grade', '5th grade', 'Middle school', 'High school'],
+    count: ['5', '10', '15', '20'],
+    difficulty: ['Easy', 'Medium', 'Hard'],
+    done: []
+  };
+  const chips = sets[chatFlow && chatFlow.step] || [];
+  chipsEl.innerHTML = chips.map(c => `<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
+}
+
 function botSay(t) { addMsg('bot', t); }
 function userSay(t) { addMsg('user', t); }
 function sysSay(t) { addMsg('sys', t); }
@@ -938,27 +1023,34 @@ function addMsg(kind, text) {
   log.scrollTop = log.scrollHeight;
 }
 function setWaiting(w) {
-  chatState.waiting = w;
+  if (!chatFlow) chatFlow = {};
+  chatFlow.waiting = w;
   $('#aiSend').innerHTML = w ? "<i class='bx bx-loader-alt spin'></i>" : "<i class='bx bx-send'></i>";
   $('#aiSend').disabled = w;
 }
+
 $('#chatChips').addEventListener('click', e => {
   const c = e.target.closest('[data-chip]'); if (!c) return;
-  if (c.dataset.chip === 'I want to upload a PDF') return $('#aiFile').click();
   $('#aiInput').value = c.dataset.chip;
-  $('#aiInput').focus();
+  $('#aiSend').click();
 });
+
 $('#aiAttach').onclick = () => $('#aiFile').click();
+
 $('#aiFile').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
   $('#aiFile').value = '';
-  if (!chatState) newChat();
+  if (!chatFlow) newChat();
   userSay('📎 ' + f.name);
   sysSay('Reading file…');
   try {
     let text = '';
     if (/\.pdf$/i.test(f.name)) {
-      if (!window.pdfjsLib) { logAIError('PDF upload failed — pdf.js missing', new Error('pdfjsLib not loaded')); botSay("PDF support failed to load. Paste the text instead."); return; }
+      if (!window.pdfjsLib) {
+        logAIError('PDF upload failed — pdf.js missing', new Error('pdfjsLib not loaded'));
+        botSay('PDF support failed to load. Paste the text instead.');
+        return;
+      }
       const buf = await f.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
       const parts = [];
@@ -968,79 +1060,130 @@ $('#aiFile').onchange = async e => {
         parts.push(content.items.map(x => x.str).join(' '));
       }
       text = parts.join('\n\n');
-    } else { text = await f.text(); }
+    } else {
+      text = await f.text();
+    }
     text = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
     const words = text.split(/\s+/).length;
-    if (words < 20) { logAIError('File had too little text', new Error(words + ' words'), f.name); botSay("That file has no selectable text — scanned PDFs aren't supported yet."); return; }
-    chatState.notes += (chatState.notes ? '\n\n' : '') + text;
+    if (words < 20) {
+      logAIError('File had too little text', new Error(words + ' words'), f.name);
+      botSay("That file has no selectable text — scanned PDFs aren't supported yet.");
+      return;
+    }
+    chatFlow.notes = (chatFlow.notes ? chatFlow.notes + '\n\n' : '') + text;
     sysSay('Added ~' + words.toLocaleString() + ' words from ' + f.name);
-    if (chatState.phase !== 'clarifying' || chatState.topic) await tryGenerate(true);
-    else botSay("Got your notes. What should the questions focus on, and how many do you want?");
-  } catch (err) { logAIError('File read failed', err, f.name); botSay("I couldn't read that file."); }
+
+    // If we haven't gotten past topic yet, treat the file as the topic and move on.
+    if (chatFlow.step === 'topic') {
+      chatFlow.topic = 'the attached ' + f.name;
+      chatFlow.step = 'grade';
+      botSay('Got your notes. ' + FLOW_QUESTIONS.grade);
+      updateChips();
+    }
+  } catch (err) {
+    logAIError('File read failed', err, f.name);
+    botSay("I couldn't read that file.");
+  }
 };
+
 $('#aiSend').onclick = async () => {
-  if (!chatState) newChat();
+  if (!chatFlow) newChat();
   const v = $('#aiInput').value.trim();
-  if (!v || chatState.waiting) return;
+  if (!v || chatFlow.waiting) return;
   $('#aiInput').value = '';
   userSay(v);
-  await handleUserMessage(v);
+  await handleFlowAnswer(v);
 };
-$('#aiInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); } });
+$('#aiInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#aiSend').click(); }
+});
 $('#aiReset').onclick = () => { newChat(); };
 
-function isVague(text) {
-  const t = text.toLowerCase().trim();
-  if (t.length < 60 && !/\d/.test(t)) return true;
-  return /\b(easy|hard|simple|quick|random|some|few)\b/.test(t) && !/\d+/.test(t) && t.length < 80;
+async function handleFlowAnswer(text) {
+  if (!chatFlow) newChat();
+
+  // Long pasted text at the topic step counts as notes
+  if (chatFlow.step === 'topic' && text.length > 400) {
+    chatFlow.notes = (chatFlow.notes ? chatFlow.notes + '\n\n' : '') + text;
+    chatFlow.topic = 'the pasted notes';
+    chatFlow.step = 'grade';
+    botSay('Got your notes. ' + FLOW_QUESTIONS.grade);
+    updateChips();
+    return;
+  }
+
+  const step = chatFlow.step;
+  const parser = FLOW_PARSERS[step];
+  const parsed = parser ? parser(text) : null;
+
+  if (parsed == null) {
+    botSay(FLOW_RETRIES[step] || 'Could you try rephrasing that?');
+    return;
+  }
+
+  if (step === 'topic') chatFlow.topic = parsed;
+  else if (step === 'grade') chatFlow.grade = parsed;
+  else if (step === 'count') chatFlow.count = parsed;
+  else if (step === 'difficulty') chatFlow.difficulty = parsed;
+
+  const idx = FLOW_ORDER.indexOf(step);
+  if (idx < FLOW_ORDER.length - 1) {
+    chatFlow.step = FLOW_ORDER[idx + 1];
+    botSay(FLOW_QUESTIONS[chatFlow.step]);
+    updateChips();
+    return;
+  }
+
+  // All four answers collected → generate
+  chatFlow.step = 'done';
+  updateChips();
+  await generateFromFlow();
 }
-async function handleUserMessage(text) {
-  const t = text.toLowerCase();
-  const numMatch = t.match(/(\d{1,3})\s*(questions|qs|items)/);
-  if (numMatch) chatState.count = Math.min(50, Math.max(1, parseInt(numMatch[1], 10)));
-  if (/\b(medium)\b/.test(t)) chatState.difficulty = 'medium';
-  if (/\b(hard|difficult|challenging)\b/.test(t)) chatState.difficulty = 'hard';
-  if (/\b(easy|simple)\b/.test(t)) chatState.difficulty = 'easy';
-  if (!chatState.topic && text.length <= 120) chatState.topic = text;
-  if (text.length > 400) { chatState.notes += (chatState.notes ? '\n\n' : '') + text; sysSay('Got it — using your pasted notes.'); }
-  const wantsGen = /generate|make|create|build|write|produce/i.test(t) || /questions/i.test(t);
-  if (isVague(text) && !chatState.notes) { chatState.phase = 'clarifying'; await askClarifying(text); return; }
-  if (chatState.notes || (chatState.topic && (wantsGen || !isVague(text)))) { await tryGenerate(false); return; }
-  chatState.phase = 'clarifying';
-  await askClarifying(text);
-}
-async function askClarifying(initial) {
+
+async function generateFromFlow() {
   setWaiting(true);
-  const prompt = `You are a friendly assistant helping a teacher design a quiz.
-The user said: "${initial}"
-Context: Topic: ${chatState.topic || '(unknown)'} | Difficulty: ${chatState.difficulty} | Count: ${chatState.count} | Notes: ${chatState.notes ? 'yes' : 'no'}
-Ask ONE short follow-up question to narrow things down. If they have not mentioned notes/files, ask first whether they have any notes or files you can reference. Then ask about topic, difficulty, and how many questions. Do NOT generate questions yet. Reply with just the single question.`;
-  try { const reply = await aiChat(prompt); botSay(reply.trim()); }
-  catch (e) { logAIError('Clarifying question failed', e); botSay("Do you have any notes or files I can reference? If not, tell me the topic, grade level, and how many questions."); }
-  setWaiting(false);
-}
-async function tryGenerate(silent) {
-  setWaiting(true);
-  sysSay('Generating ' + chatState.count + ' ' + chatState.difficulty + ' questions…');
+  sysSay('Generating ' + chatFlow.count + ' ' + chatFlow.difficulty + ' questions about "' + chatFlow.topic + '" (grade ' + chatFlow.grade + ')…');
+  const prompt = AI_PROMPT(
+    chatFlow.count,
+    chatFlow.topic + ' · grade ' + chatFlow.grade + ' · difficulty ' + chatFlow.difficulty,
+    chatFlow.notes
+  );
   let raw = '';
-  const prompt = AI_PROMPT(chatState.count, chatState.topic, chatState.notes);
-  try { raw = await aiChat(prompt); }
-  catch (e) { logAIError('AI request failed', e, 'prompt chars: ' + prompt.length); botSay("The AI request failed. See the Errors panel or the badge above for details."); setWaiting(false); return; }
+  try {
+    raw = await aiChat(prompt);
+  } catch (e) {
+    logAIError('AI request failed', e, 'prompt chars: ' + prompt.length);
+    botSay('The AI request failed. See the Errors panel or the badge above.');
+    setWaiting(false);
+    chatFlow.step = 'difficulty'; // let them retry
+    updateChips();
+    return;
+  }
   let data = null;
   try { data = parseQuizJSON(raw); } catch (e) { logAIError('parseQuizJSON threw', e, 'raw preview: ' + raw.slice(0, 200)); }
   if (!data || !data.questions || !data.questions.length) {
     logAIError('AI returned unusable JSON', new Error('No valid questions'), 'raw preview: ' + raw.slice(0, 400));
-    botSay("The model replied but the JSON was invalid or empty. Open the Errors panel above.");
+    botSay("The model replied but the JSON was invalid or empty. Open the Errors panel.");
     setWaiting(false);
+    chatFlow.step = 'difficulty';
+    updateChips();
     return;
   }
-  data.title = data.title || (chatState.topic || 'Quiz');
-  addQuestionSet({ title: data.title, questions: data.questions, source: chatState.notes ? 'notes' : 'topic' });
-  botSay('Done! I saved "' + data.title + '" with ' + data.questions.length + ' questions. Head to the Questions tab to play or assign it.');
-  chatState.phase = 'idle';
+  data.title = data.title || (chatFlow.topic || 'Quiz');
+  addQuestionSet({
+    title: data.title,
+    questions: data.questions,
+    source: chatFlow.notes ? 'notes' : 'topic',
+    grade: chatFlow.grade,
+    difficulty: chatFlow.difficulty
+  });
+  botSay('Done! I saved "' + data.title + '" with ' + data.questions.length + ' questions. Head to the Questions tab to play or assign it.\n\nClick "New chat" if you want to make another set.');
   setWaiting(false);
+  chatFlow.step = 'done';
+  updateChips();
 }
 
+/* =================== aiChat =================== */
 async function aiChat(prompt) {
   const ok = await ensureAuth();
   if (!ok) {
@@ -1081,7 +1224,7 @@ async function aiChat(prompt) {
         const signed = await ensureAuth({ forceRealSignIn: true });
         if (signed) {
           wrap.remove();
-          botSay('Signed in. Try your prompt again — the credits come from your account now.');
+          botSay('Signed in. Answer the last question again — the credits come from your account now.');
         } else {
           btn.disabled = false; btn.textContent = 'Sign in with Puter';
         }
@@ -1204,15 +1347,56 @@ function assignQuiz(qsId) {
   $('#assignList').addEventListener('click', e => {
     const b = e.target.closest('[data-cid]'); if (!b) return;
     const c = classes.find(x => x.id === b.dataset.cid); if (!c) return;
-    c.assignments.unshift({ id: Date.now(), text: 'Quiz: ' + qs.title + ' (' + qs.questions.length + ' questions)', time: Date.now(), kind: 'quiz', quizId: qs.id });
-    c.setupDone = true;
-    qs.assignedTo = qs.assignedTo || [];
-    if (!qs.assignedTo.includes(c.id)) qs.assignedTo.push(c.id);
-    save(); saveQSets(); closeModal();
+    addAssignmentForClass(c, qs);
+    closeModal();
     toast('Assigned to ' + c.name);
-    render(); renderQuestionSets();
+    if (cur() && cur().id === c.id) { tab = 'assignments'; render(); }
+    renderQuestionSets();
   });
 }
+
+function addAssignmentForClass(c, qs) {
+  c.assignments.unshift({
+    id: Date.now(),
+    text: 'Quiz: ' + qs.title + ' (' + qs.questions.length + ' questions)',
+    time: Date.now(),
+    kind: 'quiz',
+    quizId: qs.id
+  });
+  c.setupDone = true;
+  qs.assignedTo = qs.assignedTo || [];
+  if (!qs.assignedTo.includes(c.id)) qs.assignedTo.push(c.id);
+  save(); saveQSets();
+}
+
+/* ---------- Assign from the teacher's Assignments tab ---------- */
+function pickAndAssignQuiz() {
+  if (!qsets.length) return toast('No question sets yet — make one in AI Quiz');
+  if (!classes.length) return toast('Create a class first');
+  const c = cur();
+  openModal(`<h3>Assign a quiz</h3><p class="sub">Pick a question set to attach to <b>${esc(c.name)}</b>.</p>
+    <div class="qs-pick" id="qsPick">
+      ${qsets.map(q => `
+        <button type="button" data-qsid="${q.id}">
+          <span class="qsi"><i class='bx bx-list-check'></i></span>
+          <span class="qst">
+            <b>${esc(q.title)}</b>
+            <small>${q.questions.length} questions${q.grade ? ' · ' + esc(q.grade) : ''}${q.difficulty ? ' · ' + esc(q.difficulty) : ''}</small>
+          </span>
+        </button>`).join('')}
+    </div>
+    <div class="foot"><button class="btn ghost" data-x>Cancel</button></div>`);
+  $('#modal [data-x]').onclick = closeModal;
+  $('#qsPick').addEventListener('click', e => {
+    const b = e.target.closest('[data-qsid]'); if (!b) return;
+    const qs = qsets.find(x => x.id === b.dataset.qsid); if (!qs) return;
+    addAssignmentForClass(c, qs);
+    closeModal();
+    toast('Assigned "' + qs.title + '" to ' + c.name);
+    render();
+  });
+}
+
 function editQuiz(qsId) {
   const qs = qsets.find(x => x.id === qsId); if (!qs) return;
   openModal(`<h3>Edit "${esc(qs.title)}"</h3><p class="sub">Change any question. Radio = correct answer.</p>
@@ -1266,7 +1450,7 @@ $('#battleClose').onclick = () => {
   document.body.style.overflow = '';
 };
 
-/* ---------- Shared Kahoot-style quiz modal + ammo API ---------- */
+/* ---------- Kahoot-style quiz modal ---------- */
 const GAME_QUIZ_HELPERS = `
 function escHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function makeQuizModal(opts) {
@@ -1866,7 +2050,7 @@ async function bootSession() {
         title: 'Guest session ready',
         body:
           'A temporary guest session was created successfully.\n\n' +
-          'Everything works except the AI quiz generator. Puter only gives AI credits to signed-in users, so guest sessions can\'t call the AI. You can still make classes, assign quizzes, edit question sets, and play all three games.\n\n' +
+          'Everything works except the AI quiz generator. Puter only gives AI credits to signed-in users.\n\n' +
           'Want the AI too? Sign in with a real Puter account any time.',
         tone: 'warn',
         actions: [
@@ -1886,9 +2070,7 @@ async function bootSession() {
         title: 'Signed in',
         body: 'Welcome back. The AI quiz generator is enabled and uses your Puter credits.',
         tone: 'ok',
-        actions: [
-          { label: 'Got it', onClick: closeAuthPopup }
-        ]
+        actions: [{ label: 'Got it', onClick: closeAuthPopup }]
       });
     }
   } else if (authState === 'failed') {
@@ -1899,7 +2081,7 @@ async function bootSession() {
         body:
           'Temp user creation failed.\n\n' +
           'Reason: ' + (authLastReason || 'Unknown error.') + '\n\n' +
-          'You can still use everything except the AI. If you want to try again, click Retry.',
+          'You can still use everything except the AI.',
         tone: 'bad',
         actions: [
           { label: 'Retry', onClick: async () => {
