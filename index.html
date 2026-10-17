@@ -39,7 +39,8 @@ button{font-family:inherit;cursor:pointer}
 #sidebar.hide .side-menu li a{width:40px;transition:width .3s ease}
 #sidebar .side-menu li a.logout{color:var(--red)}
 #sidebar .side-menu li a .bx{min-width:40px;display:flex;justify-content:center}
-#sidebar .side-menu.bottom li:nth-last-of-type(-n+2){position:absolute;bottom:0;left:0;right:0}
+#sidebar .side-menu.bottom li:nth-last-of-type(-n+3){position:absolute;bottom:0;left:0;right:0}
+#sidebar .side-menu.bottom li:nth-last-of-type(3){bottom:80px}
 #sidebar .side-menu.bottom li:nth-last-of-type(2){bottom:40px}
 #content{position:relative;width:calc(100% - 220px);left:220px;transition:.3s ease}
 #sidebar.hide~#content{width:calc(100% - 60px);left:60px}
@@ -155,7 +156,7 @@ main{padding:28px 24px;color:var(--dark)}
 @media(max-width:900px){.sumrow{grid-template-columns:1fr}}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:5000;padding:16px}
 .scrim.show{display:flex}
-.modal{background:var(--light);color:var(--dark);border-radius:14px;padding:28px;width:100%;max-width:440px}
+.modal{background:var(--light);color:var(--dark);border-radius:14px;padding:28px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
 .modal h3{font-size:22px;margin-bottom:6px}
 .modal .sub{color:var(--dark-grey);font-size:14px;margin-bottom:18px}
 .modal input[type=text]{width:100%;padding:12px 14px;border:1px solid #ccc;border-radius:6px;font:inherit;background:transparent;color:var(--dark);margin-bottom:18px}
@@ -241,8 +242,9 @@ main{padding:28px 24px;color:var(--dark)}
 .auth-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:20px;background:var(--light-blue);color:var(--blue);font-size:13px;font-weight:600;transition:background .2s,color .2s}
 .auth-badge.temp{background:#fff6d6;color:#8a6b00}
 .auth-badge.signed{background:#e6f5e9;color:#26890c}
-.auth-badge.failed{background:#fde8e6;color:#8a2721}
-/* Force sidebar icons to always render visibly */
+.auth-badge.failed,.auth-badge.exhausted{background:#fde8e6;color:#8a2721}
+.auth-badge.clickable{cursor:pointer}
+.auth-badge.clickable:hover{filter:brightness(1.05)}
 #sidebar .side-menu li a .bx{display:inline-flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
 </style>
 </head>
@@ -259,6 +261,7 @@ main{padding:28px 24px;color:var(--dark)}
     <li><a href="#"><i class='bx bxs-group bx-sm'></i><span class="text">Team</span></a></li>
   </ul>
   <ul class="side-menu bottom">
+    <li><a href="#" id="puterLogout" class="logout" style="display:none" title="Sign out of Puter"><i class='bx bx-log-out bx-sm'></i><span class="text">Sign out of Puter</span></a></li>
     <li><a href="#"><i class='bx bxs-cog bx-sm'></i><span class="text">Settings</span></a></li>
     <li><a href="#" class="logout"><i class='bx bx-power-off bx-sm'></i><span class="text">Logout</span></a></li>
   </ul>
@@ -342,6 +345,7 @@ main{padding:28px 24px;color:var(--dark)}
 
 <div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
 <div class="toast" id="toast"></div>
+<div class="scrim" id="authScrim"><div class="modal" id="authModal"></div></div>
 
 <div class="battle-wrap" id="battleWrap">
   <button class="battle-close" id="battleClose" title="Close"><i class='bx bx-x'></i></button>
@@ -522,7 +526,7 @@ $('#classView').addEventListener('click', e => {
 $('#classView').addEventListener('keydown', e => {
   if (e.target.id === 'postBox' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addPost(e.target.value); }
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeAuthPopup(); } });
 
 const sidebar = $('#sidebar');
 $('#content nav .bx-menu').onclick = () => sidebar.classList.toggle('hide');
@@ -552,7 +556,7 @@ document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
     const v = li.dataset.view;
     if (!v) return;
     nav = v;
-    if (v === 'ai') { renderChat(); ensureAuth().then(updateAuthBadge).catch(() => {}); }
+    if (v === 'ai') { renderChat(); ensureAuth().then(() => { updateAuthBadge(); updateLogoutVisibility(); }).catch(() => {}); }
     if (v === 'questions') renderQuestionSets();
     route();
   });
@@ -611,61 +615,196 @@ document.getElementById('aiErrorsToggle').onclick = () => { const p = document.g
 document.getElementById('aiErrorsClear').onclick = () => { aiErrors = []; renderAIErrors(); };
 
 /* =================== AUTH: temp user first, sign-in second =================== */
-let authState = 'unknown'; // unknown | temp | signed | failed
+let authState = 'unknown'; // unknown | temp | signed | exhausted | failed
+let authLastError = null;
+let authLastReason = '';
 let authAttempts = 0;
 const MAX_AUTH_ATTEMPTS = 3;
 let authInFlight = null;
+let authPopupShown = false;
 
-async function ensureAuth() {
-  if (authInFlight) return authInFlight;
+function isCreditsError(e) {
+  if (!e) return false;
+  const msg = String(e.message || e.error || e || '').toLowerCase();
+  return msg.includes('not enough credits') || msg.includes('upgrade your plan') || msg.includes('insufficient');
+}
+function isAuthError(e) {
+  if (!e) return false;
+  return e.error === 'must_login_or_signup' || e.status === 401 || e.status === 403;
+}
+function describeAuthError(e) {
+  if (!e) return 'Unknown error.';
+  const code = e.error || e.code || '';
+  const map = {
+    'auth_window_closed': 'The sign-in window was closed before you finished.',
+    'popup_blocked': 'Your browser blocked the Puter popup. Allow popups for this site and try again.',
+    'auth_cancelled': 'Sign-in was cancelled.',
+    'network_error': 'A network error occurred talking to Puter.',
+    'server_error': 'Puter returned a server error.'
+  };
+  if (map[code]) return map[code];
+  if (e.message) return e.message;
+  if (code) return 'Puter returned code: ' + code;
+  return 'Unknown error.';
+}
+
+function showAuthPopup({ title, body, tone, actions }) {
+  const scrim = document.getElementById('authScrim');
+  const modal = document.getElementById('authModal');
+  if (!scrim || !modal) return;
+  const toneStyles = {
+    ok:   'background:#e6f5e9;color:#26890c;border-color:#26890c',
+    warn: 'background:#fff6d6;color:#8a6b00;border-color:#d89e00',
+    bad:  'background:#fde8e6;color:#8a2721;border-color:#8a2721'
+  };
+  const toneStyle = toneStyles[tone] || toneStyles.warn;
+  modal.innerHTML =
+    '<h3 style="margin:0 0 8px">' + esc(title) + '</h3>' +
+    '<div style="display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid;margin-bottom:14px;' + toneStyle + '">' +
+      (tone === 'ok' ? '✓ Success' : tone === 'bad' ? '✗ Failed' : '⚠ Notice') +
+    '</div>' +
+    '<div style="font-size:14px;line-height:1.5;color:var(--dark-grey);white-space:pre-wrap">' + esc(body) + '</div>' +
+    '<div class="foot" style="margin-top:18px;flex-wrap:wrap">' +
+      (actions || []).map((a, i) =>
+        '<button class="btn ' + (a.kind === 'ghost' ? 'ghost' : '') + '" data-auth-action="' + i + '">' + esc(a.label) + '</button>'
+      ).join('') +
+    '</div>';
+  scrim.classList.add('show');
+  modal.querySelectorAll('[data-auth-action]').forEach((btn, i) => {
+    btn.onclick = () => {
+      const act = (actions || [])[i];
+      scrim.classList.remove('show');
+      if (act && typeof act.onClick === 'function') act.onClick();
+    };
+  });
+}
+function closeAuthPopup() {
+  const scrim = document.getElementById('authScrim');
+  if (scrim) scrim.classList.remove('show');
+}
+document.getElementById('authScrim').addEventListener('click', e => {
+  if (e.target.id === 'authScrim') closeAuthPopup();
+});
+
+async function ensureAuth(opts = {}) {
+  const forceRealSignIn = !!opts.forceRealSignIn;
+  const silent = !!opts.silent;
+
+  if (authInFlight && !forceRealSignIn) return authInFlight;
   authInFlight = (async () => {
     if (!window.puter || !puter.auth) {
       authState = 'failed';
-      logAIError('Puter.js auth not available', new Error('puter.auth missing'));
+      authLastReason = 'Puter.js is not loaded. Check that https://js.puter.com/v2/ is in <head> and not blocked.';
+      logAIError('Puter.js auth not available', new Error(authLastReason));
       return false;
     }
-    // Already signed in?
+
     try {
       const signedIn = await puter.auth.isSignedIn();
       if (signedIn) {
         const user = await puter.auth.getUser().catch(() => null);
-        authState = (user && !user.email) ? 'temp' : 'signed';
-        authAttempts = 0;
-        return true;
+        const isTemp = (user && !user.email);
+        if (!(forceRealSignIn && isTemp)) {
+          authState = isTemp ? 'temp' : 'signed';
+          authLastReason = '';
+          if (!forceRealSignIn) { authAttempts = 0; return true; }
+        }
       }
-    } catch (e) { /* fall through to sign-in */ }
+    } catch (e) { /* fall through */ }
 
-    // PRIMARY: try to auto-create a temporary (guest) user
+    if (authState === 'exhausted' || forceRealSignIn) {
+      try {
+        await puter.auth.signIn();
+        authState = 'signed';
+        authLastReason = '';
+        authAttempts = 0;
+        try { localStorage.removeItem('adminhub_auth_exhausted'); } catch (e) {}
+        if (!silent) toast('Signed in — you can now generate quizzes.');
+        return true;
+      } catch (e2) {
+        authState = 'failed';
+        authLastError = e2;
+        authLastReason = describeAuthError(e2);
+        authAttempts++;
+        logAIError('Real sign-in failed (attempt ' + authAttempts + '/' + MAX_AUTH_ATTEMPTS + ')', e2,
+          e2 && e2.error ? 'code: ' + e2.error : '');
+        return false;
+      }
+    }
+
+    // PRIMARY: temp user creation
     try {
       await puter.auth.signIn({ attempt_temp_user_creation: true });
       authState = 'temp';
+      authLastError = null;
+      authLastReason = '';
       authAttempts = 0;
+      try { localStorage.removeItem('adminhub_auth_exhausted'); } catch (e) {}
       return true;
     } catch (e) {
-      const code = e && e.error ? e.error : 'unknown';
-      if (code === 'auth_window_closed' || code === 'popup_blocked') {
-        logAIError('Temp user creation cancelled/blocked', e, 'trying normal sign-in next');
-      } else {
-        logAIError('Temp user creation failed', e, 'trying normal sign-in next');
-      }
+      authLastError = e;
+      authLastReason = describeAuthError(e);
+      logAIError('Temp user creation failed', e, 'code: ' + (e && e.error ? e.error : 'unknown') + ' — trying normal sign-in next');
     }
 
     // SECONDARY: full sign-in popup
     try {
       await puter.auth.signIn();
       authState = 'signed';
+      authLastError = null;
+      authLastReason = '';
       authAttempts = 0;
       return true;
     } catch (e2) {
       authState = 'failed';
+      authLastError = e2;
+      authLastReason = describeAuthError(e2);
       authAttempts++;
       logAIError('Sign-in failed (attempt ' + authAttempts + '/' + MAX_AUTH_ATTEMPTS + ')', e2,
         e2 && e2.error ? 'code: ' + e2.error : '');
       return false;
     }
   })();
+
   try { return await authInFlight; }
-  finally { authInFlight = null; updateAuthBadge(); }
+  finally { authInFlight = null; updateAuthBadge(); updateLogoutVisibility(); }
+}
+
+async function puterLogout() {
+  if (authState !== 'signed') {
+    toast('Logout only works for a full Puter account, not a guest session.');
+    return;
+  }
+  try {
+    await puter.auth.signOut();
+    authState = 'unknown';
+    authLastError = null;
+    authLastReason = '';
+    try { localStorage.removeItem('adminhub_auth_exhausted'); } catch (e) {}
+    updateAuthBadge();
+    updateLogoutVisibility();
+    toast('Signed out of Puter.');
+    showAuthPopup({
+      title: 'Signed out',
+      body: 'You have been signed out. Reload the page to start a new guest session, or sign back in any time.',
+      tone: 'warn',
+      actions: [
+        { label: 'Reload', onClick: () => location.reload() },
+        { label: 'Sign in again', kind: 'ghost', onClick: async () => {
+          const ok = await ensureAuth({ forceRealSignIn: true, silent: true });
+          if (ok) toast('Signed in.');
+        }}
+      ]
+    });
+  } catch (e) {
+    logAIError('Sign-out failed', e);
+    toast('Could not sign out.');
+  }
+}
+function updateLogoutVisibility() {
+  const btn = document.getElementById('puterLogout');
+  if (!btn) return;
+  btn.style.display = (authState === 'signed') ? '' : 'none';
 }
 
 function updateAuthBadge() {
@@ -673,22 +812,93 @@ function updateAuthBadge() {
   const icon  = document.getElementById('authIcon');
   const text  = document.getElementById('authText');
   if (!badge || !icon || !text) return;
-  badge.classList.remove('temp', 'signed', 'failed');
+  badge.classList.remove('temp', 'signed', 'failed', 'exhausted', 'clickable');
+  badge.style.cursor = '';
+  badge.onclick = null;
+
   if (authState === 'temp') {
-    badge.classList.add('temp');
+    badge.classList.add('temp', 'clickable');
     icon.className = 'bx bx-user-check';
     text.textContent = 'Guest session';
+    badge.style.cursor = 'pointer';
+    badge.title = 'Guest session active. Click to see details or sign in for AI features.';
+    badge.onclick = showSessionInfo;
   } else if (authState === 'signed') {
-    badge.classList.add('signed');
+    badge.classList.add('signed', 'clickable');
     icon.className = 'bx bx-check-circle';
     text.textContent = 'Signed in';
+    badge.style.cursor = 'pointer';
+    badge.title = 'Signed in with your Puter account. Click for details.';
+    badge.onclick = showSessionInfo;
+  } else if (authState === 'exhausted') {
+    badge.classList.add('exhausted', 'clickable');
+    icon.className = 'bx bx-error';
+    text.textContent = 'Out of credits — click to sign in';
+    badge.style.cursor = 'pointer';
+    badge.title = 'Guest accounts have no AI credits. Click to sign in with a real account.';
+    badge.onclick = async () => {
+      authState = 'unknown';
+      updateAuthBadge();
+      const ok = await ensureAuth({ forceRealSignIn: true });
+      if (ok) toast('Signed in.');
+    };
   } else if (authState === 'failed') {
-    badge.classList.add('failed');
+    badge.classList.add('failed', 'clickable');
     icon.className = 'bx bx-error-circle';
     text.textContent = 'Auth failed';
+    badge.style.cursor = 'pointer';
+    badge.title = authLastReason || 'Authentication failed. Click for details.';
+    badge.onclick = () => showAuthPopup({
+      title: 'Authentication failed',
+      body: authLastReason || 'Unknown error. Check the Errors panel for details.',
+      tone: 'bad',
+      actions: [
+        { label: 'Try again', onClick: async () => {
+          authState = 'unknown'; updateAuthBadge();
+          await ensureAuth({ forceRealSignIn: true });
+        }},
+        { label: 'Close', kind: 'ghost', onClick: closeAuthPopup }
+      ]
+    });
   } else {
     icon.className = 'bx bx-loader-alt spin';
     text.textContent = 'Checking…';
+  }
+}
+
+function showSessionInfo() {
+  if (authState === 'temp') {
+    showAuthPopup({
+      title: 'Guest session active',
+      body:
+        'A temporary guest session was created successfully.\n\n' +
+        'What works:\n' +
+        '• Classes, assignments, question sets, and all three games.\n\n' +
+        'What does NOT work:\n' +
+        '• The AI quiz generator. Puter gives guest accounts zero AI credits, so every AI request will fail with "not enough credits".\n\n' +
+        'To unlock the AI, sign in with a real Puter account. Your work is stored in this browser, so nothing is lost when you switch.',
+      tone: 'warn',
+      actions: [
+        { label: 'Sign in for AI', onClick: async () => {
+          authState = 'unknown'; updateAuthBadge();
+          const ok = await ensureAuth({ forceRealSignIn: true });
+          if (ok) toast('Signed in.');
+        }},
+        { label: 'Close', kind: 'ghost', onClick: closeAuthPopup }
+      ]
+    });
+  } else if (authState === 'signed') {
+    showAuthPopup({
+      title: 'Signed in',
+      body:
+        'You are signed in with a full Puter account.\n\n' +
+        'AI quiz generation is enabled and uses your Puter credits. If you run low, top up at puter.com/#billing.',
+      tone: 'ok',
+      actions: [
+        { label: 'Sign out', kind: 'ghost', onClick: puterLogout },
+        { label: 'Close', onClick: closeAuthPopup }
+      ]
+    });
   }
 }
 
@@ -815,7 +1025,7 @@ async function tryGenerate(silent) {
   let raw = '';
   const prompt = AI_PROMPT(chatState.count, chatState.topic, chatState.notes);
   try { raw = await aiChat(prompt); }
-  catch (e) { logAIError('AI request failed', e, 'prompt chars: ' + prompt.length); botSay("The AI request failed. Open the Errors panel above."); setWaiting(false); return; }
+  catch (e) { logAIError('AI request failed', e, 'prompt chars: ' + prompt.length); botSay("The AI request failed. See the Errors panel or the badge above for details."); setWaiting(false); return; }
   let data = null;
   try { data = parseQuizJSON(raw); } catch (e) { logAIError('parseQuizJSON threw', e, 'raw preview: ' + raw.slice(0, 200)); }
   if (!data || !data.questions || !data.questions.length) {
@@ -831,7 +1041,6 @@ async function tryGenerate(silent) {
   setWaiting(false);
 }
 
-/* =================== aiChat: auth-aware wrapper =================== */
 async function aiChat(prompt) {
   const ok = await ensureAuth();
   if (!ok) {
@@ -854,11 +1063,40 @@ async function aiChat(prompt) {
   try { return await attempt(AI_MODEL); }
   catch (e) {
     firstErr = e;
-    if (e && (e.error === 'popup_blocked')) {
+
+    if (isCreditsError(e) && authState === 'temp') {
+      logAIError('Guest account has no AI credits', e, 'prompting real sign-in');
+      authState = 'exhausted';
+      updateAuthBadge();
+      botSay("Guest sessions don't get AI credits — Puter only gives them to signed-in users. Click the badge above or the button below to sign in, then try again.");
+      const log = $('#chatLog');
+      const wrap = document.createElement('div');
+      wrap.className = 'msg bot';
+      wrap.innerHTML = "<button class='btn' id='__signinNow' style='margin-top:4px'>Sign in with Puter</button>";
+      log.appendChild(wrap);
+      log.scrollTop = log.scrollHeight;
+      const btn = wrap.querySelector('#__signinNow');
+      if (btn) btn.onclick = async () => {
+        btn.disabled = true; btn.textContent = 'Signing in…';
+        const signed = await ensureAuth({ forceRealSignIn: true });
+        if (signed) {
+          wrap.remove();
+          botSay('Signed in. Try your prompt again — the credits come from your account now.');
+        } else {
+          btn.disabled = false; btn.textContent = 'Sign in with Puter';
+        }
+      };
+      throw e;
+    }
+    if (isCreditsError(e)) {
+      logAIError('Account out of credits', e);
+      botSay("Your Puter account is out of AI credits. Top up at puter.com/#billing, then try again.");
+      throw e;
+    }
+    if (e && e.error === 'popup_blocked') {
       botSay("Your browser blocked the Puter popup. Click somewhere in the page first, then try again.");
     }
-    // Auth-flavoured error → re-auth and retry once
-    if (e && (e.error === 'must_login_or_signup' || e.status === 401 || e.status === 403)) {
+    if (isAuthError(e)) {
       authState = 'unknown';
       const reAuth = await ensureAuth();
       if (reAuth) {
@@ -872,6 +1110,12 @@ async function aiChat(prompt) {
 
   try { return await attempt(AI_FALLBACK); }
   catch (e2) {
+    if (isCreditsError(e2) && authState === 'temp') {
+      authState = 'exhausted';
+      updateAuthBadge();
+      botSay("Guest account is out of credits. Sign in with a real Puter account to generate quizzes.");
+      throw e2;
+    }
     logAIError('Fallback "' + AI_FALLBACK + '" also failed', e2,
       'First error: ' + (firstErr && firstErr.message ? firstErr.message : firstErr));
     throw e2;
@@ -1593,13 +1837,92 @@ document.querySelectorAll('#sidebar .side-menu.top li a').forEach(a => a.addEven
   }
 })();
 
+document.getElementById('puterLogout').addEventListener('click', e => {
+  e.preventDefault();
+  puterLogout();
+});
+
+async function bootSession() {
+  const previouslyExhausted = (() => {
+    try { return localStorage.getItem('adminhub_auth_exhausted') === '1'; }
+    catch (e) { return false; }
+  })();
+
+  if (previouslyExhausted) {
+    authState = 'exhausted';
+    updateAuthBadge();
+    updateLogoutVisibility();
+    return;
+  }
+
+  authState = 'unknown';
+  updateAuthBadge();
+  const ok = await ensureAuth();
+
+  if (ok && authState === 'temp') {
+    if (!authPopupShown) {
+      authPopupShown = true;
+      showAuthPopup({
+        title: 'Guest session ready',
+        body:
+          'A temporary guest session was created successfully.\n\n' +
+          'Everything works except the AI quiz generator. Puter only gives AI credits to signed-in users, so guest sessions can\'t call the AI. You can still make classes, assign quizzes, edit question sets, and play all three games.\n\n' +
+          'Want the AI too? Sign in with a real Puter account any time.',
+        tone: 'warn',
+        actions: [
+          { label: 'Continue as guest', onClick: closeAuthPopup },
+          { label: 'Sign in for AI', kind: 'ghost', onClick: async () => {
+            authState = 'unknown'; updateAuthBadge();
+            const signed = await ensureAuth({ forceRealSignIn: true });
+            if (signed) toast('Signed in.');
+          }}
+        ]
+      });
+    }
+  } else if (ok && authState === 'signed') {
+    if (!authPopupShown) {
+      authPopupShown = true;
+      showAuthPopup({
+        title: 'Signed in',
+        body: 'Welcome back. The AI quiz generator is enabled and uses your Puter credits.',
+        tone: 'ok',
+        actions: [
+          { label: 'Got it', onClick: closeAuthPopup }
+        ]
+      });
+    }
+  } else if (authState === 'failed') {
+    if (!authPopupShown) {
+      authPopupShown = true;
+      showAuthPopup({
+        title: 'Could not start a session',
+        body:
+          'Temp user creation failed.\n\n' +
+          'Reason: ' + (authLastReason || 'Unknown error.') + '\n\n' +
+          'You can still use everything except the AI. If you want to try again, click Retry.',
+        tone: 'bad',
+        actions: [
+          { label: 'Retry', onClick: async () => {
+            authPopupShown = false;
+            authState = 'unknown'; updateAuthBadge();
+            await bootSession();
+          }},
+          { label: 'Continue anyway', kind: 'ghost', onClick: closeAuthPopup }
+        ]
+      });
+    }
+  }
+
+  updateAuthBadge();
+  updateLogoutVisibility();
+}
+
 render();
 route();
 renderAIErrors();
 updateAuthBadge();
-
-// Kick off auth as soon as the page loads so the badge settles quickly.
-ensureAuth().then(updateAuthBadge).catch(() => {});
+updateLogoutVisibility();
+bootSession();
 </script>
 </body>
 </html>
