@@ -60,9 +60,6 @@ button{font-family:inherit;cursor:pointer}
 #content nav .dd.show{display:block}
 #content nav .dd li{padding:10px;border-bottom:1px solid var(--grey);color:var(--dark)}
 #content nav .dd li:hover{background:var(--light-blue)}
-#content nav .swith-lm{background:var(--grey);border-radius:50px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:3px;position:relative;height:21px;width:45px;transform:scale(1.5)}
-#content nav .swith-lm .ball{background:var(--blue);border-radius:50%;position:absolute;top:2px;left:2px;height:20px;width:20px;transition:transform .2s linear}
-#content nav .checkbox:checked+.swith-lm .ball{transform:translateX(22px)}
 .bxs-moon{color:var(--yellow)}.bx-sun{color:var(--orange)}
 main{padding:28px 24px;color:var(--dark)}
 .classes{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
@@ -246,8 +243,6 @@ main{padding:28px 24px;color:var(--dark)}
 .auth-badge.clickable{cursor:pointer}
 .auth-badge.clickable:hover{filter:brightness(1.05)}
 #sidebar .side-menu li a .bx{display:inline-flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
-
-/* Assign-quiz panel inside the Assignments tab */
 .assign-panel{background:var(--light);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .assign-panel .ap-icon{width:44px;height:44px;border-radius:12px;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
 .assign-panel .ap-info{flex:1;min-width:200px}
@@ -261,12 +256,39 @@ main{padding:28px 24px;color:var(--dark)}
 .qs-pick button .qst{flex:1;min-width:0}
 .qs-pick button .qst b{display:block;font-size:14px}
 .qs-pick button .qst small{color:var(--dark-grey);font-size:12px}
+
+/* ============ Teacher / Student toggle ============ */
+.mode-toggle{display:flex;background:var(--grey);border-radius:20px;padding:3px;gap:2px;font-family:var(--lato);flex:none}
+.mode-toggle button{border:none;background:transparent;padding:6px 14px;border-radius:16px;font-size:13px;font-weight:600;color:var(--dark-grey);cursor:pointer;transition:background .15s,color .15s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.mode-toggle button.on{background:var(--blue);color:#fff}
+.mode-toggle button:not(.on):hover{background:var(--light-blue);color:var(--blue)}
+
+/* ============ Student view ============ */
+.student-join-wrap{display:flex;align-items:center;justify-content:center;min-height:55vh;padding:20px}
+.student-join-card{background:var(--light);border-radius:16px;padding:40px 32px;box-shadow:0 4px 20px rgba(0,0,0,.08);text-align:center;max-width:420px;width:100%}
+.student-join-card .sj-icon{width:72px;height:72px;border-radius:50%;background:var(--light-blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px}
+.student-join-card h1{font-size:26px;margin-bottom:8px;color:var(--dark)}
+.student-join-card p{color:var(--dark-grey);margin-bottom:24px;font-size:15px;line-height:1.5}
+.student-join-card input{width:100%;padding:16px;border:2px solid #ccc;border-radius:10px;font-size:24px;text-align:center;letter-spacing:.15em;font-family:ui-monospace,Menlo,monospace;font-weight:700;background:transparent;color:var(--dark);outline:none;text-transform:uppercase;margin-bottom:16px}
+.student-join-card input:focus{border-color:var(--blue)}
+.student-join-card .btn{width:100%;padding:14px;font-size:17px}
+.sj-error{color:var(--red);font-size:14px;margin-top:14px;padding:10px;background:#fde8e6;border-radius:8px;display:none}
+.student-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:var(--light-blue);color:var(--blue);font-size:13px;font-weight:600}
+.student-class-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.student-class-hd h1{font-size:34px;font-weight:600;color:var(--dark)}
+.student-class-hd .cls-meta{color:var(--dark-grey);font-size:14px;margin-top:4px}
+.student-post{padding:16px 20px;border-bottom:1px solid var(--grey)}
+.student-post:last-child{border-bottom:none}
+.student-post .meta{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.student-post .meta small{display:block;color:var(--dark-grey)}
+.student-post p{white-space:pre-wrap;word-break:break-word}
+.student-empty{padding:36px 20px;text-align:center;color:var(--dark-grey)}
 </style>
 </head>
 <body>
 <section id="sidebar">
   <a href="#" class="brand"><i class='bx bxs-smile bx-lg'></i><span class="text">AdminHub</span></a>
-  <ul class="side-menu top">
+  <ul class="side-menu top teacher-menu">
     <li class="active" data-view="classes"><a href="#"><i class='bx bxs-graduation bx-sm'></i><span class="text">Classes</span></a></li>
     <li data-view="ai"><a href="#"><i class='bx bxs-bot bx-sm'></i><span class="text">AI Quiz</span></a></li>
     <li data-view="questions"><a href="#"><i class='bx bx-list-check bx-sm'></i><span class="text">Questions</span></a></li>
@@ -275,7 +297,11 @@ main{padding:28px 24px;color:var(--dark)}
     <li><a href="#"><i class='bx bxs-message-dots bx-sm'></i><span class="text">Message</span></a></li>
     <li><a href="#"><i class='bx bxs-group bx-sm'></i><span class="text">Team</span></a></li>
   </ul>
+  <ul class="side-menu top student-menu" style="display:none">
+    <li class="active"><a href="#"><i class='bx bxs-home bx-sm'></i><span class="text">My Class</span></a></li>
+  </ul>
   <ul class="side-menu bottom">
+    <li><a href="#" id="studentLeaveBtn" style="display:none"><i class='bx bx-log-out bx-sm'></i><span class="text">Leave class</span></a></li>
     <li><a href="#" id="puterLogout" class="logout" style="display:none" title="Sign out of Puter"><i class='bx bx-log-out bx-sm'></i><span class="text">Sign out of Puter</span></a></li>
     <li><a href="#"><i class='bx bxs-cog bx-sm'></i><span class="text">Settings</span></a></li>
     <li><a href="#" class="logout"><i class='bx bx-power-off bx-sm'></i><span class="text">Logout</span></a></li>
@@ -287,8 +313,10 @@ main{padding:28px 24px;color:var(--dark)}
     <i class='bx bx-menu bx-sm'></i>
     <a href="#" class="nav-link">Categories</a>
     <form action="#"><div class="form-input"><input type="search" placeholder="Search..."><button type="submit"><i class='bx bx-search'></i></button></div></form>
-    <input type="checkbox" class="checkbox" id="switch-mode" hidden>
-    <label class="swith-lm" for="switch-mode"><i class="bx bxs-moon"></i><i class="bx bx-sun"></i><div class="ball"></div></label>
+    <div class="mode-toggle" id="modeToggle" role="tablist" aria-label="Switch UI">
+      <button type="button" data-mode="teacher" class="on" aria-selected="true"><i class='bx bxs-graduation'></i> Teacher</button>
+      <button type="button" data-mode="student" aria-selected="false"><i class='bx bxs-user'></i> Student</button>
+    </div>
     <a href="#" class="notification" id="notificationIcon"><i class='bx bxs-bell'></i><span class="num">8</span></a>
     <div class="dd" id="notificationMenu"><ul><li>New message from John</li><li>Your order has been shipped</li><li>New comment on your post</li><li>Reminder: Meeting at 3PM</li></ul></div>
     <a href="#" class="profile" id="profileIcon"><img src="https://placehold.co/600x400/png" alt="Profile"></a>
@@ -296,6 +324,7 @@ main{padding:28px 24px;color:var(--dark)}
   </nav>
 
   <main>
+    <!-- Teacher views -->
     <div class="classes view on" id="classes" data-view="classes">
       <button class="railopen" id="railOpen"><i class='bx bx-menu-alt-left'></i>Classes</button>
       <aside class="rail">
@@ -350,6 +379,24 @@ main{padding:28px 24px;color:var(--dark)}
       </div>
       <div id="qsList"></div>
     </div>
+
+    <!-- Student views -->
+    <div class="view" id="studentJoinView">
+      <div class="student-join-wrap">
+        <div class="student-join-card">
+          <div class="sj-icon"><i class='bx bx-user-plus'></i></div>
+          <h1>Join a class</h1>
+          <p>Enter the class code your teacher gave you.</p>
+          <input type="text" id="joinCodeInput" placeholder="ABCD123456" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button class="btn" id="joinCodeBtn">Join class</button>
+          <div class="sj-error" id="joinCodeError"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="studentClassView">
+      <div id="studentClassInner"></div>
+    </div>
   </main>
 </section>
 
@@ -376,6 +423,39 @@ window.addEventListener('error', function (e) {
 
 let nav = 'classes';
 const VIEWS = ['classes', 'ai', 'questions'];
+
+/* =================== UI mode (teacher / student) =================== */
+let uiMode = 'teacher';
+try {
+  const m = localStorage.getItem('adminhub_ui_mode_v1');
+  if (m === 'student' || m === 'teacher') uiMode = m;
+} catch (e) {}
+function saveUiMode() { try { localStorage.setItem('adminhub_ui_mode_v1', uiMode); } catch (e) {} }
+
+let studentSession = null;
+try {
+  const s = localStorage.getItem('adminhub_student_join_v1');
+  if (s) studentSession = JSON.parse(s);
+} catch (e) {}
+function saveStudentSession() {
+  try {
+    if (studentSession) localStorage.setItem('adminhub_student_join_v1', JSON.stringify(studentSession));
+    else localStorage.removeItem('adminhub_student_join_v1');
+  } catch (e) {}
+}
+let studentTab = 'posts';
+
+function updateModeToggle() {
+  document.querySelectorAll('#modeToggle button').forEach(b => {
+    const on = b.dataset.mode === uiMode;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+}
+function updateStudentSidebarExtras() {
+  const leaveBtn = document.getElementById('studentLeaveBtn');
+  if (leaveBtn) leaveBtn.style.display = (uiMode === 'student' && studentSession) ? '' : 'none';
+}
 
 /* =================== ORIGINAL DASHBOARD =================== */
 const KEY = 'adminhub_classes_v1';
@@ -503,7 +583,6 @@ function render() {
     } else if (tab === 'dashboard') {
       body = dashHtml(c);
     } else {
-      /* ---------- Assignments tab ---------- */
       body = `<div class="assign-panel">
         <div class="ap-icon"><i class='bx bx-task'></i></div>
         <div class="ap-info">
@@ -559,23 +638,56 @@ const sidebar = $('#sidebar');
 $('#content nav .bx-menu').onclick = () => sidebar.classList.toggle('hide');
 function adjust() { sidebar.classList.toggle('hide', window.innerWidth <= 576); }
 addEventListener('load', adjust); addEventListener('resize', adjust);
-$('#switch-mode').onchange = e => document.body.classList.toggle('dark', e.target.checked);
 $('#notificationIcon').onclick = e => { e.preventDefault(); $('#notificationMenu').classList.toggle('show'); $('#profileMenu').classList.remove('show'); };
 $('#profileIcon').onclick = e => { e.preventDefault(); $('#profileMenu').classList.toggle('show'); $('#notificationMenu').classList.remove('show'); };
 addEventListener('click', e => { if (!e.target.closest('.notification') && !e.target.closest('.profile')) document.querySelectorAll('.dd').forEach(d => d.classList.remove('show')); });
 
-/* =================== Top nav =================== */
+/* =================== Teacher/Student toggle =================== */
+document.getElementById('modeToggle').addEventListener('click', e => {
+  const btn = e.target.closest('[data-mode]');
+  if (!btn) return;
+  const mode = btn.dataset.mode;
+  if (mode === uiMode) return;
+  uiMode = mode;
+  saveUiMode();
+  updateModeToggle();
+  route();
+  updateStudentSidebarExtras();
+});
+
+/* =================== Top nav (teacher) =================== */
 function route() {
+  const teacherMenu = document.querySelector('.side-menu.teacher-menu');
+  const studentMenu = document.querySelector('.side-menu.student-menu');
+  if (teacherMenu) teacherMenu.style.display = uiMode === 'teacher' ? '' : 'none';
+  if (studentMenu) studentMenu.style.display = uiMode === 'student' ? '' : 'none';
+
+  if (uiMode === 'student') {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+    if (studentSession) {
+      const sv = document.getElementById('studentClassView');
+      if (sv) sv.classList.add('on');
+      renderStudentClass();
+    } else {
+      const jv = document.getElementById('studentJoinView');
+      if (jv) jv.classList.add('on');
+      renderStudentJoin();
+    }
+    updateStudentSidebarExtras();
+    return;
+  }
+
   VIEWS.forEach(v => {
     const el = document.querySelector('.view[data-view="' + v + '"]');
     if (el) el.classList.toggle('on', nav === v);
   });
-  document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
+  document.querySelectorAll('#sidebar .teacher-menu li').forEach(li => {
     const isActive = (li.dataset.view || '') === nav;
     li.classList.toggle('active', isActive);
   });
+  updateStudentSidebarExtras();
 }
-document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
+document.querySelectorAll('#sidebar .teacher-menu li').forEach(li => {
   const a = li.querySelector('a');
   if (!a) return;
   a.addEventListener('click', e => {
@@ -588,6 +700,130 @@ document.querySelectorAll('#sidebar .side-menu.top li').forEach(li => {
     route();
   });
 });
+
+/* =================== Student join + class view =================== */
+function renderStudentJoin() {
+  const input = document.getElementById('joinCodeInput');
+  const btn = document.getElementById('joinCodeBtn');
+  const err = document.getElementById('joinCodeError');
+  if (!input || !btn) return;
+
+  input.value = '';
+  if (err) { err.style.display = 'none'; err.textContent = ''; }
+
+  const submit = () => {
+    const code = input.value.trim().toUpperCase();
+    if (!code) return;
+    const c = classes.find(x => x.code === code);
+    if (!c) {
+      if (err) { err.textContent = 'No class found with that code. Check with your teacher.'; err.style.display = 'block'; }
+      return;
+    }
+    if (err) err.style.display = 'none';
+    studentSession = { classId: c.id, joinedAt: Date.now() };
+    saveStudentSession();
+    c.opened = Date.now();
+    save();
+    studentTab = 'posts';
+    toast('Joined ' + c.name);
+    route();
+    updateStudentSidebarExtras();
+  };
+
+  btn.onclick = submit;
+  input.onkeydown = e => { if (e.key === 'Enter') submit(); };
+  setTimeout(() => input.focus(), 100);
+}
+
+function leaveStudentClass() {
+  if (!studentSession) return;
+  if (!confirm('Leave this class? You can rejoin with the same code.')) return;
+  studentSession = null;
+  saveStudentSession();
+  toast('Left class');
+  route();
+  updateStudentSidebarExtras();
+}
+document.getElementById('studentLeaveBtn').addEventListener('click', e => {
+  e.preventDefault();
+  leaveStudentClass();
+});
+
+function renderStudentClass() {
+  const inner = document.getElementById('studentClassInner');
+  if (!inner) return;
+  if (!studentSession) { route(); return; }
+
+  const c = classes.find(x => x.id === studentSession.classId);
+  if (!c) {
+    inner.innerHTML = `
+      <div class="student-join-wrap">
+        <div class="student-join-card">
+          <div class="sj-icon" style="background:#fde8e6;color:#8a2721"><i class='bx bx-error-circle'></i></div>
+          <h1>Class unavailable</h1>
+          <p>Your teacher's class is no longer available. You can join a different class with a new code.</p>
+          <button class="btn" id="studentResetBtn">Join a different class</button>
+        </div>
+      </div>`;
+    const b = document.getElementById('studentResetBtn');
+    if (b) b.onclick = () => {
+      studentSession = null; saveStudentSession(); route(); updateStudentSidebarExtras();
+    };
+    return;
+  }
+
+  const showWall = c.settings && c.settings.wallVisible !== false;
+
+  const postsHtml = (!showWall)
+    ? `<div class="student-empty">Your teacher has hidden the posts wall for now.</div>`
+    : (c.posts.length
+        ? c.posts.map(p => `<div class="student-post"><div class="meta"><div class="avatar"><i class='bx bxs-user'></i></div><div><b>${esc(p.by || 'Teacher')}</b><small>${fmt(p.time)}</small></div></div><p>${esc(p.text)}</p></div>`).join('')
+        : `<div class="student-empty">No posts yet.</div>`);
+
+  const assignmentsHtml = c.assignments.length
+    ? c.assignments.map(a => `
+        <div class="student-post">
+          <div class="meta">
+            <div class="avatar" style="background:#2F65C8"><i class='bx bxs-task'></i></div>
+            <div><b>Assignment</b><small>${fmt(a.time)}${a.kind === 'quiz' ? ' · quiz' : ''}</small></div>
+          </div>
+          <p>${esc(a.text)}</p>
+          ${a.kind === 'quiz' && a.quizId ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="playbtn battleship" data-student-play="${a.quizId}" data-game="battleship"><i class='bx bxs-ship'></i> Battleship</button><button class="playbtn bubble" data-student-play="${a.quizId}" data-game="bubble"><i class='bx bxs-circle'></i> Bubble Shooter</button><button class="playbtn asteroids" data-student-play="${a.quizId}" data-game="asteroids"><i class='bx bxs-planet'></i> Asteroids</button></div>` : ''}
+        </div>`).join('')
+    : `<div class="student-empty">No assignments yet. Check back soon!</div>`;
+
+  inner.innerHTML = `
+    <div class="student-class-hd">
+      <div>
+        <h1>${esc(c.name)}</h1>
+        <div class="cls-meta"><span class="student-badge"><i class='bx bx-user'></i> Student view</span> &nbsp; Class code ${esc(c.code)}</div>
+      </div>
+      <button class="btn ghost" id="studentLeaveBtn2"><i class='bx bx-log-out'></i> Leave class</button>
+    </div>
+    <div class="row">
+      <div class="tabs">
+        <button data-student-tab="posts" class="${studentTab === 'posts' ? 'on' : ''}">Posts</button>
+        <button data-student-tab="assignments" class="${studentTab === 'assignments' ? 'on' : ''}">Assignments</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0">
+      ${studentTab === 'posts' ? postsHtml : assignmentsHtml}
+    </div>
+  `;
+
+  inner.querySelectorAll('[data-student-tab]').forEach(b => {
+    b.onclick = () => { studentTab = b.dataset.studentTab; renderStudentClass(); };
+  });
+  const lv = document.getElementById('studentLeaveBtn2');
+  if (lv) lv.onclick = leaveStudentClass;
+
+  inner.querySelectorAll('[data-student-play]').forEach(b => {
+    b.onclick = () => {
+      const qs = qsets.find(x => x.id === b.dataset.studentPlay);
+      openGame(b.dataset.game, qs || null);
+    };
+  });
+}
 
 /* =================== Questions storage =================== */
 const QKEY = 'adminhub_questions_v2';
@@ -961,7 +1197,6 @@ const FLOW_PARSERS = {
   topic: v => {
     const t = v.trim();
     if (t.length < 3) return null;
-    // reject obvious non-answers
     if (/^(idk|i don'?t know|no|nope|nothing|anything|whatever|\?+)$/i.test(t)) return null;
     return t;
   },
@@ -1073,7 +1308,6 @@ $('#aiFile').onchange = async e => {
     chatFlow.notes = (chatFlow.notes ? chatFlow.notes + '\n\n' : '') + text;
     sysSay('Added ~' + words.toLocaleString() + ' words from ' + f.name);
 
-    // If we haven't gotten past topic yet, treat the file as the topic and move on.
     if (chatFlow.step === 'topic') {
       chatFlow.topic = 'the attached ' + f.name;
       chatFlow.step = 'grade';
@@ -1102,7 +1336,6 @@ $('#aiReset').onclick = () => { newChat(); };
 async function handleFlowAnswer(text) {
   if (!chatFlow) newChat();
 
-  // Long pasted text at the topic step counts as notes
   if (chatFlow.step === 'topic' && text.length > 400) {
     chatFlow.notes = (chatFlow.notes ? chatFlow.notes + '\n\n' : '') + text;
     chatFlow.topic = 'the pasted notes';
@@ -1134,7 +1367,6 @@ async function handleFlowAnswer(text) {
     return;
   }
 
-  // All four answers collected → generate
   chatFlow.step = 'done';
   updateChips();
   await generateFromFlow();
@@ -1155,7 +1387,7 @@ async function generateFromFlow() {
     logAIError('AI request failed', e, 'prompt chars: ' + prompt.length);
     botSay('The AI request failed. See the Errors panel or the badge above.');
     setWaiting(false);
-    chatFlow.step = 'difficulty'; // let them retry
+    chatFlow.step = 'difficulty';
     updateChips();
     return;
   }
@@ -1369,7 +1601,6 @@ function addAssignmentForClass(c, qs) {
   save(); saveQSets();
 }
 
-/* ---------- Assign from the teacher's Assignments tab ---------- */
 function pickAndAssignQuiz() {
   if (!qsets.length) return toast('No question sets yet — make one in AI Quiz');
   if (!classes.length) return toast('Create a class first');
@@ -2099,6 +2330,8 @@ async function bootSession() {
   updateLogoutVisibility();
 }
 
+updateModeToggle();
+updateStudentSidebarExtras();
 render();
 route();
 renderAIErrors();
